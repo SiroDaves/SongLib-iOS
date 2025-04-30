@@ -23,7 +23,7 @@ final class DiContainer {
             { self.container.resolve(NetworkServiceProtocol.self) },
             { self.container.resolve(AnalyticsServiceProtocol.self) },
             { self.container.resolve(LoggerProtocol.self) },
-            { self.container.resolve(CartService.self) }
+            { self.container.resolve(SelectionService.self) }
         ]
 
         for resolve in dependencies {

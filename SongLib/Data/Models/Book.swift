@@ -8,6 +8,7 @@
 import Foundation
 
 struct Book: Identifiable, Codable {
+    let id: Int
     let bookId: Int
     let title: String
     let subTitle: String
