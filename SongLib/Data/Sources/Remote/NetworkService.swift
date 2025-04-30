@@ -2,44 +2,16 @@
 //  NetworkService.swift
 //  SongLib
 //
-//  Created by Siro Daves on 29/04/2025.
+//  Created by Siro Daves on 30/04/2025.
 //
 
-import Foundation
-
 protocol NetworkServiceProtocol {
-    func fetch<T: Decodable>(endpoint: Endpoint) async throws -> T
+    func fetchBooks() async -> [Book]
 }
 
-class NetworkService: NetworkServiceProtocol {
-    private let session: URLSession
-    
-    init(session: URLSession = .shared) {
-        self.session = session
+final class NetworkService: NetworkServiceProtocol {
+    func fetchBooks() async -> [Book] {
+        try? await Task.sleep(nanoseconds: 1_000_000_000)
+        return []
     }
-    
-    func fetch<T: Decodable>(endpoint: Endpoint) async throws -> T {
-        guard let url = endpoint.url else {
-            throw NetworkError.invalidURL
-        }
-        
-        let (data, response) = try await session.data(from: url)
-        
-        guard let httpResponse = response as? HTTPURLResponse,
-              (200...299).contains(httpResponse.statusCode) else {
-            throw NetworkError.invalidResponse
-        }
-        
-        do {
-            return try JSONDecoder().decode(T.self, from: data)
-        } catch {
-            throw NetworkError.decodingError(error)
-        }
-    }
-}
-
-enum NetworkError: Error {
-    case invalidURL
-    case invalidResponse
-    case decodingError(Error)
 }
