@@ -9,8 +9,8 @@ import Swinject
 
 struct DependencyMap {
     static func registerDependencies(in container: Container) {
-        container.register(NetworkServiceProtocol.self) { _ in
-            NetworkService()
+        container.register(ApiServiceProtocol.self) { _ in
+            ApiService()
         }
 
         container.register(AnalyticsServiceProtocol.self) { _ in

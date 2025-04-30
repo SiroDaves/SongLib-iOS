@@ -20,7 +20,7 @@ final class DiContainer {
     // Validate that all dependencies are registered
     private func validateDependencies() {
         let dependencies: [() -> Any?] = [
-            { self.container.resolve(NetworkServiceProtocol.self) },
+            { self.container.resolve(ApiServiceProtocol.self) },
             { self.container.resolve(AnalyticsServiceProtocol.self) },
             { self.container.resolve(LoggerProtocol.self) },
             { self.container.resolve(SelectionService.self) }

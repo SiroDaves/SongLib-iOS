@@ -20,13 +20,13 @@ final class BookDetailCoordinator: Coordinator {
     func start() -> AnyView {
         let selectionManager = resolver.resolve(SelectionService.self)!
         let analyticsService = resolver.resolve(AnalyticsServiceProtocol.self)!
-        let networkService = resolver.resolve(NetworkServiceProtocol.self)!
+        let apiService = resolver.resolve(ApiServiceProtocol.self)!
 
         let viewModel = BookDetailViewModel(
             book: book,
             selectionManager: selectionManager,
             analyticsService: analyticsService,
-            networkService: networkService
+            apiService: apiService
         )
         return AnyView(
             BookDetailView(viewModel: viewModel)

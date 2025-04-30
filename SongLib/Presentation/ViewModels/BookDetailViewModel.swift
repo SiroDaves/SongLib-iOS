@@ -11,13 +11,13 @@ final class BookDetailViewModel: ObservableObject {
     @Published var book: Book
     private let selectionManager: SelectionService
     private let analyticsService: AnalyticsServiceProtocol
-    private let networkService: NetworkServiceProtocol
+    private let apiService: ApiServiceProtocol
     
-    init(book: Book, selectionManager: SelectionService, analyticsService: AnalyticsServiceProtocol, networkService: NetworkServiceProtocol) {
+    init(book: Book, selectionManager: SelectionService, analyticsService: AnalyticsServiceProtocol, apiService: ApiServiceProtocol) {
         self.book = book
         self.selectionManager = selectionManager
         self.analyticsService = analyticsService
-        self.networkService = networkService
+        self.apiService = apiService
     }
     
     func addToCart() {
@@ -25,8 +25,8 @@ final class BookDetailViewModel: ObservableObject {
         analyticsService.trackEvent("Added \(book.title) to cart")
     }
     
-    func fetchBookDetails() async {
-        let books = await networkService.fetchBooks()
+    func fetchBooks() async {
+        //let books = await apiService.fetch(endpoint: .book)
         print("Fetched books: \(book)")
     }
 }

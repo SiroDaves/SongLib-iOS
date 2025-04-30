@@ -8,29 +8,21 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State private var books: [Book] = []
+    @State private var navigateToHome = false
 
     var body: some View {
-        NavigationView {
-            List(books, id: \.id) { book in
-                if let coordinator = DiContainer.shared.container.resolve(
-                    BookDetailCoordinator.self,
-                    argument: book
-                ) {
-                    NavigationLink(
-                        destination: coordinator.start()
-                    ) {
-                        Text(book.title)
+        Group {
+            if navigateToHome {
+                Step1View()
+            } else {
+                SplashView()
+                    .onAppear {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+                            navigateToHome = true
+                        }
                     }
-                } else {
-                    Text("Unable to load book details")
-                }
             }
-            .navigationTitle("Select Song Books")
         }
-        .task {
-            let networkService = DiContainer.shared.container.resolve(NetworkServiceProtocol.self)
-            books = await networkService?.fetchBooks() ?? []
-        }
+        .animation(.easeInOut, value: navigateToHome)
     }
 }
