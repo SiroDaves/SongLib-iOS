@@ -5,34 +5,57 @@
 //  Created by Siro Daves on 30/04/2025.
 //
 
-class Step1ViewModel: ObservableObject {
-    @Published var books: [Book] = []
+import Foundation
+import SwiftUI
+
+struct BookResponse: Decodable {
+    let count: Int
+    let data: [Book]
+}
+
+final class Step1ViewModel: ObservableObject {
+    @Published var books: [Selectable<Book>] = []
     @Published var isLoading = false
     @Published var errorMessage: String? = nil
+
+    private let apiService: ApiServiceProtocol
+
+    init(apiService: ApiServiceProtocol) {
+        self.apiService = apiService
+    }
 
     func fetchBooks() {
         isLoading = true
         errorMessage = nil
 
-        // Simulate API call
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-            self.books = (1...10).map { Book(id: $0, title: "Book \($0)") }
-            self.isLoading = false
+        Task {
+            do {
+                let response: BookResponse = try await apiService.fetch(endpoint: .books)
+                let bookList = response.data.map { Selectable(data: $0, isSelected: false) }
+                await MainActor.run {
+                    self.books = bookList
+                    self.isLoading = false
+                }
+            } catch {
+                await MainActor.run {
+                    self.errorMessage = "Failed to fetch books: \(error)"
+                    //self.errorMessage = error.localizedDescription
+                    self.isLoading = false
+                }
+            }
         }
     }
 
     func toggleSelection(for book: Book) {
-        if let index = books.firstIndex(of: book) {
-            books[index].isSelected.toggle()
-        }
+        guard let index = books.firstIndex(where: { $0.data.id == book.id }) else { return }
+        books[index].isSelected.toggle()
     }
 
     func selectedBooks() -> [Book] {
-        books.filter { $0.isSelected }
+        books.filter { $0.isSelected }.map { $0.data }
     }
 
     func saveBooks() {
-        // Handle persistence here
         print("Saved books: \(selectedBooks().map { $0.title })")
     }
 }

@@ -31,5 +31,10 @@ struct DependencyMap {
                 resolver: r
             )
         }
+        
+        container.register(Step1ViewModel.self) { resolver in
+            let apiService = resolver.resolve(ApiServiceProtocol.self)!
+            return Step1ViewModel(apiService: apiService)
+        }
     }
 }

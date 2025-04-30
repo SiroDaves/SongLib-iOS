@@ -8,7 +8,7 @@
 import Foundation
 
 struct Book: Identifiable, Codable {
-    let id: Int
+    var id: Int { bookId }
     let bookId: Int
     let title: String
     let subTitle: String
@@ -17,5 +17,5 @@ struct Book: Identifiable, Codable {
     let bookNo: Int
     let enabled: Bool
     let created: String
-    let updated: String
+    let updated: String?
 }

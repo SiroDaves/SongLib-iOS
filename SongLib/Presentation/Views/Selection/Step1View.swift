@@ -8,112 +8,105 @@
 import SwiftUI
 
 struct Step1View: View {
-    @StateObject private var viewModel = Step1ViewModel()
-    @State private var showConfirmAlert = false
-    @State private var showEmptyAlert = false
-    @Environment(\.horizontalSizeClass) var hSizeClass
+    @StateObject private var viewModel: Step1ViewModel = {
+        DiContainer.shared.resolve(Step1ViewModel.self)
+    }()
+    @State private var navigateToNext = false
 
     var body: some View {
         NavigationView {
-            Group {
+            VStack {
                 if viewModel.isLoading {
-                    ProgressView("Loading Books...")
-                        .padding()
+                    ProgressView("Loading books...")
+                        .progressViewStyle(CircularProgressViewStyle())
                 } else if let error = viewModel.errorMessage {
                     VStack {
-                        Text("Error: \(error)")
+                        Text(error)
+                            .foregroundColor(.red)
                         Button("Retry") {
-                            viewModel.fetchBooks()
-                        }
-                    }
-                } else {
-                    let layout = hSizeClass == .regular
-                        ? AnyLayout(GridLayout())
-                        : AnyLayout(ListLayout())
-
-                    layout {
-                        ForEach(viewModel.books) { book in
-                            BookRow(book: book) {
-                                viewModel.toggleSelection(for: book)
+                            Task {
+                                await viewModel.fetchBooks()
                             }
                         }
                     }
                     .padding()
-                }
-            }
-            .navigationTitle("Books")
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: viewModel.fetchBooks) {
-                        Image(systemName: "arrow.clockwise")
-                    }
-                }
-                ToolbarItem(placement: .bottomBar) {
-                    Button {
-                        if viewModel.selectedBooks().isEmpty {
-                            showEmptyAlert = true
-                        } else {
-                            showConfirmAlert = true
+                } else {
+                    ScrollView {
+                        LazyVStack(spacing: 12) {
+                            ForEach(viewModel.books.indices, id: \.self) { index in
+                                let selectable = viewModel.books[index]
+                                BookItemView(
+                                    book: selectable.data,
+                                    isSelected: selectable.isSelected
+                                ) {
+                                    viewModel.toggleSelection(for: selectable.data)
+                                }
+                            }
                         }
-                    } label: {
-                        Label("Proceed", systemImage: "checkmark")
-                            .font(.headline)
-                            .padding()
-                            .background(Color.accentColor)
-                            .foregroundColor(.white)
-                            .cornerRadius(10)
+                        .padding()
                     }
+
+                    Button(action: {
+                        if !viewModel.selectedBooks().isEmpty {
+                            navigateToNext = true
+                        }
+                    }) {
+                        HStack {
+                            Image(systemName: "checkmark")
+                            Text("Proceed")
+                        }
+                        .foregroundColor(.white)
+                        .padding()
+                        .background(Color.accentColor)
+                        .cornerRadius(10)
+                    }
+                    .padding(.bottom)
+                }
+
+                NavigationLink(destination: Step2View(), isActive: $navigateToNext) {
+                    EmptyView()
                 }
             }
-            .onAppear {
-                viewModel.fetchBooks()
-            }
-            .alert("No Books Selected", isPresented: $showEmptyAlert) {
-                Button("OK", role: .cancel) { }
-            } message: {
-                Text("Please select at least one book before proceeding.")
-            }
-            .alert("Done Selecting?", isPresented: $showConfirmAlert) {
-                Button("Cancel", role: .cancel) { }
-                Button("Proceed") {
-                    viewModel.saveBooks()
-                    // Navigate to next screen here
-                }
-            } message: {
-                Text("You've selected \(viewModel.selectedBooks().count) book(s). Proceed?")
+            .navigationTitle("Select Song Books")
+            .task {
+                await viewModel.fetchBooks()
             }
         }
     }
 }
 
-struct BookRow: View {
+
+struct BookItemView: View {
     let book: Book
+    let isSelected: Bool
     let onTap: () -> Void
 
     var body: some View {
         HStack {
-            Text(book.title)
+            VStack(alignment: .leading) {
+                Text(book.title)
+                    .font(.headline)
+                Text(book.subTitle)
+                    .font(.subheadline)
+            }
             Spacer()
-            if book.isSelected {
+            if isSelected {
                 Image(systemName: "checkmark.circle.fill")
                     .foregroundColor(.green)
+            } else {
+                Image(systemName: "circle")
+                    .foregroundColor(.gray)
             }
         }
         .padding()
-        .background(book.isSelected ? Color.green.opacity(0.2) : Color.gray.opacity(0.1))
+        .background(isSelected ? Color.blue.opacity(0.1) : Color.gray.opacity(0.05))
         .cornerRadius(8)
-        .onTapGesture { onTap() }
+        .onTapGesture {
+            onTap()
+        }
     }
 }
 
-struct GridLayout: Layout {
-    func callAsFunction(@ViewBuilder content: () -> some View) -> some View {
-        LazyVGrid(columns: Array(repeating: .init(.flexible()), count: 2), content: content)
-    }
-}
-
-struct ListLayout: Layout {
-    func callAsFunction(@ViewBuilder content: () -> some View) -> some View {
-        VStack(alignment: .leading, spacing: 10, content: content)
-    }
+#Preview {
+    Step1View()
 }

@@ -5,12 +5,10 @@
 //  Created by Siro Daves on 30/04/2025.
 //
 
-class Selectable<T>: ObservableObject {
-    @Published var isSelected: Bool
-    let data: T
+import Foundation
 
-    init(_ data: T, isSelected: Bool = false) {
-        self.data = data
-        self.isSelected = isSelected
-    }
+struct Selectable<T>: Identifiable {
+    let id = UUID()
+    var data: T
+    var isSelected: Bool
 }
