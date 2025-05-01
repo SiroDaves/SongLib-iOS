@@ -19,7 +19,7 @@ struct Step1View: View {
         NavigationView {
             VStack {
                 if viewModel.isLoading {
-                    ProgressView("Loading books...")
+                    ProgressView("Loading data ...")
                         .progressViewStyle(CircularProgressViewStyle())
                 } else if let error = viewModel.errorMessage {
                     VStack {

@@ -19,6 +19,7 @@ final class DiContainer {
 
     private func validateDependencies() {
         let dependencies: [() -> Any?] = [
+            { self.container.resolve(PrefsRepository.self) },
             { self.container.resolve(CoreDataManager.self) },
             { self.container.resolve(ApiServiceProtocol.self) },
             { self.container.resolve(AnalyticsServiceProtocol.self) },

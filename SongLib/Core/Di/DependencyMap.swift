@@ -9,6 +9,10 @@ import Swinject
 
 struct DependencyMap {
     static func registerDependencies(in container: Container) {
+        container.register(PrefsRepository.self) { _ in
+            PrefsRepository()
+        }.inObjectScope(.container)
+
         container.register(CoreDataManager.self) { _ in
             CoreDataManager.shared
         }.inObjectScope(.container)
