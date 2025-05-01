@@ -17,15 +17,16 @@ struct Step1View: View {
         NavigationView {
             VStack {
                 if viewModel.isLoading {
-                    ProgressView("Loading books...")
-                        .progressViewStyle(CircularProgressViewStyle())
+                    ProgressView("Fetching data ...")
+                    .progressViewStyle(
+                        CircularProgressViewStyle(),
+                    )
                 } else if let error = viewModel.errorMessage {
                     VStack {
-                        Text(error)
-                            .foregroundColor(.red)
+                        Text(error).foregroundColor(.red)
                         Button("Retry") {
                             Task {
-                                await viewModel.fetchBooks()
+                                viewModel.fetchBooks()
                             }
                         }
                     }
@@ -63,46 +64,23 @@ struct Step1View: View {
                     .padding(.bottom)
                 }
 
-                NavigationLink(destination: Step2View(), isActive: $navigateToNext) {
-                    EmptyView()
+                NavigationStack {
+                    VStack {
+                        NavigationLink(value: 1) {
+                            Text("Proceed")
+                        }
+                    }
+                    .navigationDestination(for: Int.self) { value in
+                        if value == 1 {
+                            Step2View()
+                        }
+                    }
                 }
             }
             .navigationTitle("Select Song Books")
             .task {
-                await viewModel.fetchBooks()
+                viewModel.fetchBooks()
             }
-        }
-    }
-}
-
-
-struct BookItemView: View {
-    let book: Book
-    let isSelected: Bool
-    let onTap: () -> Void
-
-    var body: some View {
-        HStack {
-            VStack(alignment: .leading) {
-                Text(book.title)
-                    .font(.headline)
-                Text(book.subTitle)
-                    .font(.subheadline)
-            }
-            Spacer()
-            if isSelected {
-                Image(systemName: "checkmark.circle.fill")
-                    .foregroundColor(.green)
-            } else {
-                Image(systemName: "circle")
-                    .foregroundColor(.gray)
-            }
-        }
-        .padding()
-        .background(isSelected ? Color.blue.opacity(0.1) : Color.gray.opacity(0.05))
-        .cornerRadius(8)
-        .onTapGesture {
-            onTap()
         }
     }
 }
