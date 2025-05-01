@@ -56,9 +56,9 @@ class SongDataManager {
                 cdSong.created = song.created
                 
                 // Link to the book if it exists
-                if let book = bookDataManager.fetchBookEntity(withId: Int32(song.book)) {
-                    cdSong.bookObject = book
-                }
+//                if let book = bookDataManager.fetchBookEntity(withId: Int32(song.book)) {
+//                    cdSong.bookObject = book
+//                }
             }
             
             try context.save()

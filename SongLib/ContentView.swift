@@ -27,18 +27,18 @@ struct ContentView: View {
                     HomeView()
                 } else {
                     if isDataSelected {
-                        Step1View()
-                    } else {
                         Step2View()
+                    } else {
+                        Step1View()
                     }
                 }
             } else {
                 SplashView()
-                .onAppear {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
-                        goToNextScreen = true
+                    .onAppear {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+                            goToNextScreen = true
+                        }
                     }
-                }
             }
         }
         .animation(.easeInOut, value: goToNextScreen)

@@ -11,6 +11,7 @@ class PrefsRepository {
     private enum Keys {
         static let isSelected = "dataIsSelectedKey"
         static let isLoaded = "dataIsLoadedKey"
+        static let selectedBooks = "selectedBooksKey"
     }
     
     private let userDefaults: UserDefaults
@@ -34,6 +35,15 @@ class PrefsRepository {
         }
         set {
             userDefaults.set(newValue, forKey: Keys.isLoaded)
+        }
+    }
+    
+    var selectedBooks: String {
+        get {
+            return userDefaults.string(forKey: Keys.selectedBooks) ?? ""
+        }
+        set {
+            userDefaults.set(newValue, forKey: Keys.selectedBooks)
         }
     }
 }

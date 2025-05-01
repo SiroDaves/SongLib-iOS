@@ -11,12 +11,13 @@ struct Step1View: View {
     @StateObject private var viewModel: SelectionViewModel = {
         DiContainer.shared.resolve(SelectionViewModel.self)
     }()
-    @State private var navigateToNext = false
+    
+    @State private var path = NavigationPath()
     @State private var showNoSelectionAlert = false
     @State private var showConfirmationAlert = false
 
     var body: some View {
-        NavigationView {
+        NavigationStack(path: $path) {
             VStack {
                 if viewModel.isLoading {
                     ProgressView("Loading data ...")
@@ -50,10 +51,10 @@ struct Step1View: View {
 
                     Button(action: {
                         if viewModel.selectedBooks().isEmpty {
-                                showNoSelectionAlert = true
-                            } else {
-                                showConfirmationAlert = true
-                            }
+                            showNoSelectionAlert = true
+                        } else {
+                            showConfirmationAlert = true
+                        }
                     }) {
                         HStack {
                             Image(systemName: "checkmark")
@@ -65,10 +66,6 @@ struct Step1View: View {
                         .cornerRadius(10)
                     }
                     .padding(.bottom)
-                }
-
-                NavigationLink(destination: Step2View(), isActive: $navigateToNext) {
-                    EmptyView()
                 }
             }
             .navigationTitle("Select Songbooks")
@@ -91,13 +88,20 @@ struct Step1View: View {
                 )
             }
             .confirmationDialog("If you are done selecting please proceed ahead. We can always bring you back here to reselect afresh.", isPresented: $showConfirmationAlert, titleVisibility: .visible) {
-                Button("Proceed", role: .none) {
-                    navigateToNext = true
+                Button("Proceed") {
+                    viewModel.saveBooks()
+                    path = NavigationPath()
+                    path.append("step2")
                 }
                 Button("Cancel", role: .cancel) {}
             }
             .task {
-                 viewModel.fetchBooks()
+                viewModel.fetchBooks()
+            }
+            .navigationDestination(for: String.self) { route in
+                if route == "step2" {
+                    Step2View()
+                }
             }
         }
     }

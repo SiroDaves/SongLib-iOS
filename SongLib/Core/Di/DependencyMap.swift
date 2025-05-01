@@ -55,8 +55,10 @@ struct DependencyMap {
         }.inObjectScope(.container)
         
         container.register(SelectionViewModel.self) { resolver in
-            let bookRepo = resolver.resolve(BookRepositoryProtocol.self)!
-            return SelectionViewModel(bookRepo: bookRepo)
+            SelectionViewModel(
+                prefsRepo: resolver.resolve(PrefsRepository.self)!,
+                bookRepo: resolver.resolve(BookRepositoryProtocol.self)!,
+            )
         }.inObjectScope(.container)
     }
 }
