@@ -18,8 +18,8 @@ enum Endpoint {
             return "/book"
         case .songs:
             return "/song"
-        case .songsByBook(let books):
-            return "/song/book/\(books)"
+        case .songsByBook(let booksIds):
+            return "/song/book/\(booksIds)"
         }
     }
     

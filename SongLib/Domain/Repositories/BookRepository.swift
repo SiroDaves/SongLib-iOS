@@ -9,28 +9,28 @@ import Foundation
 
 protocol BookRepositoryProtocol {
     func fetchBooks() async throws -> BookResponse
-//    func getLocalBooks() -> [Book]
-//    func saveBooks(_ books: [Book])
+    func getLocalBooks() -> [Book]
+    func saveBooks(_ books: [Book])
 }
 
 class BookRepository: BookRepositoryProtocol {
     private let apiService: ApiServiceProtocol
-    private let dataManager: CoreDataManager
+    private let bookData: BookDataManager
     
-    init(apiService: ApiServiceProtocol, dataManager: CoreDataManager) {
+    init(apiService: ApiServiceProtocol, bookData: BookDataManager) {
         self.apiService = apiService
-        self.dataManager = dataManager
+        self.bookData = bookData
     }
     
     func fetchBooks() async throws -> BookResponse {
         return try await apiService.fetch(endpoint: .books)
     }
     
-//    func getLocalBooks() -> [Book] {
-//        return persistence.fetchBooks()
-//    }
-//    
-//    func saveBooks(_ books: [Book]) {
-//        persistence.saveBooks(books)
-//    }
+    func getLocalBooks() -> [Book] {
+        return bookData.fetchBooks()
+    }
+    
+    func saveBooks(_ books: [Book]) {
+        bookData.saveBooks(books)
+    }
 }

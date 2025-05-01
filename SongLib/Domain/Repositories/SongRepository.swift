@@ -8,29 +8,29 @@
 import Foundation
 
 protocol SongRepositoryProtocol {
-//    func fetchSongs(for bookId: String) async throws -> [Song]
-//    func getLocalSongs(for bookId: String?) -> [Song]
-//    func saveSongs(_ songs: [Song], for bookId: String)
+    func fetchSongs(for bookId: String) async throws -> [Song]
+    func getLocalSongs(for booksIds: Int?) -> [Song]
+    func saveSongs(_ songs: [Song])
 }
 
 class SongRepository: SongRepositoryProtocol {
     private let apiService: ApiServiceProtocol
-    private let persistence: PersistenceController
+    private let songData: SongDataManager
     
-    init(apiService: ApiServiceProtocol, persistence: PersistenceController) {
+    init(apiService: ApiServiceProtocol, songData: SongDataManager) {
         self.apiService = apiService
-        self.persistence = persistence
+        self.songData = songData
     }
     
-//    func fetchSongs(for bookId: String) async throws -> [Song] {
-//        return try await apiService.fetch(endpoint: .songsForBook(bookId))
-//    }
-//    
-//    func getLocalSongs(for bookId: String? = nil) -> [Song] {
-//        return persistence.fetchSongs(for: bookId)
-//    }
-//    
-//    func saveSongs(_ songs: [Song], for bookId: String) {
-//        persistence.saveSongs(songs, for: bookId)
-//    }
+    func fetchSongs(for booksIds: String) async throws -> [Song] {
+        return try await apiService.fetch(endpoint: .songsByBook(booksIds))
+    }
+    
+    func getLocalSongs(for bookId: Int? = nil) -> [Song] {
+        return songData.fetchSongs(for: bookId)
+    }
+    
+    func saveSongs(_ songs: [Song]) {
+        songData.saveSongs(songs)
+    }
 }
