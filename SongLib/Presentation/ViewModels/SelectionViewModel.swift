@@ -13,15 +13,15 @@ struct BookResponse: Decodable {
     let data: [Book]
 }
 
-final class Step1ViewModel: ObservableObject {
+final class SelectionViewModel: ObservableObject {
     @Published var books: [Selectable<Book>] = []
     @Published var isLoading = false
     @Published var errorMessage: String? = nil
 
-    private let apiService: ApiServiceProtocol
+    private let bookRepo: BookRepositoryProtocol
 
-    init(apiService: ApiServiceProtocol) {
-        self.apiService = apiService
+    init(bookRepo: BookRepositoryProtocol) {
+        self.bookRepo = bookRepo
     }
 
     func fetchBooks() {
@@ -30,16 +30,15 @@ final class Step1ViewModel: ObservableObject {
 
         Task {
             do {
-                let response: BookResponse = try await apiService.fetch(endpoint: .books)
-                let bookList = response.data.map { Selectable(data: $0, isSelected: false) }
+                let resp: BookResponse = try await bookRepo.fetchBooks()
+                let data = resp.data.map { Selectable(data: $0, isSelected: false) }
                 await MainActor.run {
-                    self.books = bookList
+                    self.books = data
                     self.isLoading = false
                 }
             } catch {
                 await MainActor.run {
                     self.errorMessage = "Failed to fetch books: \(error)"
-                    //self.errorMessage = error.localizedDescription
                     self.isLoading = false
                 }
             }

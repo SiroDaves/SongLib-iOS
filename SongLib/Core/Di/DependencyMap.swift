@@ -9,6 +9,10 @@ import Swinject
 
 struct DependencyMap {
     static func registerDependencies(in container: Container) {
+        container.register(CoreDataManager.self) { _ in
+            CoreDataManager.shared
+        }.inObjectScope(.container)
+        
         container.register(ApiServiceProtocol.self) { _ in
             ApiService()
         }
@@ -20,9 +24,19 @@ struct DependencyMap {
         container.register(LoggerProtocol.self) { _ in
             Logger()
         }
-
-        container.register(SelectionService.self) { _ in
-            SelectionManager()
+        
+        container.register(BookRepositoryProtocol.self) { resolver in
+            BookRepository(
+                apiService: resolver.resolve(ApiServiceProtocol.self)!,
+                dataManager: resolver.resolve(CoreDataManager.self)!
+            )
+        }
+        
+        container.register(SongRepositoryProtocol.self) { resolver in
+            SongRepository(
+                apiService: resolver.resolve(ApiServiceProtocol.self)!,
+                dataManager: resolver.resolve(CoreDataManager.self)!
+            )
         }
         
         container.register(BookDetailCoordinator.self) { (r, book: Book) in
@@ -32,9 +46,9 @@ struct DependencyMap {
             )
         }
         
-        container.register(Step1ViewModel.self) { resolver in
-            let apiService = resolver.resolve(ApiServiceProtocol.self)!
-            return Step1ViewModel(apiService: apiService)
+        container.register(SelectionViewModel.self) { resolver in
+            let bookRepo = resolver.resolve(BookRepositoryProtocol.self)!
+            return SelectionViewModel(bookRepo: bookRepo)
         }
     }
 }

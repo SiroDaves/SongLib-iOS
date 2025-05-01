@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct Step1View: View {
-    @StateObject private var viewModel: Step1ViewModel = {
-        DiContainer.shared.resolve(Step1ViewModel.self)
+    @StateObject private var viewModel: SelectionViewModel = {
+        DiContainer.shared.resolve(SelectionViewModel.self)
     }()
     @State private var navigateToNext = false
 

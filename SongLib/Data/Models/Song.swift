@@ -8,11 +8,10 @@
 import Foundation
 
 struct Song: Identifiable, Codable {
-    let id: Int
-    let rid: Int
+    var id: Int { songId }
     let book: Int
-    let songId: String
-    let songNo: String
+    let songId: Int
+    let songNo: Int
     let title: String
     let alias: String
     let content: String
@@ -20,5 +19,4 @@ struct Song: Identifiable, Codable {
     let likes: Int
     let liked: Bool
     let created: String
-    let updated: String
 }

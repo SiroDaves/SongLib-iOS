@@ -17,5 +17,4 @@ struct Book: Identifiable, Codable {
     let bookNo: Int
     let enabled: Bool
     let created: String
-    let updated: String?
 }
