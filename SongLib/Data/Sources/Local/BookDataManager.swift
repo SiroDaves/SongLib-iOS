@@ -5,6 +5,8 @@
 //  Created by Siro Daves on 02/05/2025.
 //
 
+import CoreData
+
 class BookDataManager {
     private let dataManager = CoreDataManager.shared
     
