@@ -11,22 +11,18 @@ struct ContentView: View {
     private let prefsRepo: PrefsRepository
     
     @State private var goToNextScreen = false
-    @State private var isDataSelected = false
-    @State private var isDataLoaded = false
     
     init(prefsRepo: PrefsRepository) {
         self.prefsRepo = prefsRepo
-        self.isDataSelected = prefsRepo.isDataSelected
-        self.isDataLoaded = prefsRepo.isDataLoaded
     }
     
     var body: some View {
         Group {
             if goToNextScreen {
-                if isDataLoaded {
+                if prefsRepo.isDataLoaded {
                     HomeView()
                 } else {
-                    if isDataSelected {
+                    if prefsRepo.isDataSelected {
                         Step2View()
                     } else {
                         Step1View()
