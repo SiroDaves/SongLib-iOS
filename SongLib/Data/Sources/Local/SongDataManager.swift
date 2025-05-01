@@ -8,12 +8,19 @@
 import CoreData
 
 class SongDataManager {
-    private let dataManager = CoreDataManager.shared
-    private let bookData = BookDataManager()
+    private let coreDataManager: CoreDataManager
+    private let bookDataManager: BookDataManager
+    
+    // Constructor with dependency injection
+    init(coreDataManager: CoreDataManager = CoreDataManager.shared,
+         bookDataManager: BookDataManager) {
+        self.coreDataManager = coreDataManager
+        self.bookDataManager = bookDataManager
+    }
     
     // Access to the view context
     private var context: NSManagedObjectContext {
-        return dataManager.viewContext
+        return coreDataManager.viewContext
     }
     
     // Save songs to Core Data
@@ -49,7 +56,7 @@ class SongDataManager {
                 cdSong.created = song.created
                 
                 // Link to the book if it exists
-                if let book = bookData.fetchBookEntity(withId: Int32(song.book)) {
+                if let book = bookDataManager.fetchBookEntity(withId: Int32(song.book)) {
                     cdSong.bookObject = book
                 }
             }

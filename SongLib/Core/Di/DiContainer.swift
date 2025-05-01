@@ -23,6 +23,11 @@ final class DiContainer {
             { self.container.resolve(ApiServiceProtocol.self) },
             { self.container.resolve(AnalyticsServiceProtocol.self) },
             { self.container.resolve(LoggerProtocol.self) },
+            { self.container.resolve(BookDataManager.self) },
+            { self.container.resolve(BookRepositoryProtocol.self) },
+            { self.container.resolve(SongDataManager.self) },
+            { self.container.resolve(SongRepositoryProtocol.self) },
+            { self.container.resolve(SelectionViewModel.self) },
         ]
 
         for resolve in dependencies {

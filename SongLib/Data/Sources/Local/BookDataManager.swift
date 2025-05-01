@@ -8,11 +8,16 @@
 import CoreData
 
 class BookDataManager {
-    private let dataManager = CoreDataManager.shared
+    private let coreDataManager: CoreDataManager
+        
+    // Constructor that takes a CoreDataManager dependency
+    init(coreDataManager: CoreDataManager = CoreDataManager.shared) {
+        self.coreDataManager = coreDataManager
+    }
     
     // Access to the view context
     private var context: NSManagedObjectContext {
-        return dataManager.viewContext
+        return coreDataManager.viewContext
     }
     
     // Save books to Core Data

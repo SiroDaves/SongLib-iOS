@@ -18,6 +18,36 @@
             endingLineNumber = "25"
             landmarkName = "fetchSongs(for:)"
             landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "59E7A815-48B8-4861-8223-A9DCD579BA51 - 626c507f5cca8661"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "SongLib.SongRepository.fetchSongs(for: Swift.String) async throws -&gt; Swift.Array&lt;SongLib.Song&gt;"
+                  moduleName = "SongLib.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/sirodaves/Developer/iOS/Projects/SongLib/SongLib/Domain/Repositories/SongRepository.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "25"
+                  endingLineNumber = "25">
+               </Location>
+               <Location
+                  uuid = "59E7A815-48B8-4861-8223-A9DCD579BA51 - 96976e0ff4b42fb1"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(1) suspend resume partial function for SongLib.SongRepository.fetchSongs(for: Swift.String) async throws -&gt; Swift.Array&lt;SongLib.Song&gt;"
+                  moduleName = "SongLib.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/sirodaves/Developer/iOS/Projects/SongLib/SongLib/Domain/Repositories/SongRepository.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "25"
+                  endingLineNumber = "25">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

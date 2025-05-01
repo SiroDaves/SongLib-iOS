@@ -15,40 +15,44 @@ struct DependencyMap {
         
         container.register(ApiServiceProtocol.self) { _ in
             ApiService()
-        }
+        }.inObjectScope(.container)
 
         container.register(AnalyticsServiceProtocol.self) { _ in
             AnalyticsService()
-        }
+        }.inObjectScope(.container)
 
         container.register(LoggerProtocol.self) { _ in
             Logger()
-        }
+        }.inObjectScope(.container)
+        
+        container.register(BookDataManager.self) { resolver in
+            BookDataManager(coreDataManager: resolver.resolve(CoreDataManager.self)!)
+        }.inObjectScope(.container)
         
         container.register(BookRepositoryProtocol.self) { resolver in
             BookRepository(
                 apiService: resolver.resolve(ApiServiceProtocol.self)!,
-                dataManager: resolver.resolve(CoreDataManager.self)!
+                bookData: resolver.resolve(BookDataManager.self)!
             )
-        }
+        }.inObjectScope(.container)
+        
+        container.register(SongDataManager.self) { resolver in
+            SongDataManager(
+                coreDataManager: resolver.resolve(CoreDataManager.self)!,
+                bookDataManager: resolver.resolve(BookDataManager.self)!
+            )
+        }.inObjectScope(.container)
         
         container.register(SongRepositoryProtocol.self) { resolver in
             SongRepository(
                 apiService: resolver.resolve(ApiServiceProtocol.self)!,
-                dataManager: resolver.resolve(CoreDataManager.self)!
+                songData: resolver.resolve(SongDataManager.self)!
             )
-        }
-        
-        container.register(BookDetailCoordinator.self) { (r, book: Book) in
-            BookDetailCoordinator(
-                book: book,
-                resolver: r
-            )
-        }
+        }.inObjectScope(.container)
         
         container.register(SelectionViewModel.self) { resolver in
             let bookRepo = resolver.resolve(BookRepositoryProtocol.self)!
             return SelectionViewModel(bookRepo: bookRepo)
-        }
+        }.inObjectScope(.container)
     }
 }
