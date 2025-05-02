@@ -18,8 +18,8 @@ struct BookItemView: View {
     
     var body: some View {
         let unselectedColor = colorScheme == .light ? Color.white : ThemeColors.primaryDark
-        let backgroundColor = isSelected ? Color.accentColor : unselectedColor
-        let foregroundColor = isSelected ? Color.white : ThemeColors.primary
+        let backgroundColor = isSelected ? ThemeColors.primary : unselectedColor
+        let foregroundColor = isSelected ? Color.white : Color.black
 
         return ZStack {
             RoundedRectangle(cornerRadius: 12)
@@ -63,10 +63,10 @@ struct BookItemView: View {
             position: 1,
             bookNo: 1,
             enabled: true,
-            created: "2023-07-08T16:42:09.722Z"
+            created: ""
         ),
-        isSelected: true,
-        onTap: { print("Tapped book") }
+        isSelected: false,
+        onTap: { print("Amen") }
     )
     .padding()
 }

@@ -12,18 +12,19 @@ struct Step1View: View {
         DiContainer.shared.resolve(SelectionViewModel.self)
     }()
     @State private var navigateToNext = false
+    @State private var showNoSelectionAlert = false
+    @State private var showConfirmationAlert = false
 
     var body: some View {
         NavigationView {
             VStack {
                 if viewModel.isLoading {
-                    ProgressView("Fetching data ...")
-                    .progressViewStyle(
-                        CircularProgressViewStyle(),
-                    )
+                    ProgressView("Loading books...")
+                        .progressViewStyle(CircularProgressViewStyle())
                 } else if let error = viewModel.errorMessage {
                     VStack {
-                        Text(error).foregroundColor(.red)
+                        Text(error)
+                            .foregroundColor(.red)
                         Button("Retry") {
                             Task {
                                 viewModel.fetchBooks()
@@ -48,9 +49,11 @@ struct Step1View: View {
                     }
 
                     Button(action: {
-                        if !viewModel.selectedBooks().isEmpty {
-                            navigateToNext = true
-                        }
+                        if viewModel.selectedBooks().isEmpty {
+                                showNoSelectionAlert = true
+                            } else {
+                                showConfirmationAlert = true
+                            }
                     }) {
                         HStack {
                             Image(systemName: "checkmark")
@@ -58,15 +61,43 @@ struct Step1View: View {
                         }
                         .foregroundColor(.white)
                         .padding()
-                        .background(Color.accentColor)
+                        .background(ThemeColors.primary)
                         .cornerRadius(10)
                     }
                     .padding(.bottom)
                 }
+
+                NavigationLink(destination: Step2View(), isActive: $navigateToNext) {
+                    EmptyView()
+                }
             }
-            .navigationTitle("Select Song Books")
+            .navigationTitle("Select Songbooks")
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(action: {
+                        Task {
+                            viewModel.fetchBooks()
+                        }
+                    }) {
+                        Image(systemName: "arrow.clockwise")
+                    }
+                }
+            }
+            .alert(isPresented: $showNoSelectionAlert) {
+                Alert(
+                    title: Text("Oops! No selection found"),
+                    message: Text("Please, just select at least 1 song book to be able to proceed to the next step."),
+                    dismissButton: .default(Text("OK"))
+                )
+            }
+            .confirmationDialog("If you are done selecting please proceed ahead. We can always bring you back here to reselect afresh.", isPresented: $showConfirmationAlert, titleVisibility: .visible) {
+                Button("Proceed", role: .none) {
+                    navigateToNext = true
+                }
+                Button("Cancel", role: .cancel) {}
+            }
             .task {
-                viewModel.fetchBooks()
+                 viewModel.fetchBooks()
             }
         }
     }
