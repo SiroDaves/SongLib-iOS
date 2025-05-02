@@ -7,33 +7,67 @@
 
 import SwiftUI
 
+import SwiftUI
+
 struct BookItemView: View {
     let book: Book
     let isSelected: Bool
     let onTap: () -> Void
-
+    
+    @Environment(\.colorScheme) private var colorScheme
+    
     var body: some View {
-        HStack {
-            VStack(alignment: .leading) {
-                Text(book.title)
-                    .font(.headline)
-                Text(book.subTitle)
-                    .font(.subheadline)
+        let unselectedColor = colorScheme == .light ? Color.white : ThemeColors.primaryDark
+        let backgroundColor = isSelected ? Color.accentColor : unselectedColor
+        let foregroundColor = isSelected ? Color.white : ThemeColors.primary
+
+        return ZStack {
+            RoundedRectangle(cornerRadius: 12)
+                .fill(backgroundColor)
+                .shadow(radius: 5)
+            
+            HStack(spacing: 16) {
+                Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
+                    .foregroundColor(foregroundColor)
+                    .font(.system(size: 24))
+                    .padding(8)
+                
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(refineTitle(txt: book.title))
+                        .font(.system(size: 20, weight: .bold))
+                        .foregroundColor(foregroundColor)
+
+                    Text("\(book.songs) \(book.subTitle) songs")
+                        .font(.system(size: 18))
+                        .foregroundColor(foregroundColor)
+                }
+                Spacer()
             }
-            Spacer()
-            if isSelected {
-                Image(systemName: "checkmark.circle.fill")
-                    .foregroundColor(.green)
-            } else {
-                Image(systemName: "circle")
-                    .foregroundColor(.gray)
-            }
+            .padding()
         }
-        .padding()
-        .background(isSelected ? Color.blue.opacity(0.1) : Color.gray.opacity(0.05))
-        .cornerRadius(8)
+        .frame(maxWidth: .infinity)
         .onTapGesture {
             onTap()
         }
     }
 }
+
+
+#Preview {
+    BookItemView(
+        book: Book(
+            bookId: 1,
+            title: "Songs of Worship",
+            subTitle: "worship",
+            songs: 750,
+            position: 1,
+            bookNo: 1,
+            enabled: true,
+            created: "2023-07-08T16:42:09.722Z"
+        ),
+        isSelected: true,
+        onTap: { print("Tapped book") }
+    )
+    .padding()
+}
+

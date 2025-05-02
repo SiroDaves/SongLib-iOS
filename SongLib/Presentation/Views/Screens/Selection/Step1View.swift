@@ -63,19 +63,6 @@ struct Step1View: View {
                     }
                     .padding(.bottom)
                 }
-
-                NavigationStack {
-                    VStack {
-                        NavigationLink(value: 1) {
-                            Text("Proceed")
-                        }
-                    }
-                    .navigationDestination(for: Int.self) { value in
-                        if value == 1 {
-                            Step2View()
-                        }
-                    }
-                }
             }
             .navigationTitle("Select Song Books")
             .task {
