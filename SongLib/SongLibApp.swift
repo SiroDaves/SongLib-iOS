@@ -11,7 +11,7 @@ import SwiftUI
 struct SongLibApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            ContentView(prefsRepo: PrefsRepository())
         }
     }
 }
