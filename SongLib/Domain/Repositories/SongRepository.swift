@@ -8,9 +8,9 @@
 import Foundation
 
 protocol SongRepositoryProtocol {
-    func fetchSongs(for bookId: String) async throws -> [Song]
-    func getLocalSongs(for booksIds: Int?) -> [Song]
-    func saveSongs(_ songs: [Song])
+    func fetchRemoteSongs(for bookId: String) async throws -> SongResponse
+    func fetchLocalSongs(for booksIds: Int?) -> [Song]
+    func saveSongsLocally(_ songs: [Song])
 }
 
 class SongRepository: SongRepositoryProtocol {
@@ -22,15 +22,15 @@ class SongRepository: SongRepositoryProtocol {
         self.songData = songData
     }
     
-    func fetchSongs(for booksIds: String) async throws -> [Song] {
+    func fetchRemoteSongs(for booksIds: String) async throws -> SongResponse {
         return try await apiService.fetch(endpoint: .songsByBook(booksIds))
     }
     
-    func getLocalSongs(for bookId: Int? = nil) -> [Song] {
+    func fetchLocalSongs(for bookId: Int? = nil) -> [Song] {
         return songData.fetchSongs(for: bookId)
     }
     
-    func saveSongs(_ songs: [Song]) {
+    func saveSongsLocally(_ songs: [Song]) {
         songData.saveSongs(songs)
     }
 }

@@ -8,7 +8,7 @@
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
             uuid = "59E7A815-48B8-4861-8223-A9DCD579BA51"
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "SongLib/Domain/Repositories/SongRepository.swift"
@@ -16,7 +16,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "25"
             endingLineNumber = "25"
-            landmarkName = "fetchSongs(for:)"
+            landmarkName = "fetchRemoteSongs(for:)"
             landmarkType = "7">
             <Locations>
                <Location

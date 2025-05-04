@@ -8,9 +8,9 @@
 import Foundation
 
 protocol BookRepositoryProtocol {
-    func fetchBooks() async throws -> BookResponse
-    func getLocalBooks() -> [Book]
-    func saveBooks(_ books: [Book])
+    func fetchRemoteBooks() async throws -> BookResponse
+    func fetchLocalBooks() -> [Book]
+    func saveBooksLocally(_ books: [Book])
 }
 
 class BookRepository: BookRepositoryProtocol {
@@ -22,15 +22,15 @@ class BookRepository: BookRepositoryProtocol {
         self.bookData = bookData
     }
     
-    func fetchBooks() async throws -> BookResponse {
+    func fetchRemoteBooks() async throws -> BookResponse {
         return try await apiService.fetch(endpoint: .books)
     }
     
-    func getLocalBooks() -> [Book] {
+    func fetchLocalBooks() -> [Book] {
         return bookData.fetchBooks()
     }
     
-    func saveBooks(_ books: [Book]) {
+    func saveBooksLocally(_ books: [Book]) {
         bookData.saveBooks(books)
     }
 }
