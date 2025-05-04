@@ -9,7 +9,7 @@ import SwiftUI
 
 import SwiftUI
 
-struct BookItemView: View {
+struct BookItem: View {
     let book: Book
     let isSelected: Bool
     let onTap: () -> Void
@@ -54,7 +54,7 @@ struct BookItemView: View {
 
 
 #Preview {
-    BookItemView(
+    BookItem(
         book: Book(
             bookId: 1,
             title: "Songs of Worship",

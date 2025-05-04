@@ -1,0 +1,94 @@
+//
+//  SearchSongItem.swift
+//  SongLib
+//
+//  Created by Siro Daves on 04/05/2025.
+//
+
+import SwiftUI
+
+struct SearchSongItem: View {
+    let song: Song
+    let height: CGFloat
+    let isSelected: Bool
+    let isSearching: Bool
+    let onTap: (() -> Void)?
+
+    private var verses: [String] {
+        song.content.components(separatedBy: "##")
+    }
+
+    private var hasChorus: Bool {
+        song.content.contains("CHORUS")
+    }
+
+    private var chorusText: String {
+        hasChorus ? "Chorus" : ""
+    }
+
+    private var versesText: String {
+        let count = verses.count
+        let base = hasChorus ? "\(count - 1) V" : "\(count) V"
+        return count == 1 ? base : "\(base)s"
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 5) {
+            HStack(alignment: .center) {
+                Text("\(song.songNo). \(song.title)")
+                    .font(.headline)
+                    .lineLimit(1)
+
+                Spacer()
+
+                TagItem(tagText: versesText, height: height)
+
+                if hasChorus {
+                    TagItem(tagText: chorusText, height: height)
+                }
+
+                Image(systemName: song.liked ? "heart.fill" : "heart")
+                    .foregroundColor(.primary)
+            }
+
+            Divider()
+
+            Text(verses.first ?? "")
+                .lineLimit(2)
+                .font(.body)
+                .foregroundColor(.secondary)
+
+            if isSearching {
+                TagItem(tagText: "Book \(song.book)", height: height)
+            }
+        }
+        .padding(5)
+        .background(isSelected ? ThemeColors.primary : Color.clear)
+        .contentShape(Rectangle())
+        .onTapGesture {
+            onTap?()
+        }
+    }
+}
+
+#Preview {
+    SearchSongItem(
+        song: Song(
+            book: 1,
+            songId: 1,
+            songNo: 1,
+            title: "Amazing Grace",
+            alias: "",
+            content: "Amazing grace how sweet the sound",
+            views: 1200,
+            likes: 300,
+            liked: true,
+            created: "2024-01-01"
+        ),
+        height: 30,
+        isSelected: true,
+        isSearching: true,
+        onTap: { print("Tapped") },
+    )
+    .padding()
+}

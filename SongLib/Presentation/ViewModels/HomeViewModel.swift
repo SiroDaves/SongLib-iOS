@@ -14,6 +14,7 @@ final class HomeViewModel: ObservableObject {
     @Published var likes: [Song] = []
     @Published var filtered: [Song] = []
     @Published var uiState: ViewUiState = .idle
+    @Published var selectedBook: Int = 0
 
     private let prefsRepo: PrefsRepository
     private let bookRepo: BookRepositoryProtocol
