@@ -17,7 +17,11 @@ final class SelectionViewModel: ObservableObject {
     private let bookRepo: BookRepositoryProtocol
     private let songRepo: SongRepositoryProtocol
 
-    init(prefsRepo: PrefsRepository, bookRepo: BookRepositoryProtocol, songRepo: SongRepositoryProtocol) {
+    init(
+        prefsRepo: PrefsRepository,
+        bookRepo: BookRepositoryProtocol,
+        songRepo: SongRepositoryProtocol
+    ) {
         self.prefsRepo = prefsRepo
         self.bookRepo = bookRepo
         self.songRepo = songRepo

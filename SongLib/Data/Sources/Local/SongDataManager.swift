@@ -61,12 +61,8 @@ class SongDataManager {
     }
     
     // Fetch all songs or songs for a specific book
-    func fetchSongs(for bookId: Int? = nil) -> [Song] {
-        let fetchRequest: NSFetchRequest<CDSong> = CDSong.fetchRequest()
-        if let bookId = bookId {
-            fetchRequest.predicate = NSPredicate(format: "book == %d", bookId)
-        }
-        
+    func fetchSongs() -> [Song] {
+        let fetchRequest: NSFetchRequest<CDSong> = CDSong.fetchRequest()        
         do {
             let cdSongs = try context.fetch(fetchRequest)
             return cdSongs.map { cdSong in

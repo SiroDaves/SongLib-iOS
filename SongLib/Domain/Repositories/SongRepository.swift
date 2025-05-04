@@ -9,7 +9,7 @@ import Foundation
 
 protocol SongRepositoryProtocol {
     func fetchRemoteSongs(for bookId: String) async throws -> SongResponse
-    func fetchLocalSongs(for booksIds: Int?) -> [Song]
+    func fetchLocalSongs() -> [Song]
     func saveSongsLocally(_ songs: [Song])
 }
 
@@ -26,8 +26,8 @@ class SongRepository: SongRepositoryProtocol {
         return try await apiService.fetch(endpoint: .songsByBook(booksIds))
     }
     
-    func fetchLocalSongs(for bookId: Int? = nil) -> [Song] {
-        return songData.fetchSongs(for: bookId)
+    func fetchLocalSongs() -> [Song] {
+        return songData.fetchSongs()
     }
     
     func saveSongsLocally(_ songs: [Song]) {

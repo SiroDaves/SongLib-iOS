@@ -17,7 +17,11 @@ enum ViewUiState: Equatable {
     case idle
     case loading(String? = nil)
     case saving(String? = nil)
+    case synced
+    case filtering
+    case filtered
     case fetched
     case saved
+    case loaded
     case error(String)
 }
