@@ -11,7 +11,6 @@ class SongDataManager {
     private let coreDataManager: CoreDataManager
     private let bookDataManager: BookDataManager
     
-    // Constructor with dependency injection
     init(coreDataManager: CoreDataManager = CoreDataManager.shared,
          bookDataManager: BookDataManager) {
         self.coreDataManager = coreDataManager
@@ -23,42 +22,41 @@ class SongDataManager {
         return coreDataManager.viewContext
     }
     
-    // Save songs to Core Data
+    // Save records to Core Data
     func saveSongs(_ songs: [Song]) {
-        do {
-            // For each song in the input array
-            for song in songs {
-                // Check if the song already exists
-                let fetchRequest: NSFetchRequest<CDSong> = CDSong.fetchRequest()
-                fetchRequest.predicate = NSPredicate(format: "songId == %d", song.songId)
-                
-                let existingSongs = try context.fetch(fetchRequest)
-                let cdSong: CDSong
-                
-                if let existingSong = existingSongs.first {
-                    // Update existing song
-                    cdSong = existingSong
-                } else {
-                    // Create new song
-                    cdSong = CDSong(context: context)
+        context.perform {
+            do {
+                for song in songs {
+                    let fetchRequest: NSFetchRequest<CDSong> = CDSong.fetchRequest()
+                    fetchRequest.predicate = NSPredicate(format: "songId == %d", song.songId)
+                    fetchRequest.fetchLimit = 1
+
+                    let existingRecords = try self.context.fetch(fetchRequest)
+                    let cdSong: CDSong
+
+                    if let existingRecord = existingRecords.first {
+                        cdSong = existingRecord
+                    } else {
+                        cdSong = CDSong(context: self.context)
+                    }
+
+                    // Safely set values
+                    cdSong.songId = Int32(song.songId)
+                    cdSong.book = Int32(song.book)
+                    cdSong.songNo = Int32(song.songNo)
+                    cdSong.title = song.title
+                    cdSong.alias = song.alias
+                    cdSong.content = song.content
+                    cdSong.views = Int32(song.views)
+                    cdSong.likes = Int32(song.likes)
+                    cdSong.liked = song.liked
+                    cdSong.created = song.created
                 }
-                
-                // Set all properties
-                cdSong.songId = Int32(song.songId)
-                cdSong.book = Int32(song.book)
-                cdSong.songNo = Int32(song.songNo)
-                cdSong.title = song.title
-                cdSong.alias = song.alias
-                cdSong.content = song.content
-                cdSong.views = Int32(song.views)
-                cdSong.likes = Int32(song.likes)
-                cdSong.liked = song.liked
-                cdSong.created = song.created
+
+                try self.context.save()
+            } catch {
+                print("Failed to save songs: \(error)")
             }
-            
-            try context.save()
-        } catch {
-            print("Failed to save songs: \(error)")
         }
     }
     
@@ -91,7 +89,7 @@ class SongDataManager {
         }
     }
     
-    // Fetch a single song by ID
+    // Fetch a single record by ID
     func fetchSong(withId id: Int) -> Song? {
         let fetchRequest: NSFetchRequest<CDSong> = CDSong.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "songId == %d", id)
@@ -119,7 +117,7 @@ class SongDataManager {
         }
     }
     
-    // Delete a song by ID
+    // Delete a record by ID
     func deleteSong(withId id: Int) {
         let fetchRequest: NSFetchRequest<CDSong> = CDSong.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "songId == %d", id)
@@ -135,4 +133,3 @@ class SongDataManager {
         }
     }
 }
-

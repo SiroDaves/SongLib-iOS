@@ -12,3 +12,12 @@ struct Selectable<T>: Identifiable {
     var data: T
     var isSelected: Bool
 }
+
+enum ViewUiState: Equatable {
+    case idle
+    case loading(String? = nil)
+    case saving(String? = nil)
+    case fetched
+    case saved
+    case error(String)
+}

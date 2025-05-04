@@ -11,9 +11,7 @@ import SwiftUI
 final class SelectionViewModel: ObservableObject {
     @Published var books: [Selectable<Book>] = []
     @Published var songs: [Song] = []
-    @Published var isLoading = false
-    @Published var error: Error?
-    @Published var errorMessage: String? = nil
+    @Published var uiState: ViewUiState = .idle
 
     private let prefsRepo: PrefsRepository
     private let bookRepo: BookRepositoryProtocol
@@ -42,8 +40,7 @@ final class SelectionViewModel: ObservableObject {
     }
 
     func fetchBooks() {
-        isLoading = true
-        errorMessage = nil
+        uiState = .loading("Fetching books ...")
 
         Task {
             do {
@@ -51,19 +48,18 @@ final class SelectionViewModel: ObservableObject {
                 let data = resp.data.map { Selectable(data: $0, isSelected: false) }
                 await MainActor.run {
                     self.books = data
-                    self.isLoading = false
+                    self.uiState = .fetched
                 }
             } catch {
                 await MainActor.run {
-                    self.errorMessage = "Failed to fetch books: \(error)"
-                    self.isLoading = false
+                    self.uiState = .error("Failed to fetch books: \(error)")
                 }
             }
         }
     }
 
     func saveBooks() {
-        isLoading = true
+        uiState = .saving("Saving books ...")
         print("Selected books: \(selectedBooks())")
                 
         Task {
@@ -72,40 +68,38 @@ final class SelectionViewModel: ObservableObject {
             await MainActor.run {
                 self.prefsRepo.isDataSelected = true
                 self.prefsRepo.selectedBooks = selectedBooksIds()
-                self.isLoading = false
+                self.uiState = .saved
             }
         }
     }
     
     func fetchSongs() {
-        isLoading = true
-        errorMessage = nil
+        uiState = .loading("Fetching songs ...")
 
         Task {
             do {
                 let resp: SongResponse = try await songRepo.fetchRemoteSongs(for: prefsRepo.selectedBooks)
                 await MainActor.run {
                     self.songs = resp.data
-                    self.isLoading = false
+                    self.uiState = .fetched
                 }
             } catch {
                 await MainActor.run {
-                    self.errorMessage = "Failed to fetch songs: \(error)"
-                    self.isLoading = false
+                    self.uiState = .error("Failed to fetch songs: \(error)")
                 }
             }
         }
     }
 
     func saveSongs() {
-        isLoading = true
+        self.uiState = .saving("Saving songs ...")
                 
         Task {
             self.songRepo.saveSongsLocally(songs)
             
             await MainActor.run {
                 self.prefsRepo.isDataLoaded = true
-                self.isLoading = false
+                self.uiState = .saved
             }
         }
     }

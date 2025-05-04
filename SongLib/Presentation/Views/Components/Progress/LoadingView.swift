@@ -9,24 +9,24 @@ import SwiftUI
 
 struct LoadingView: View {
     var title: String = "Loading data ..."
+    var backgroundColor: Color = Color(.systemBackground).opacity(0.9)
 
     var body: some View {
         ZStack {
-            Color(.systemBackground)
+            backgroundColor
                 .ignoresSafeArea()
-                .opacity(0.9)
 
-            VStack(spacing: 20) {
+            VStack(spacing: 100) {
                 ProgressView()
-                    .scaleEffect(2.5)
+                    .scaleEffect(5)
+                    .tint(ThemeColors.primary)
                 Text(title)
-                    .font(.title2)
+                    .font(.title3)
                     .foregroundColor(.gray)
             }
         }
     }
 }
-
 
 #Preview {
     LoadingView()

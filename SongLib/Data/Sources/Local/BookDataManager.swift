@@ -10,7 +10,6 @@ import CoreData
 class BookDataManager {
     private let coreDataManager: CoreDataManager
         
-    // Constructor that takes a CoreDataManager dependency
     init(coreDataManager: CoreDataManager = CoreDataManager.shared) {
         self.coreDataManager = coreDataManager
     }
@@ -20,44 +19,44 @@ class BookDataManager {
         return coreDataManager.viewContext
     }
     
-    // Save books to Core Data
+    // Save records to Core Data
     func saveBooks(_ books: [Book]) {
-        do {
-            // For each book in the input array
-            for book in books {
-                // Check if the book already exists in Core Data
-                let fetchRequest: NSFetchRequest<CDBook> = CDBook.fetchRequest()
-                fetchRequest.predicate = NSPredicate(format: "bookId == %d", book.bookId)
-                
-                let existingBooks = try context.fetch(fetchRequest)
-                let cdBook: CDBook
-                
-                if let existingBook = existingBooks.first {
-                    // Update existing book
-                    cdBook = existingBook
-                } else {
-                    // Create new book
-                    cdBook = CDBook(context: context)
+        context.perform {
+            do {
+                for book in books {
+                    let fetchRequest: NSFetchRequest<CDBook> = CDBook.fetchRequest()
+                    fetchRequest.predicate = NSPredicate(format: "bookId == %d", book.bookId)
+                    
+                    let existingRecords = try self.context.fetch(fetchRequest)
+                    let cdBook: CDBook
+                    
+                    if let existingRecord = existingRecords.first {
+                        // Update existing record
+                        cdBook = existingRecord
+                    } else {
+                        // Create new record
+                        cdBook = CDBook(context: self.context)
+                    }
+                    
+                    // Set all properties
+                    cdBook.bookId = Int32(book.bookId)
+                    cdBook.title = book.title
+                    cdBook.subTitle = book.subTitle
+                    cdBook.songs = Int32(book.songs)
+                    cdBook.position = Int32(book.position)
+                    cdBook.bookNo = Int32(book.bookNo)
+                    cdBook.enabled = book.enabled
+                    cdBook.created = book.created
                 }
                 
-                // Set all properties
-                cdBook.bookId = Int32(book.bookId)
-                cdBook.title = book.title
-                cdBook.subTitle = book.subTitle
-                cdBook.songs = Int32(book.songs)
-                cdBook.position = Int32(book.position)
-                cdBook.bookNo = Int32(book.bookNo)
-                cdBook.enabled = book.enabled
-                cdBook.created = book.created
+                try self.context.save()
+            } catch {
+                print("Failed to save books: \(error)")
             }
-            
-            try context.save()
-        } catch {
-            print("Failed to save books: \(error)")
         }
     }
     
-    // Fetch all books from Core Data
+    // Fetch all records from Core Data
     func fetchBooks() -> [Book] {
         let fetchRequest: NSFetchRequest<CDBook> = CDBook.fetchRequest()
         do {
@@ -80,7 +79,7 @@ class BookDataManager {
         }
     }
     
-    // Fetch a single book by ID
+    // Fetch a single record by ID
     func fetchBook(withId id: Int) -> Book? {
         let fetchRequest: NSFetchRequest<CDBook> = CDBook.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "bookId == %d", id)
@@ -106,7 +105,7 @@ class BookDataManager {
         }
     }
     
-    // Delete a book by ID
+    // Delete a record by ID
     func deleteBook(withId id: Int) {
         let fetchRequest: NSFetchRequest<CDBook> = CDBook.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "bookId == %d", id)
@@ -122,7 +121,7 @@ class BookDataManager {
         }
     }
     
-    // Helper method to fetch a book entity by ID (internal use)
+    // Helper method to fetch a record entity by ID (internal use)
     func fetchBookEntity(withId id: Int32) -> CDBook? {
         let fetchRequest: NSFetchRequest<CDBook> = CDBook.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "bookId == %d", id)

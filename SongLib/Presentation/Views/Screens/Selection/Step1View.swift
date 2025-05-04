@@ -19,66 +19,33 @@ struct Step1View: View {
     var body: some View {
         NavigationStack(path: $path) {
             VStack {
-                if viewModel.isLoading {
-                    LoadingView(title: "Fetching songbooks ...")
-                } else if let error = viewModel.errorMessage {
-                    VStack {
-                        Text(error)
-                            .foregroundColor(.red)
-                        Button("Retry") {
-                            Task {
-                                viewModel.fetchBooks()
-                            }
-                        }
-                    }
-                    .padding()
-                } else {
-                    ScrollView {
-                        LazyVStack(spacing: 12) {
-                            ForEach(viewModel.books.indices, id: \.self) { index in
-                                let selectable = viewModel.books[index]
-                                BookItemView(
-                                    book: selectable.data,
-                                    isSelected: selectable.isSelected
-                                ) {
-                                    viewModel.toggleSelection(for: selectable.data)
+                switch viewModel.uiState {
+                    case .loading(let msg):
+                        LoadingView(title: msg!)
+                    case .saving(let msg):
+                        LoadingView(title: msg!)
+                    case .saved:
+                        LoadingView()
+                    case .error(let msg):
+                        VStack {
+                            Text(msg)
+                                .foregroundColor(.red)
+                            Button("Retry") {
+                                Task {
+                                    viewModel.fetchBooks()
                                 }
                             }
                         }
                         .padding()
-                    }
-
-                    Button(action: {
-                        if viewModel.selectedBooks().isEmpty {
-                            showNoSelectionAlert = true
-                        } else {
-                            showConfirmationAlert = true
-                        }
-                    }) {
-                        HStack {
-                            Image(systemName: "checkmark")
-                            Text("Proceed")
-                        }
-                        .foregroundColor(.white)
-                        .padding()
-                        .background(ThemeColors.primary)
-                        .cornerRadius(10)
-                    }
-                    .padding(.bottom)
+                    default:
+                        BookSelectionView(
+                            viewModel: viewModel,
+                            showNoSelectionAlert: $showNoSelectionAlert,
+                            showConfirmationAlert: $showConfirmationAlert
+                        )
                 }
             }
             .navigationTitle("Select Songbooks")
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: {
-                        Task {
-                            viewModel.fetchBooks()
-                        }
-                    }) {
-                        Image(systemName: "arrow.clockwise")
-                    }
-                }
-            }
             .alert(isPresented: $showNoSelectionAlert) {
                 Alert(
                     title: Text("Oops! No selection found"),
@@ -89,19 +56,66 @@ struct Step1View: View {
             .confirmationDialog("If you are done selecting please proceed ahead. We can always bring you back here to reselect afresh.", isPresented: $showConfirmationAlert, titleVisibility: .visible) {
                 Button("Proceed") {
                     viewModel.saveBooks()
-                    path = NavigationPath()
-                    path.append("step2")
                 }
                 Button("Cancel", role: .cancel) {}
             }
             .task {
                 viewModel.fetchBooks()
             }
+            .onChange(of: viewModel.uiState) { state in
+                if case .saved = state {
+                    path = NavigationPath()
+                    path.append("step2")
+                }
+            }
             .navigationDestination(for: String.self) { route in
                 if route == "step2" {
                     Step2View()
                 }
             }
+        }
+    }
+}
+
+struct BookSelectionView: View {
+    @ObservedObject var viewModel: SelectionViewModel
+    @Binding var showNoSelectionAlert: Bool
+    @Binding var showConfirmationAlert: Bool
+
+    var body: some View {
+        VStack {
+            ScrollView {
+                LazyVStack(spacing: 12) {
+                    ForEach(viewModel.books.indices, id: \.self) { index in
+                        let selectable = viewModel.books[index]
+                        BookItemView(
+                            book: selectable.data,
+                            isSelected: selectable.isSelected
+                        ) {
+                            viewModel.toggleSelection(for: selectable.data)
+                        }
+                    }
+                }
+                .padding()
+            }
+
+            Button(action: {
+                if viewModel.selectedBooks().isEmpty {
+                    showNoSelectionAlert = true
+                } else {
+                    showConfirmationAlert = true
+                }
+            }) {
+                HStack {
+                    Image(systemName: "checkmark")
+                    Text("Proceed")
+                }
+                .foregroundColor(.white)
+                .padding()
+                .background(ThemeColors.primary)
+                .cornerRadius(10)
+            }
+            .padding(.bottom)
         }
     }
 }
