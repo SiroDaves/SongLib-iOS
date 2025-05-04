@@ -16,10 +16,7 @@ struct Step2View: View {
     var body: some View {
         NavigationView {
             VStack {
-                if viewModel.isLoading {
-                    ProgressView("Loading data ...")
-                        .progressViewStyle(CircularProgressViewStyle())
-                } else if let error = viewModel.errorMessage {
+                if let error = viewModel.errorMessage {
                     VStack {
                         Text(error)
                             .foregroundColor(.red)
@@ -30,6 +27,9 @@ struct Step2View: View {
                         }
                     }
                     .padding()
+                }
+                else /*if viewModel.isLoading*/ {
+                    LoadingView()
                 }
                 NavigationLink(destination: HomeView(), isActive: $navigateToNext) {
                     EmptyView()
