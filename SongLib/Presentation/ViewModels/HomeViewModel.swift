@@ -42,7 +42,7 @@ final class HomeViewModel: ObservableObject {
         }
     }
     
-    func filterData(book: Int) {
+    func filterSongs(book: Int) {
         uiState = .filtering
 
         Task {
@@ -53,5 +53,16 @@ final class HomeViewModel: ObservableObject {
             }
         }
     }
+    
+    func searchSongs(searchText: String) {
+        if searchText.isEmpty {
+            filtered = songs.filter { $0.book == books[selectedBook].bookNo }
+        } else {
+            filtered = songs.filter {
+                $0.title.lowercased().contains(searchText.lowercased())
+            }
+        }
+    }
+
 
 }
