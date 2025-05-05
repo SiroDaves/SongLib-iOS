@@ -12,49 +12,49 @@ struct Step2View: View {
         DiContainer.shared.resolve(SelectionViewModel.self)
     }()
     
-    @State private var path = NavigationPath()
+    @State private var navigateToNextScreen = false
 
     var body: some View {
-        NavigationStack(path: $path) {
-            VStack {
-                switch viewModel.uiState {
-                    case .loading(let msg):
-                        LoadingView(title: msg!)
-                    case .saving(let msg):
-                        LoadingView(title: msg!)
-                    case .saved:
-                        LoadingView()
-                    case .error(let msg):
-                        VStack {
-                            Text(msg)
-                                .foregroundColor(.red)
-                            Button("Retry") {
-                                Task {
-                                    viewModel.fetchBooks()
-                                }
-                            }
-                        }
-                        .padding()
-                    default:
-                        LoadingView()
-                }
+        Group {
+            navigateToNextScreen ? AnyView(HomeView()) : AnyView(mainContent)
+        }
+    }
+    
+    private var mainContent: some View {
+        VStack {
+            stateContent
+        }
+        .task({viewModel.fetchSongs()})
+        .onChange(of: viewModel.uiState, perform: handleStateChange)
+    }
+    
+    @ViewBuilder
+    private var stateContent: some View {
+        switch viewModel.uiState {
+        case .loading(let msg):
+            LoadingView(title: msg ?? "Loading ...")
+            
+        case .saving(let msg):
+            LoadingView(title: msg ?? "Saving ...")
+            
+        case .saved:
+            LoadingView()
+            
+        case .error(let msg):
+            ErrorView(message: msg) {
+                Task { viewModel.fetchSongs() }
             }
-            .task {
-                viewModel.fetchSongs()
-            }
-            .onChange(of: viewModel.uiState) { state in
-                if case .saved = state {
-                    path = NavigationPath()
-                    path.append("home")
-                } else if case .fetched = state {
-                    viewModel.saveSongs()
-                }
-            }
-            .navigationDestination(for: String.self) { route in
-                if route == "home" {
-                    HomeView()
-                }
-            }
+            
+        default:
+            LoadingView()
+        }
+    }
+    
+    private func handleStateChange(_ state: ViewUiState) {
+        if case .saved = state {
+            navigateToNextScreen = true
+        } else if case .fetched = state {
+            viewModel.saveSongs()
         }
     }
 }

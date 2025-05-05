@@ -10,7 +10,7 @@ import SwiftUI
 struct ContentView: View {
     private let prefsRepo: PrefsRepository
     
-    @State private var goToNextScreen = false
+    @State private var navigateToNextScreen = false
     
     init(prefsRepo: PrefsRepository) {
         self.prefsRepo = prefsRepo
@@ -18,7 +18,7 @@ struct ContentView: View {
     
     var body: some View {
         Group {
-            if goToNextScreen {
+            if navigateToNextScreen {
                 if prefsRepo.isDataLoaded {
                     HomeView()
                 } else {
@@ -32,11 +32,11 @@ struct ContentView: View {
                 SplashView()
                     .onAppear {
                         DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
-                            goToNextScreen = true
+                            navigateToNextScreen = true
                         }
                     }
             }
         }
-        .animation(.easeInOut, value: goToNextScreen)
+        .animation(.easeInOut, value: navigateToNextScreen)
     }
 }

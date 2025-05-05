@@ -8,72 +8,84 @@
 import SwiftUI
 
 struct Step1View: View {
-    @StateObject private var viewModel: SelectionViewModel = {
-        DiContainer.shared.resolve(SelectionViewModel.self)
-    }()
-    
-    @State private var path = NavigationPath()
+    @StateObject private var viewModel: SelectionViewModel = DiContainer.shared.resolve(SelectionViewModel.self)
     @State private var showNoSelectionAlert = false
     @State private var showConfirmationAlert = false
+    @State private var navigateToNextScreen = false
 
     var body: some View {
-        NavigationStack(path: $path) {
-            VStack {
-                switch viewModel.uiState {
-                    case .loading(let msg):
-                        LoadingView(title: msg!)
-                    case .saving(let msg):
-                        LoadingView(title: msg!)
-                    case .saved:
-                        LoadingView()
-                    case .error(let msg):
-                        VStack {
-                            Text(msg)
-                                .foregroundColor(.red)
-                            Button("Retry") {
-                                Task {
-                                    viewModel.fetchBooks()
-                                }
-                            }
-                        }
-                        .padding()
-                    default:
-                        BookSelectionView(
-                            viewModel: viewModel,
-                            showNoSelectionAlert: $showNoSelectionAlert,
-                            showConfirmationAlert: $showConfirmationAlert
-                        )
-                }
-            }
-            .navigationTitle("Select Songbooks")
-            .alert(isPresented: $showNoSelectionAlert) {
-                Alert(
-                    title: Text("Oops! No selection found"),
-                    message: Text("Please, just select at least 1 song book to be able to proceed to the next step."),
-                    dismissButton: .default(Text("OK"))
-                )
-            }
-            .confirmationDialog("If you are done selecting please proceed ahead. We can always bring you back here to reselect afresh.", isPresented: $showConfirmationAlert, titleVisibility: .visible) {
-                Button("Proceed") {
-                    viewModel.saveBooks()
-                }
-                Button("Cancel", role: .cancel) {}
-            }
-            .task {
-                viewModel.fetchBooks()
-            }
-            .onChange(of: viewModel.uiState) { state in
-                if case .saved = state {
-                    path = NavigationPath()
-                    path.append("step2")
-                }
-            }
-            .navigationDestination(for: String.self) { route in
-                if route == "step2" {
-                    Step2View()
-                }
-            }
+        Group {
+            navigateToNextScreen ? AnyView(Step2View()) : AnyView(mainContent)
         }
+    }
+    
+    private var mainContent: some View {
+        VStack {
+            Text("Select Songbooks")
+                .font(.title)
+                .fontWeight(.bold)
+            Divider()
+            stateContent
+        }
+        .alert(isPresented: $showNoSelectionAlert) {
+            noSelectionAlert
+        }
+        .confirmationDialog(
+            "If you are done selecting please proceed ahead. We can always bring you back here to reselect afresh.",
+            isPresented: $showConfirmationAlert,
+            titleVisibility: .visible
+        ) {
+            confirmationDialogActions
+        }
+        .task({viewModel.fetchBooks()})
+        .onChange(of: viewModel.uiState, perform: handleStateChange)
+    }
+    
+    @ViewBuilder
+    private var stateContent: some View {
+        switch viewModel.uiState {
+        case .loading(let msg):
+            LoadingView(title: msg ?? "Loading...")
+            
+        case .saving(let msg):
+            LoadingView(title: msg ?? "Saving...")
+            
+        case .saved:
+            LoadingView()
+            
+        case .error(let msg):
+            ErrorView(message: msg) {
+                Task { viewModel.fetchBooks() }
+            }
+            
+        default:
+            BookSelectionView(
+                viewModel: viewModel,
+                showNoSelectionAlert: $showNoSelectionAlert,
+                showConfirmationAlert: $showConfirmationAlert
+            )
+        }
+    }
+    
+    private var noSelectionAlert: Alert {
+        Alert(
+            title: Text("Oops! No selection found"),
+            message: Text("Please select at least 1 song book to proceed to the next step."),
+            dismissButton: .default(Text("OK"))
+        )
+    }
+    
+    private var confirmationDialogActions: some View {
+        Group {
+            Button("Proceed") {
+                viewModel.saveBooks()
+            }
+            Button("Cancel", role: .cancel) {}
+        }
+    }
+    
+    private func handleStateChange(_ state: ViewUiState) {
+        navigateToNextScreen = .saved == state
     }
 }
 

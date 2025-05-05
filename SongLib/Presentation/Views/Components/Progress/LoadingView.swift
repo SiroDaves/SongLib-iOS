@@ -28,6 +28,23 @@ struct LoadingView: View {
     }
 }
 
+struct ErrorView: View {
+    let message: String
+    let retryAction: () -> Void
+    
+    var body: some View {
+        VStack {
+            Text(message)
+                .foregroundColor(.red)
+                .padding()
+            
+            Button("Retry", action: retryAction)
+                .buttonStyle(.borderedProminent)
+        }
+        .padding()
+    }
+}
+
 #Preview {
     LoadingView()
 }
