@@ -31,22 +31,22 @@ struct Step2View: View {
     @ViewBuilder
     private var stateContent: some View {
         switch viewModel.uiState {
-        case .loading(let msg):
-            LoadingView(title: msg ?? "Loading ...")
-            
-        case .saving(let msg):
-            LoadingView(title: msg ?? "Saving ...")
-            
-        case .saved:
-            LoadingView()
-            
-        case .error(let msg):
-            ErrorView(message: msg) {
-                Task { viewModel.fetchSongs() }
-            }
-            
-        default:
-            LoadingView()
+            case .loading(let msg):
+                LoadingView(title: msg ?? "Loading ...")
+                
+            case .saving(let msg):
+                LoadingView(title: msg ?? "Saving ...")
+                
+            case .saved:
+                LoadingView()
+                
+            case .error(let msg):
+                ErrorView(message: msg) {
+                    Task { viewModel.fetchSongs() }
+                }
+                
+            default:
+                LoadingView()
         }
     }
     

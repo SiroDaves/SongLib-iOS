@@ -14,68 +14,56 @@ struct HomeView: View {
     
     var body: some View {
         VStack(spacing: 0){
-            Text("SongLib")
-                .font(.largeTitle)
-                .fontWeight(.bold)
-                .padding(.top, 5)
-                .padding(.bottom, 5)
-
-            Divider()
-            
-            switch viewModel.uiState {
-                case .loading(let msg):
-                    LoadingView(title: msg!)
-                case .filtering:
-                    ProgressView()
-                        .scaleEffect(5)
-                        .tint(ThemeColors.primary)
-                case .filtered:
-                    TabView {
-                        SongsView(
-                            viewModel: viewModel,
-                            //onSongSelect: (Song) -> { }
-                        )
-                            .tabItem {
-                                Label("Songs", systemImage: "magnifyingglass")
-                            }
-                        LikesView(viewModel: viewModel)
-                            .tabItem {
-                                Label("Likes", systemImage: "heart.fill")
-                            }
-                    }
-                case .error(let msg):
-                    VStack {
-                        Text(msg)
-                            .foregroundColor(.red)
-                    }
-                    .padding()
-                default:
-                    LoadingView()
-            }
+//            Text("SongLib")
+//                .font(.largeTitle)
+//                .fontWeight(.bold)
+//            Divider()
+            stateContent
         }
         .edgesIgnoringSafeArea(.bottom)
-        .task {
-            viewModel.fetchData()
-        }
-        .onChange(of: viewModel.uiState) { state in
-            if case .fetched = state {
-                viewModel.filterData(book: viewModel.books[0].bookId)
-            }
+        .task { viewModel.fetchData() }
+        .onChange(of: viewModel.uiState, perform: handleStateChange)
+    }
+    
+    @ViewBuilder
+    private var stateContent: some View {
+        switch viewModel.uiState {
+            case .loading(let msg):
+                LoadingView(title: msg!)
+            case .filtering:
+                ProgressView()
+                    .scaleEffect(5)
+                    .tint(ThemeColors.primary)
+            case .filtered:
+                TabView {
+                    SongsView(
+                        viewModel: viewModel,
+                        //onSongSelect: (Song) -> { }
+                    )
+                        .tabItem {
+                            Label("Songs", systemImage: "magnifyingglass")
+                        }
+                    LikesView(viewModel: viewModel)
+                        .tabItem {
+                            Label("Likes", systemImage: "heart.fill")
+                        }
+                }
+            case .error(let msg):
+                ErrorView(message: msg) {
+                    Task { viewModel.fetchData() }
+                }
+                
+            default:
+                LoadingView()
         }
     }
-}
-
-struct LikesView: View {
-    @ObservedObject var viewModel: HomeViewModel
-
-    var body: some View {
-        NavigationView {
-            List(viewModel.likes) { song in
-                Text(song.title)
-            }
-            .navigationTitle("Likes")
+    
+    private func handleStateChange(_ state: ViewUiState) {
+        if case .fetched = state {
+            viewModel.filterData(book: viewModel.books[0].bookId)
         }
     }
+    
 }
 
 #Preview {

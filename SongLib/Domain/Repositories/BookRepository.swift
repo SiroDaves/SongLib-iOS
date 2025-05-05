@@ -27,7 +27,8 @@ class BookRepository: BookRepositoryProtocol {
     }
     
     func fetchLocalBooks() -> [Book] {
-        return bookData.fetchBooks()
+        let books = bookData.fetchBooks()
+        return books.sorted { $0.bookId < $1.bookId }
     }
     
     func saveBooksLocally(_ books: [Book]) {

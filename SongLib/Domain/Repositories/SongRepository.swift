@@ -27,7 +27,8 @@ class SongRepository: SongRepositoryProtocol {
     }
     
     func fetchLocalSongs() -> [Song] {
-        return songData.fetchSongs()
+        let songs = songData.fetchSongs()
+        return songs.sorted { $0.songId < $1.songId }
     }
     
     func saveSongsLocally(_ songs: [Song]) {
