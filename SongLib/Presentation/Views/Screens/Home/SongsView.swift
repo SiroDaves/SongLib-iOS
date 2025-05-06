@@ -9,33 +9,30 @@ import SwiftUI
 
 struct SongsView: View {
     @ObservedObject var viewModel: HomeViewModel
-    var selectedSong: Song?
-    //var onSongSelect: (Song) -> Void
-    
+    @State private var selectedSong: Song? = nil
     @State private var searchText: String = ""
 
     var body: some View {
-        ScrollView {
+        NavigationStack {
             VStack(spacing: 12) {
-                TextField("Search songs...", text: $searchText)
+                TextField("Search songs ...", text: $searchText)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .padding(.horizontal)
                     .onChange(of: searchText) { newValue in
                         viewModel.searchSongs(searchText: newValue)
                     }
+
                 BooksListView(
                     books: viewModel.books,
                     selectedBook: viewModel.selectedBook,
-                    onSelect: { index in
-                        viewModel.selectedBook = viewModel.books.firstIndex(of: index) ?? 0
-                        viewModel.filterSongs(book: index.bookId)
+                    onSelect: { book in
+                        viewModel.selectedBook = viewModel.books.firstIndex(of: book) ?? 0
+                        viewModel.filterSongs(book: book.bookId)
                     }
                 )
-                SongsListView(
-                    songs: viewModel.filtered,
-                    //selectedSong: selectedSong!,
-                    //onTap: onSongSelect
-                )
+
+                // Removed ScrollView wrapper
+                SongsListView(songs: viewModel.filtered)
             }
             .padding()
         }
@@ -54,9 +51,7 @@ struct BooksListView: View {
                     SearchBookItem(
                         text: book.title,
                         isSelected: index == selectedBook,
-                        onPressed: {
-                            //onSelect(book)
-                        }
+                        onPressed: { onSelect(book) }
                     )
                 }
             }
@@ -68,24 +63,20 @@ struct BooksListView: View {
 
 struct SongsListView: View {
     let songs: [Song]
-    //let selectedSong: Song
-    //let onTap: (Song, Bool) -> Void
 
     var body: some View {
-        VStack(spacing: 8) {
-            ForEach(songs) { song in
+        List(songs) { song in
+            NavigationLink {
+                PresentorView(song: song)
+            } label: {
                 SearchSongItem(
                     song: song,
                     height: 50,
                     isSelected: false,
-                    //isSelected: isBigScreen ? song.id == selectedSong.id : false,
-                    isSearching: false,
-                    onTap: {
-                        //onTap(song, !isBigScreen)
-                    },
+                    isSearching: false
                 )
             }
         }
-        .padding(.horizontal)
+        .listStyle(.plain)
     }
 }

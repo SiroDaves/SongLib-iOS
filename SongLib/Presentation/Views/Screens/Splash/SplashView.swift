@@ -25,7 +25,7 @@ struct SplashView: View {
             Spacer()
 
             Divider()
-                .frame(height: 2)
+                .frame(height: 1)
                 .padding(.horizontal, 50)
                 .background(ThemeColors.primaryDark)
 
@@ -58,7 +58,7 @@ struct SplashView: View {
             .padding(.top, 10)
 
             Spacer().frame(height: 20)
-        }
+        }.padding()
     }
 }
 

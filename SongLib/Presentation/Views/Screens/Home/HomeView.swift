@@ -35,18 +35,19 @@ struct HomeView: View {
                     .scaleEffect(5)
                     .tint(ThemeColors.primary)
             case .filtered:
-                TabView {
-                    SongsView(
-                        viewModel: viewModel,
-                        //onSongSelect: (Song) -> { }
-                    )
-                        .tabItem {
-                            Label("Songs", systemImage: "magnifyingglass")
-                        }
-                    LikesView(viewModel: viewModel)
-                        .tabItem {
-                            Label("Likes", systemImage: "heart.fill")
-                        }
+                NavigationStack {
+                    TabView {
+                        SongsView(
+                            viewModel: viewModel,
+                        )
+                            .tabItem {
+                                Label("Songs", systemImage: "magnifyingglass")
+                            }
+                        LikesView(viewModel: viewModel)
+                            .tabItem {
+                                Label("Likes", systemImage: "heart.fill")
+                            }
+                    }
                 }
             case .error(let msg):
                 ErrorView(message: msg) {
@@ -60,7 +61,7 @@ struct HomeView: View {
     
     private func handleStateChange(_ state: ViewUiState) {
         if case .fetched = state {
-            viewModel.filterSongs(book: viewModel.selectedBook)
+            viewModel.filterSongs(book: viewModel.books[viewModel.selectedBook].bookId)
         }
     }
     

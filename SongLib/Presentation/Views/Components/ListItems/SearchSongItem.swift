@@ -12,7 +12,6 @@ struct SearchSongItem: View {
     let height: CGFloat
     let isSelected: Bool
     let isSearching: Bool
-    let onTap: (() -> Void)?
 
     private var verses: [String] {
         song.content.components(separatedBy: "##")
@@ -33,7 +32,7 @@ struct SearchSongItem: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 5) {
+        VStack(alignment: .leading, spacing: 2) {
             HStack(alignment: .center) {
                 Text("\(song.songNo). \(song.title)")
                     .font(.headline)
@@ -62,12 +61,9 @@ struct SearchSongItem: View {
                 TagItem(tagText: "Book \(song.book)", height: height)
             }
         }
-        .padding(5)
+        .padding(3)
         .background(isSelected ? ThemeColors.primary : Color.clear)
         .contentShape(Rectangle())
-        .onTapGesture {
-            onTap?()
-        }
     }
 }
 
@@ -88,7 +84,6 @@ struct SearchSongItem: View {
         height: 30,
         isSelected: true,
         isSearching: true,
-        onTap: { print("Tapped") },
     )
     .padding()
 }

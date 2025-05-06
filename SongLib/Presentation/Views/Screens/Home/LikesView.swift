@@ -14,13 +14,11 @@ struct LikesView: View {
 
     var body: some View {
         ScrollView {
-            VStack(spacing: 12) {
-                LikesListView(
-                    songs: viewModel.likes,
-                    //selectedSong: selectedSong!,
-                    //onTap: onSongSelect
-                )
-            }
+            LikesListView(
+                songs: viewModel.likes,
+                //selectedSong: selectedSong!,
+                //onTap: onSongSelect
+            )
             .padding()
         }
     }
@@ -32,20 +30,19 @@ struct LikesListView: View {
     //let onTap: (Song, Bool) -> Void
 
     var body: some View {
-        VStack(spacing: 8) {
-            ForEach(songs) { song in
-                SearchSongItem(
-                    song: song,
-                    height: 50,
-                    isSelected: false,
-                    //isSelected: isBigScreen ? song.id == selectedSong.id : false,
-                    isSearching: false,
-                    onTap: {
-                        //onTap(song, !isBigScreen)
-                    },
-                )
+        NavigationStack {
+            VStack(spacing: 8) {
+                ForEach(songs) { song in
+                    SearchSongItem(
+                        song: song,
+                        height: 50,
+                        isSelected: false,
+                        //isSelected: isBigScreen ? song.id == selectedSong.id : false,
+                        isSearching: false,
+                    )
+                }
             }
+            .padding(.horizontal)
         }
-        .padding(.horizontal)
     }
 }
