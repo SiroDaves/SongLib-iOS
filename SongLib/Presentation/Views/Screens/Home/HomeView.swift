@@ -13,13 +13,7 @@ struct HomeView: View {
     }()
     
     var body: some View {
-        VStack(spacing: 0){
-//            Text("SongLib")
-//                .font(.largeTitle)
-//                .fontWeight(.bold)
-//            Divider()
-            stateContent
-        }
+        stateContent
         .edgesIgnoringSafeArea(.bottom)
         .task { viewModel.fetchData() }
         .onChange(of: viewModel.uiState, perform: handleStateChange)
@@ -65,6 +59,19 @@ struct HomeView: View {
         }
     }
     
+}
+
+struct LikesView: View {
+    @ObservedObject var viewModel: HomeViewModel
+
+    var body: some View {
+        NavigationStack {
+            VStack(spacing: 12) {
+                SongsListView(songs: viewModel.likes)
+            }
+            .padding()
+        }
+    }
 }
 
 #Preview {

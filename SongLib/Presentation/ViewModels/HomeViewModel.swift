@@ -31,7 +31,7 @@ final class HomeViewModel: ObservableObject {
     }
     
     func fetchData() {
-        uiState = .loading("Fetching data ...")
+        self.uiState = .loading("Fetching data ...")
 
         Task {
             await MainActor.run {
@@ -43,7 +43,7 @@ final class HomeViewModel: ObservableObject {
     }
     
     func filterSongs(book: Int) {
-        uiState = .filtering
+        self.uiState = .filtering
 
         Task {
             await MainActor.run {
@@ -63,6 +63,5 @@ final class HomeViewModel: ObservableObject {
             }
         }
     }
-
 
 }

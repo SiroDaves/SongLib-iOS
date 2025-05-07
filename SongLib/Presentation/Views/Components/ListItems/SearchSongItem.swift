@@ -34,7 +34,7 @@ struct SearchSongItem: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 2) {
             HStack(alignment: .center) {
-                Text("\(song.songNo). \(song.title)")
+                Text(songItemTitle(number: song.songNo, title: song.title))
                     .font(.headline)
                     .lineLimit(1)
 

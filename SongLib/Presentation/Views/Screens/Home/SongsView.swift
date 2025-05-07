@@ -9,7 +9,6 @@ import SwiftUI
 
 struct SongsView: View {
     @ObservedObject var viewModel: HomeViewModel
-    @State private var selectedSong: Song? = nil
     @State private var searchText: String = ""
 
     var body: some View {
@@ -31,7 +30,6 @@ struct SongsView: View {
                     }
                 )
 
-                // Removed ScrollView wrapper
                 SongsListView(songs: viewModel.filtered)
             }
             .padding()
