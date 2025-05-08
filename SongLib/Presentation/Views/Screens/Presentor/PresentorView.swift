@@ -26,17 +26,13 @@ struct PresentorView: View {
     @ViewBuilder
     private var stateContent: some View {
         switch viewModel.uiState {
-            case .loading(let msg):
+            case .loading:
                 ProgressView()
                     .scaleEffect(5)
                     .tint(ThemeColors.primary)
             
             case .loaded:
-                VStack(spacing: 0) {
-                    tabContent
-                    tabIndicators
-                }
-                .navigationTitle(viewModel.title)
+                mainContent
                 
             case .error(let msg):
                 ErrorView(message: msg) {
@@ -48,47 +44,19 @@ struct PresentorView: View {
         }
     }
     
-    private var tabContent: some View {
-        TabView(selection: $selectedTabIndex) {
-            ForEach(viewModel.verses.indices, id: \.self) { index in
-                VStack {
-                    Spacer()
-                    Text(viewModel.verses[index])
-                        .font(.system(.title3))
-                        .multilineTextAlignment(.center)
-                        .padding(.horizontal)
-                    Spacer()
-                }
-                .tag(index)
-            }
+    private var mainContent: some View {
+        VStack(spacing: 0) {
+            PresentorTabs(
+                verses: viewModel.verses,
+                selected: $selectedTabIndex,
+            )
+            PresentorIndicators(
+                indicators: viewModel.indicators,
+                selected: $selectedTabIndex,
+            )
         }
-        .tabViewStyle(.page(indexDisplayMode: .never))
-        .frame(maxHeight: .infinity)
+        .navigationTitle(viewModel.title)
     }
-    
-    private var tabIndicators: some View {
-        HStack(spacing: 40) {
-            ForEach(viewModel.verses.indices, id: \.self) { index in
-                Button {
-                    withAnimation {
-                        selectedTabIndex = index
-                    }
-                } label: {
-                    Text(viewModel.indicators[index])
-                        .font(.title2)
-                        .foregroundColor(selectedTabIndex == index ? .white : .primary)
-                        .padding(8)
-                        .background(
-                            Circle()
-                                .fill(selectedTabIndex == index ? Color.blue : Color.clear)
-                        )
-                }
-            }
-        }
-        .padding(.vertical)
-        .background(.regularMaterial)
-    }
-    
 }
 
 #Preview{
@@ -97,9 +65,9 @@ struct PresentorView: View {
             book: 1,
             songId: 1,
             songNo: 1,
-            title: "Amazing Grace",
+            title: "Only Believe",
             alias: "",
-            content: "Amazing grace how sweet the sound",
+            content: "Fear not, little flock,#from the cross to the throne,#From death into life#He went for His own;#All power in earth,#all power above,#Is given to Him#for the flock of His love.##CHORUS#Only believe, only believe,#All things are possible,#Only believe, Only believe,#only believe,#All things are possible,#only believe.##(Lord, I believe...#(Lord, I receive. .#(Jesus Is here...##Fear not, little flock,#He goeth ahead,#Your Shepherd selecteth#the path you must tread;#The waters of Marah#He’ll sweeten for thee,#He drank all the bitter#in Gethsemane.##Fear not, little flock,#whatever your lot,#He enters all rooms,#'the doors being shut;'#He never forsakes,#He never is gone,#So count on His presence#in darkness and dawn.",
             views: 1200,
             likes: 300,
             liked: true,

@@ -155,7 +155,7 @@ func songItemTitle(number: Int, title: String) -> String {
 }
 
 // Song Verses
-func songVerses(songContent: String) -> [String] {
+func getSongVerses(songContent: String) -> [String] {
     return songContent.split(separator: "##").map { $0.replacingOccurrences(of: "#", with: "\n") }
 }
 

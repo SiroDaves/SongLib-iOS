@@ -30,11 +30,14 @@ final class PresentorViewModel: ObservableObject {
 
     func loadSong(song: Song) {
         uiState = .loading("Loading ...")
+        
+        indicators = []
+        verses = []
 
         hasChorus = song.content.contains("CHORUS")
         title = songItemTitle(number: song.songNo, title: song.title)
 
-        let songVerses = song.content.components(separatedBy: "##")
+        let songVerses = getSongVerses(songContent: song.content)
         let verseCount = songVerses.count
 
         if hasChorus {
