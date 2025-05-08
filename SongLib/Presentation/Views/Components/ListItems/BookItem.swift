@@ -22,15 +22,15 @@ struct BookItem: View {
         let foregroundColor = isSelected ? Color.white : Color.black
 
         return ZStack {
-            RoundedRectangle(cornerRadius: 12)
+            RoundedRectangle(cornerRadius: 10)
                 .fill(backgroundColor)
                 .shadow(radius: 5)
             
-            HStack(spacing: 16) {
+            HStack(spacing: 15) {
                 Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
                     .foregroundColor(foregroundColor)
                     .font(.system(size: 24))
-                    .padding(8)
+                    .padding(5)
                 
                 VStack(alignment: .leading, spacing: 4) {
                     Text(refineTitle(txt: book.title))

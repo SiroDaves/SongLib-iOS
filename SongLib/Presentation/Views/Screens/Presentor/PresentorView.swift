@@ -45,15 +45,17 @@ struct PresentorView: View {
     }
     
     private var mainContent: some View {
-        VStack(spacing: 0) {
+        VStack(spacing: 20) {
             PresentorTabs(
                 verses: viewModel.verses,
-                selected: $selectedTabIndex,
+                selected: $selectedTabIndex
             )
+            .frame(maxHeight: .infinity)
             PresentorIndicators(
                 indicators: viewModel.indicators,
-                selected: $selectedTabIndex,
+                selected: $selectedTabIndex
             )
+            .fixedSize(horizontal: false, vertical: true)
         }
         .navigationTitle(viewModel.title)
     }

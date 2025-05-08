@@ -12,31 +12,29 @@ struct PresentorIndicators: View {
     @Binding var selected: Int
     
     var body: some View {
-        HStack(spacing: 20) {
-            ForEach(indicators.indices, id: \.self) { index in
-                IndicatorButton(
-                    title: indicators[index],
-                    isSelected: index == selected,
-                    action: { selected = index }
-                )
+        ScrollView {
+            LazyVGrid(columns: [GridItem(.adaptive(minimum: 60))], spacing: 10) {
+                ForEach(indicators.indices, id: \.self) { index in
+                    IndicatorButton(
+                        title: indicators[index],
+                        isSelected: index == selected,
+                        action: { selected = index }
+                    )
+                }
             }
         }
-        .padding()
+        .padding(.horizontal)
     }
 }
 
 struct IndicatorButton: View {
     let title: String
     let isSelected: Bool
-    let size: CGFloat
-    let cornerRadius: CGFloat
     let action: () -> Void
     
-    init(title: String, isSelected: Bool, size: CGFloat = 60, cornerRadius: CGFloat = 10, action: @escaping () -> Void) {
+    init(title: String, isSelected: Bool, action: @escaping () -> Void) {
         self.title = title
         self.isSelected = isSelected
-        self.size = size
-        self.cornerRadius = cornerRadius
         self.action = action
     }
     
@@ -46,13 +44,13 @@ struct IndicatorButton: View {
                 .font(.title3)
                 .fontWeight(.medium)
                 .foregroundColor(isSelected ? .white : ThemeColors.primary)
-                .frame(width: size, height: size)
+                .frame(width: 60, height: 40)
                 .background(
-                    RoundedRectangle(cornerRadius: cornerRadius)
+                    RoundedRectangle(cornerRadius: 10)
                         .fill(isSelected ? ThemeColors.primaryDark1 : Color.clear)
                 )
                 .overlay(
-                    RoundedRectangle(cornerRadius: cornerRadius)
+                    RoundedRectangle(cornerRadius: 10)
                         .stroke(ThemeColors.primary, lineWidth: isSelected ? 0 : 2)
                 )
                 .animation(.easeInOut(duration: 0.2), value: isSelected)
