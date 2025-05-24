@@ -70,8 +70,8 @@ struct DependencyMap {
             )
         }.inObjectScope(.container)
         
-        container.register(PresentorViewModel.self) { resolver in
-            PresentorViewModel(
+        container.register(PresenterViewModel.self) { resolver in
+            PresenterViewModel(
                 prefsRepo: resolver.resolve(PrefsRepository.self)!,
                 songRepo: resolver.resolve(SongRepositoryProtocol.self)!,
             )

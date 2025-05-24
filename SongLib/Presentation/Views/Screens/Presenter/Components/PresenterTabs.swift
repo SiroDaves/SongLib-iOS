@@ -1,5 +1,5 @@
 //
-//  PresentorTabs.swift
+//  PresenterTabs.swift
 //  SongLib
 //
 //  Created by Siro Daves on 07/05/2025.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct PresentorTabs: View {
+struct PresenterTabs: View {
     let verses: [String]
     @Binding var selected: Int
     
@@ -46,7 +46,7 @@ struct VerseContent: View {
 }
 
 #Preview{
-    PresentorTabs(
+    PresenterTabs(
         verses: [
             "Fear not, little flock,\nfrom the cross to the throne,\nFrom death into life\nHe went for His own;\nAll power in earth,\nall power above,\nIs given to Him\nfor the flock of His love.",
             "CHORUS\nOnly believe, only believe,\nAll things are possible,\nOnly believe, Only believe,\nonly believe,\nAll things are possible,\nonly believe.",

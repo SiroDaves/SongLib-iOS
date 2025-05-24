@@ -65,7 +65,7 @@ struct SongsListView: View {
     var body: some View {
         List(songs) { song in
             NavigationLink {
-                PresentorView(
+                PresenterView(
                     song: song,
                 )
             } label: {

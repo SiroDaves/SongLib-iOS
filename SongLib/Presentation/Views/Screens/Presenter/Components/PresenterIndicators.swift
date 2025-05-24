@@ -1,5 +1,5 @@
 //
-//  PresentorIndicators.swift
+//  PresenterIndicators.swift
 //  SongLib
 //
 //  Created by Siro Daves on 07/05/2025.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct PresentorIndicators: View {
+struct PresenterIndicators: View {
     let indicators: [String]
     @Binding var selected: Int
     
@@ -59,7 +59,7 @@ struct IndicatorButton: View {
 }
 
 #Preview{
-    PresentorIndicators(
+    PresenterIndicators(
         indicators: ["1", "C", "2" ],
         selected: .constant(0)
     )

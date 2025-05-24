@@ -1,5 +1,5 @@
 //
-//  PresentorView.swift
+//  PresenterView.swift
 //  SongLib
 //
 //  Created by Siro Daves on 06/05/2025.
@@ -7,9 +7,9 @@
 
 import SwiftUI
 
-struct PresentorView: View {
-    @StateObject private var viewModel: PresentorViewModel = {
-        DiContainer.shared.resolve(PresentorViewModel.self)
+struct PresenterView: View {
+    @StateObject private var viewModel: PresenterViewModel = {
+        DiContainer.shared.resolve(PresenterViewModel.self)
     }()
     
     let song: Song
@@ -46,12 +46,12 @@ struct PresentorView: View {
     
     private var mainContent: some View {
         VStack(spacing: 20) {
-            PresentorTabs(
+            PresenterTabs(
                 verses: viewModel.verses,
                 selected: $selectedTabIndex
             )
             .frame(maxHeight: .infinity)
-            PresentorIndicators(
+            PresenterIndicators(
                 indicators: viewModel.indicators,
                 selected: $selectedTabIndex
             )
@@ -62,7 +62,7 @@ struct PresentorView: View {
 }
 
 #Preview{
-    PresentorView(
+    PresenterView(
         song: Song(
             book: 1,
             songId: 1,
