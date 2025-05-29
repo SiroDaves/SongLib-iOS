@@ -35,7 +35,9 @@ struct SearchSongItem: View {
         VStack(alignment: .leading, spacing: 2) {
             HStack(alignment: .center) {
                 Text(songItemTitle(number: song.songNo, title: song.title))
-                    .font(.headline)
+                    .font(.title3)
+                    .foregroundColor(.black)
+                    .fontWeight(.bold)
                     .lineLimit(1)
 
                 Spacer()
@@ -50,12 +52,10 @@ struct SearchSongItem: View {
                     .foregroundColor(.primary)
             }
 
-            Divider()
-
-            Text(verses.first ?? "")
+            Text(refineContent(txt: verses.first ?? ""))
                 .lineLimit(2)
+                .foregroundColor(.black)
                 .font(.body)
-                .foregroundColor(.secondary)
 
             if isSearching {
                 TagItem(tagText: "Book \(song.book)", height: height)
@@ -82,7 +82,7 @@ struct SearchSongItem: View {
             created: "2024-01-01"
         ),
         height: 30,
-        isSelected: true,
+        isSelected: false,
         isSearching: true,
     )
     .padding()

@@ -57,6 +57,7 @@ struct PresenterView: View {
             )
             .fixedSize(horizontal: false, vertical: true)
         }
+        .background(ThemeColors.accent1)
         .navigationTitle(viewModel.title)
     }
 }

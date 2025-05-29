@@ -43,11 +43,11 @@ struct IndicatorButton: View {
             Text(title)
                 .font(.title3)
                 .fontWeight(.medium)
-                .foregroundColor(isSelected ? .white : ThemeColors.primary)
+                .foregroundColor(.white)
                 .frame(width: 60, height: 40)
                 .background(
                     RoundedRectangle(cornerRadius: 10)
-                        .fill(isSelected ? ThemeColors.primaryDark1 : Color.clear)
+                        .fill(isSelected ? ThemeColors.primary2 : ThemeColors.primary)
                 )
                 .overlay(
                     RoundedRectangle(cornerRadius: 10)

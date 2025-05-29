@@ -42,7 +42,20 @@ struct HomeView: View {
                                 Label("Likes", systemImage: "heart.fill")
                             }
                     }
+                    .navigationTitle("SongLib")
+                    //.navigationBarTitleDisplayMode(.inline)
+                    .navigationBarTitleDisplayMode(.large)
+//                    .toolbar {
+//                        ToolbarItem(placement: .navigationBarTrailing) {
+//                            Button {
+//                                print("Settings tapped")
+//                            } label: {
+//                                Image(systemName: "gearshape")
+//                            }
+//                        }
+//                    }
                 }
+               
             case .error(let msg):
                 ErrorView(message: msg) {
                     Task { viewModel.fetchData() }

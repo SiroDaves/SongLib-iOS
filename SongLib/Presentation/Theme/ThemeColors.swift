@@ -9,6 +9,9 @@ import SwiftUICore
 
 struct ThemeColors {
     static let accent = Color("Accent")
+    static let accent1 = Color("Accent1")
+    static let accent2 = Color("Accent2")
+    static let accent3 = Color("Accent3")
     static let primary = Color("Primary")
     static let primary1 = Color("Primary1")
     static let primary2 = Color("Primary2")

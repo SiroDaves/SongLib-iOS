@@ -17,12 +17,13 @@ struct SearchBookItem: View {
             onPressed?()
         }) {
             Text(text)
-                .font(.headline)
+                .font(.title3)
+                .fontWeight(.bold)
                 .foregroundColor(isSelected ? .white : .black)
-                .padding(.horizontal, 10)
+                .padding(.horizontal, 20)
                 .padding(.vertical, 5)
-                .background(isSelected ? ThemeColors.primary : ThemeColors.accent)
-                .cornerRadius(5)
+                .background(isSelected ? ThemeColors.primary2 : ThemeColors.accent)
+                .cornerRadius(20)
         }
         .buttonStyle(PlainButtonStyle())
         .shadow(color: .black.opacity(0.1), radius: 3, x: 0, y: 2)
@@ -32,7 +33,7 @@ struct SearchBookItem: View {
 #Preview{
     SearchBookItem(
         text: "Songs of Worship",
-        isSelected: false,
+        isSelected: true,
         onPressed: { }
     )
 }

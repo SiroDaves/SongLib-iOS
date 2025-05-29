@@ -63,7 +63,7 @@ struct SongsListView: View {
     let songs: [Song]
 
     var body: some View {
-        List(songs) { song in
+        /*List(songs) { song in
             NavigationLink {
                 PresenterView(
                     song: song,
@@ -77,6 +77,27 @@ struct SongsListView: View {
                 )
             }
         }
-        .listStyle(.plain)
+        .listStyle(.plain)*/
+        ScrollView {
+            LazyVStack(spacing: 0) {
+                ForEach(Array(songs.enumerated()), id: \.element.id) { index, song in
+                    NavigationLink {
+                        PresenterView(song: song)
+                    } label: {
+                        SearchSongItem(
+                            song: song,
+                            height: 50,
+                            isSelected: false,
+                            isSearching: false
+                        )
+                    }
+
+                    if index < songs.count - 1 {
+                        Divider()
+                    }
+                }
+            }
+        }
+
     }
 }
