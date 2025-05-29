@@ -14,9 +14,9 @@
             filePath = "SongLib/Domain/Repositories/SongRepository.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "25"
-            endingLineNumber = "25"
-            landmarkName = "fetchRemoteSongs(for:)"
+            startingLineNumber = "30"
+            endingLineNumber = "30"
+            landmarkName = "fetchLocalSongs()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

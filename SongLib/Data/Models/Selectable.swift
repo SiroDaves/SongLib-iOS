@@ -23,5 +23,6 @@ enum ViewUiState: Equatable {
     case fetched
     case saved
     case loaded
+    case liked
     case error(String)
 }

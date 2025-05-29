@@ -73,7 +73,7 @@ struct LikesView: View {
             VStack(spacing: 12) {
                 SongsListView(songs: viewModel.likes)
             }
-            .background(Color.white)
+            .background(.accent1)
             .padding(.vertical)
         }
     }

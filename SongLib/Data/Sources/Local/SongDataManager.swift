@@ -113,7 +113,29 @@ class SongDataManager {
         }
     }
     
-    // Delete a record by ID
+    func updateSong(_ song: Song) {
+        context.perform {
+            let fetchRequest: NSFetchRequest<CDSong> = CDSong.fetchRequest()
+            fetchRequest.predicate = NSPredicate(format: "songId == %d", song.songId)
+            fetchRequest.fetchLimit = 1
+            
+            do {
+                if let cdSong = try self.context.fetch(fetchRequest).first {
+                    cdSong.title = song.title
+                    cdSong.alias = song.alias
+                    cdSong.content = song.content
+                    cdSong.liked = song.liked
+                    
+                    try self.context.save()
+                } else {
+                    print("Song with ID \(song.songId) not found.")
+                }
+            } catch {
+                print("Failed to update song: \(error)")
+            }
+        }
+    }
+
     func deleteSong(withId id: Int) {
         let fetchRequest: NSFetchRequest<CDSong> = CDSong.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "songId == %d", id)

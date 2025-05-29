@@ -11,9 +11,14 @@ protocol SongRepositoryProtocol {
     func fetchRemoteSongs(for bookId: String) async throws -> SongResponse
     func fetchLocalSongs() -> [Song]
     func saveSongsLocally(_ songs: [Song])
+    func updateSong(_ song: Song)
 }
 
 class SongRepository: SongRepositoryProtocol {
+    func updateSong(_ song: Song) {
+        songData.updateSong(song)
+    }
+    
     private let apiService: ApiServiceProtocol
     private let songData: SongDataManager
     

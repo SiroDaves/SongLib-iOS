@@ -56,7 +56,6 @@ struct BooksListView: View {
                 }
             }
         }
-        .background(.accent1)
         .frame(height: 40)
     }
 }

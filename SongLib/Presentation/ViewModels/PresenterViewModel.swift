@@ -19,6 +19,8 @@ final class PresenterViewModel: ObservableObject {
     @Published var hasChorus: Bool = false
     @Published var indicators: [String] = []
     @Published var verses: [String] = []
+    
+    @Published var isLiked: Bool = false
 
     init(
         prefsRepo: PrefsRepository,
@@ -62,5 +64,11 @@ final class PresenterViewModel: ObservableObject {
         }
         
         uiState = .loaded
+    }
+    
+    func likeSong(song: Song) {
+        songRepo.updateSong(<#T##song: Song##Song#>)
+        isLiked = !song.liked
+        uiState = .liked
     }
 }

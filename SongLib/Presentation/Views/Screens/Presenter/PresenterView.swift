@@ -15,7 +15,6 @@ struct PresenterView: View {
     let song: Song
     
     @State private var selectedTabIndex = 0
-    @State private var isLiked = false
 
     var body: some View {
         NavigationStack {
@@ -34,7 +33,10 @@ struct PresenterView: View {
             
             case .loaded:
                 mainContent
-                
+            
+            case .liked:
+                mainContent
+            
             case .error(let msg):
                 ErrorView(message: msg) {
                     Task { viewModel.loadSong(song: song) }
@@ -60,13 +62,12 @@ struct PresenterView: View {
         }
         .background(.accent2)
         .navigationTitle(viewModel.title)
-        //.toolbarBackground(.primary1, for: .navigationBar)
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button {
-                    print("Song liked")
+                    viewModel.likeSong(song: <#T##Song#>)
                 } label: {
-                    Image(systemName: isLiked ? "heart.fill" : "heart")
+                    Image(systemName: viewModel.isLiked ? "heart.fill" : "heart")
                         .foregroundColor(.primaryDark2)
                 }
             }
