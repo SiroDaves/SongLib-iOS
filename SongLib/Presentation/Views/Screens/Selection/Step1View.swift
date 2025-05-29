@@ -22,11 +22,12 @@ struct Step1View: View {
     private var mainContent: some View {
         VStack {
             Text("Select Songbooks")
-                .font(.title)
+                .font(.title2)
                 .fontWeight(.bold)
-            Divider()
-            stateContent
+                .foregroundColor(Color.white)
+            stateContent.background(Color.white)
         }
+        .background(.primary1)
         .alert(isPresented: $showNoSelectionAlert) {
             noSelectionAlert
         }
@@ -124,7 +125,7 @@ struct BookSelectionView: View {
                 }
                 .foregroundColor(.white)
                 .padding()
-                .background(ThemeColors.primary)
+                .background(.primary1)
                 .cornerRadius(10)
             }
             .padding(.bottom)

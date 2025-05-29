@@ -27,7 +27,7 @@ struct HomeView: View {
             case .filtering:
                 ProgressView()
                     .scaleEffect(5)
-                    .tint(ThemeColors.primary)
+                    .tint(.primary1)
             case .filtered:
                 NavigationStack {
                     TabView {
@@ -37,23 +37,14 @@ struct HomeView: View {
                             .tabItem {
                                 Label("Songs", systemImage: "magnifyingglass")
                             }
+                            .background(.accent2)
                         LikesView(viewModel: viewModel)
                             .tabItem {
                                 Label("Likes", systemImage: "heart.fill")
                             }
+                            .background(.accent2)
                     }
                     .navigationTitle("SongLib")
-                    //.navigationBarTitleDisplayMode(.inline)
-                    .navigationBarTitleDisplayMode(.large)
-//                    .toolbar {
-//                        ToolbarItem(placement: .navigationBarTrailing) {
-//                            Button {
-//                                print("Settings tapped")
-//                            } label: {
-//                                Image(systemName: "gearshape")
-//                            }
-//                        }
-//                    }
                 }
                
             case .error(let msg):
@@ -82,7 +73,8 @@ struct LikesView: View {
             VStack(spacing: 12) {
                 SongsListView(songs: viewModel.likes)
             }
-            .padding()
+            .background(Color.white)
+            .padding(.vertical)
         }
     }
 }

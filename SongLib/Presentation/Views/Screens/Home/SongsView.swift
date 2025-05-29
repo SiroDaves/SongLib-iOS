@@ -13,10 +13,10 @@ struct SongsView: View {
 
     var body: some View {
         NavigationStack {
-            VStack(spacing: 12) {
+            VStack(spacing: 1) {
                 TextField("Search songs ...", text: $searchText)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .padding(.horizontal)
+                    .padding(10)
                     .onChange(of: searchText) { newValue in
                         viewModel.searchSongs(searchText: newValue)
                     }
@@ -29,10 +29,12 @@ struct SongsView: View {
                         viewModel.filterSongs(book: book.bookId)
                     }
                 )
-
+                
+                Spacer()
                 SongsListView(songs: viewModel.filtered)
             }
-            .padding()
+            .background(.accent1)
+            .padding(.vertical)
         }
     }
 }
@@ -44,7 +46,7 @@ struct BooksListView: View {
 
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 5) {
+            HStack() {
                 ForEach(Array(books.enumerated()), id: \.1.bookId) { index, book in
                     SearchBookItem(
                         text: book.title,
@@ -53,8 +55,8 @@ struct BooksListView: View {
                     )
                 }
             }
-            .padding(5)
         }
+        .background(.accent1)
         .frame(height: 40)
     }
 }
@@ -63,21 +65,6 @@ struct SongsListView: View {
     let songs: [Song]
 
     var body: some View {
-        /*List(songs) { song in
-            NavigationLink {
-                PresenterView(
-                    song: song,
-                )
-            } label: {
-                SearchSongItem(
-                    song: song,
-                    height: 50,
-                    isSelected: false,
-                    isSearching: false
-                )
-            }
-        }
-        .listStyle(.plain)*/
         ScrollView {
             LazyVStack(spacing: 0) {
                 ForEach(Array(songs.enumerated()), id: \.element.id) { index, song in
@@ -98,6 +85,6 @@ struct SongsListView: View {
                 }
             }
         }
-
+        .background(Color.white)
     }
 }

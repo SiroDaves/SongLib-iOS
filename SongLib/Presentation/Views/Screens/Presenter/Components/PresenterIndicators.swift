@@ -47,11 +47,11 @@ struct IndicatorButton: View {
                 .frame(width: 60, height: 40)
                 .background(
                     RoundedRectangle(cornerRadius: 10)
-                        .fill(isSelected ? ThemeColors.primary2 : ThemeColors.primary)
+                        .fill(isSelected ? .primary3 : .primary1)
                 )
                 .overlay(
                     RoundedRectangle(cornerRadius: 10)
-                        .stroke(ThemeColors.primary, lineWidth: isSelected ? 0 : 2)
+                        .stroke(.primary1, lineWidth: isSelected ? 0 : 2)
                 )
                 .animation(.easeInOut(duration: 0.2), value: isSelected)
         }

@@ -62,7 +62,7 @@ struct SearchSongItem: View {
             }
         }
         .padding(3)
-        .background(isSelected ? ThemeColors.primary : Color.clear)
+        .background(isSelected ? .primary1 : Color.clear)
         .contentShape(Rectangle())
     }
 }

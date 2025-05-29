@@ -19,12 +19,13 @@ struct SearchBookItem: View {
             Text(text)
                 .font(.title3)
                 .fontWeight(.bold)
-                .foregroundColor(isSelected ? .white : .black)
-                .padding(.horizontal, 20)
+                .foregroundColor(.white)
+                .padding(.horizontal, 15)
                 .padding(.vertical, 5)
-                .background(isSelected ? ThemeColors.primary2 : ThemeColors.accent)
+                .background(isSelected ? .primary3 : .primary1)
                 .cornerRadius(20)
         }
+        .padding(.leading, 5)
         .buttonStyle(PlainButtonStyle())
         .shadow(color: .black.opacity(0.1), radius: 3, x: 0, y: 2)
     }

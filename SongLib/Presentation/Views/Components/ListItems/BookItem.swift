@@ -17,8 +17,8 @@ struct BookItem: View {
     @Environment(\.colorScheme) private var colorScheme
     
     var body: some View {
-        let unselectedColor = colorScheme == .light ? Color.white : ThemeColors.primaryDark
-        let backgroundColor = isSelected ? ThemeColors.primary : unselectedColor
+        let unselectedColor = colorScheme == .light ? Color.white : .primaryDark1
+        let backgroundColor = isSelected ? .primary1 : unselectedColor
         let foregroundColor = isSelected ? Color.white : Color.black
 
         return ZStack {

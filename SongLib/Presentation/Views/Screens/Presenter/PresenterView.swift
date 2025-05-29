@@ -15,6 +15,7 @@ struct PresenterView: View {
     let song: Song
     
     @State private var selectedTabIndex = 0
+    @State private var isLiked = false
 
     var body: some View {
         NavigationStack {
@@ -29,7 +30,7 @@ struct PresenterView: View {
             case .loading:
                 ProgressView()
                     .scaleEffect(5)
-                    .tint(ThemeColors.primary)
+                    .tint(.primary1)
             
             case .loaded:
                 mainContent
@@ -57,8 +58,19 @@ struct PresenterView: View {
             )
             .fixedSize(horizontal: false, vertical: true)
         }
-        .background(ThemeColors.accent1)
+        .background(.accent2)
         .navigationTitle(viewModel.title)
+        //.toolbarBackground(.primary1, for: .navigationBar)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button {
+                    print("Song liked")
+                } label: {
+                    Image(systemName: isLiked ? "heart.fill" : "heart")
+                        .foregroundColor(.primaryDark2)
+                }
+            }
+        }
     }
 }
 

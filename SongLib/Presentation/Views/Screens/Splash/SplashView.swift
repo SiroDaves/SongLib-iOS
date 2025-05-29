@@ -19,7 +19,7 @@ struct SplashView: View {
             Text(AppConstants.appTitle)
                 .font(.system(size: 50, weight: .bold))
                 .kerning(5)
-                .foregroundColor(ThemeColors.primary)
+                .foregroundColor(.primary1)
                 .padding(.top, 10)
 
             Spacer()
@@ -27,33 +27,33 @@ struct SplashView: View {
             Divider()
                 .frame(height: 1)
                 .padding(.horizontal, 50)
-                .background(ThemeColors.primaryDark)
+                .background(.primaryDark1)
 
             HStack {
                 Text("with ")
                     .font(.system(size: 30, weight: .bold))
                     .kerning(5)
-                    .foregroundColor(ThemeColors.primary)
+                    .foregroundColor(.primary1)
                 Image(systemName: "heart.fill")
                     .resizable()
                     .frame(width: 24, height: 24)
-                    .foregroundColor(ThemeColors.primaryDark)
+                    .foregroundColor(.primaryDark1)
                 Text(" from")
                     .font(.system(size: 30, weight: .bold))
                     .kerning(5)
-                    .foregroundColor(ThemeColors.primary)
+                    .foregroundColor(.primary1)
             }
 
             HStack {
                 Text(AppConstants.appCredits1)
                     .font(.system(size: 20, weight: .bold))
-                    .foregroundColor(ThemeColors.primaryDark)
+                    .foregroundColor(.primaryDark1)
                 Text(" & ")
                     .font(.system(size: 20))
-                    .foregroundColor(ThemeColors.primary)
+                    .foregroundColor(.primary1)
                 Text(AppConstants.appCredits2)
                     .font(.system(size: 20, weight: .bold))
-                    .foregroundColor(ThemeColors.primaryDark)
+                    .foregroundColor(.primaryDark1)
             }
             .padding(.top, 10)
 

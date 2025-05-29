@@ -18,8 +18,8 @@ struct LoadingView: View {
 
             VStack(spacing: 100) {
                 ProgressView()
-                    .scaleEffect(5)
-                    .tint(ThemeColors.primary)
+                    .scaleEffect(3)
+                    .tint(.primary1)
                 Text(title)
                     .font(.title3)
                     .foregroundColor(.gray)
