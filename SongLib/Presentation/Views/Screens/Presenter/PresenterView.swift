@@ -15,12 +15,34 @@ struct PresenterView: View {
     let song: Song
     
     @State private var selectedTabIndex = 0
+    @State private var showToast = false
 
     var body: some View {
-        NavigationStack {
-            stateContent
-        }
+        ZStack {
+           NavigationStack {
+               stateContent
+           }
+           
+            if showToast {
+                let toastMessage = viewModel.isLiked
+                    ? "\(song.title) added to your likes"
+                    : "\(song.title) removed from your likes"
+                
+                ToastView(message: toastMessage)
+                    .transition(.move(edge: .bottom).combined(with: .opacity))
+                    .zIndex(1)
+            }
+
+       }
         .task({viewModel.loadSong(song: song)})
+        .onChange(of: viewModel.uiState) { newState in
+            if case .liked = newState {
+                showToast = true
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                    showToast = false
+                }
+            }
+        }
     }
     
     @ViewBuilder
@@ -65,7 +87,7 @@ struct PresenterView: View {
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button {
-                    viewModel.likeSong(song: <#T##Song#>)
+                    viewModel.likeSong(song: song)
                 } label: {
                     Image(systemName: viewModel.isLiked ? "heart.fill" : "heart")
                         .foregroundColor(.primaryDark2)

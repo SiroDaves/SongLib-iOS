@@ -63,12 +63,27 @@ final class PresenterViewModel: ObservableObject {
             }
         }
         
+        isLiked = song.liked
         uiState = .loaded
     }
     
     func likeSong(song: Song) {
-        songRepo.updateSong(<#T##song: Song##Song#>)
-        isLiked = !song.liked
+        let updatedSong = Song(
+            book: song.book,
+            songId: song.songId,
+            songNo: song.songNo,
+            title: song.title,
+            alias: song.alias,
+            content: song.content,
+            views: song.views,
+            likes: song.likes,
+            liked: !song.liked,
+            created: song.created
+        )
+        
+        songRepo.updateSong(updatedSong)
+        isLiked = updatedSong.liked
         uiState = .liked
     }
+
 }
