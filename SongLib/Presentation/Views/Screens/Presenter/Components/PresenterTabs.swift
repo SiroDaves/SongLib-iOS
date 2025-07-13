@@ -14,7 +14,7 @@ struct PresenterTabs: View {
     var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 15)
-                .fill(Color.white)
+                .fill(.white)
                 .shadow(radius: 5)
             
             TabView(selection: $selected) {
@@ -38,7 +38,7 @@ struct VerseContent: View {
         VStack(alignment: .leading, spacing: 15) {
             Text(verse)
                 .font(.largeTitle)
-                .foregroundColor(.primary)
+                .foregroundColor(Color.black)
                 .multilineTextAlignment(.leading)
         }
         .padding(15)
