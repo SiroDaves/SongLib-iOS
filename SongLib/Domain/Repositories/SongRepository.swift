@@ -10,7 +10,7 @@ import Foundation
 protocol SongRepositoryProtocol {
     func fetchRemoteSongs(for bookId: String) async throws -> SongResponse
     func fetchLocalSongs() -> [Song]
-    func saveSongsLocally(_ songs: [Song])
+    func saveSong(_ song: Song)
     func updateSong(_ song: Song)
 }
 
@@ -36,7 +36,7 @@ class SongRepository: SongRepositoryProtocol {
         return songs.sorted { $0.songId < $1.songId }
     }
     
-    func saveSongsLocally(_ songs: [Song]) {
-        songData.saveSongs(songs)
+    func saveSong(_ song: Song) {
+        songData.saveSong(song)
     }
 }

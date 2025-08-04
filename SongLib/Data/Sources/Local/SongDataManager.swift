@@ -22,40 +22,35 @@ class SongDataManager {
         return coreDataManager.viewContext
     }
     
-    // Save records to Core Data
-    func saveSongs(_ songs: [Song]) {
+    func saveSong(_ song: Song) {
         context.perform {
             do {
-                for song in songs {
-                    let fetchRequest: NSFetchRequest<CDSong> = CDSong.fetchRequest()
-                    fetchRequest.predicate = NSPredicate(format: "songId == %d", song.songId)
-                    fetchRequest.fetchLimit = 1
+                let fetchRequest: NSFetchRequest<CDSong> = CDSong.fetchRequest()
+                fetchRequest.predicate = NSPredicate(format: "songId == %d", song.songId)
+                fetchRequest.fetchLimit = 1
 
-                    let existingRecords = try self.context.fetch(fetchRequest)
-                    let cdSong: CDSong
+                let existingRecords = try self.context.fetch(fetchRequest)
+                let cdSong: CDSong
 
-                    if let existingRecord = existingRecords.first {
-                        cdSong = existingRecord
-                    } else {
-                        cdSong = CDSong(context: self.context)
-                    }
-
-                    // Safely set values
-                    cdSong.songId = Int32(song.songId)
-                    cdSong.book = Int32(song.book)
-                    cdSong.songNo = Int32(song.songNo)
-                    cdSong.title = song.title
-                    cdSong.alias = song.alias
-                    cdSong.content = song.content
-                    cdSong.views = Int32(song.views)
-                    cdSong.likes = Int32(song.likes)
-                    cdSong.liked = song.liked
-                    cdSong.created = song.created
+                if let existingRecord = existingRecords.first {
+                    cdSong = existingRecord
+                } else {
+                    cdSong = CDSong(context: self.context)
                 }
 
+                cdSong.songId = Int32(song.songId)
+                cdSong.book = Int32(song.book)
+                cdSong.songNo = Int32(song.songNo)
+                cdSong.title = song.title
+                cdSong.alias = song.alias
+                cdSong.content = song.content
+                cdSong.views = Int32(song.views)
+                cdSong.likes = Int32(song.likes)
+                cdSong.liked = song.liked
+                cdSong.created = song.created
                 try self.context.save()
             } catch {
-                print("Failed to save songs: \(error)")
+                print("Failed to save song: \(error)")
             }
         }
     }
