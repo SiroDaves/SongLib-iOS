@@ -31,7 +31,7 @@ struct LoadingState: View {
                         Spacer().frame(width: 8)
                         Text("\(progressValue) %")
                             .font(.system(size: 20, weight: .bold))
-                            .foregroundColor(.primaryDark3)
+                            .foregroundColor(.primaryDark2)
                     }
                 }
                 .padding(.horizontal)
