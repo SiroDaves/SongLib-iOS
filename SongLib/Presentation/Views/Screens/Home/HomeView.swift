@@ -12,6 +12,8 @@ struct HomeView: View {
         DiContainer.shared.resolve(HomeViewModel.self)
     }()
     
+    @State private var showSettings: Bool = false
+    
     var body: some View {
         stateContent
         .edgesIgnoringSafeArea(.bottom)
@@ -44,7 +46,22 @@ struct HomeView: View {
                             }
                             .background(.accent2)
                     }
+                    .toolbar {
+                        ToolbarItem(placement: .navigationBarTrailing) {
+                            Button(action: {
+                                showSettings = true
+                            }) {
+                                Image(systemName: "gear")
+                                    .imageScale(.large)
+                                    .foregroundColor(.primary3)
+
+                            }
+                        }
+                    }
                     .navigationTitle("SongLib")
+                    .navigationDestination(isPresented: $showSettings) {
+                        SettingsView()
+                    }
                 }
                
             case .error(let msg):
