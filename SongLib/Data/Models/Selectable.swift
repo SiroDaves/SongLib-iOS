@@ -13,7 +13,7 @@ struct Selectable<T>: Identifiable {
     var isSelected: Bool
 }
 
-enum ViewUiState: Equatable {
+enum UiState: Equatable {
     case idle
     case loading(String? = nil)
     case saving(String? = nil)

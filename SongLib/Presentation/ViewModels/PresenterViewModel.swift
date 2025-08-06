@@ -14,7 +14,7 @@ final class PresenterViewModel: ObservableObject {
     private let prefsRepo: PrefsRepository
     private let songRepo: SongRepositoryProtocol
 
-    @Published var uiState: ViewUiState = .idle
+    @Published var uiState: UiState = .idle
     @Published var title: String = ""
     @Published var hasChorus: Bool = false
     @Published var indicators: [String] = []

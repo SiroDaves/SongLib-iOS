@@ -85,7 +85,7 @@ struct Step1View: View {
         }
     }
     
-    private func handleStateChange(_ state: ViewUiState) {
+    private func handleStateChange(_ state: UiState) {
         navigateToNextScreen = .saved == state
     }
 }

@@ -11,7 +11,7 @@ import SwiftUI
 final class SelectionViewModel: ObservableObject {
     @Published var books: [Selectable<Book>] = []
     @Published var songs: [Song] = []
-    @Published var uiState: ViewUiState = .idle
+    @Published var uiState: UiState = .idle
     
     @Published var progress: Int = 0
 

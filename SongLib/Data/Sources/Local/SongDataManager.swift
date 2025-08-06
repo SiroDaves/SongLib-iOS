@@ -11,33 +11,20 @@ class SongDataManager {
     private let coreDataManager: CoreDataManager
     private let bookDataManager: BookDataManager
     
-    init(coreDataManager: CoreDataManager = CoreDataManager.shared,
+    init(coreDataManager: CoreDataManager = .shared,
          bookDataManager: BookDataManager) {
         self.coreDataManager = coreDataManager
         self.bookDataManager = bookDataManager
     }
     
-    // Access to the view context
     private var context: NSManagedObjectContext {
-        return coreDataManager.viewContext
+        coreDataManager.viewContext
     }
     
     func saveSong(_ song: Song) {
         context.perform {
             do {
-                let fetchRequest: NSFetchRequest<CDSong> = CDSong.fetchRequest()
-                fetchRequest.predicate = NSPredicate(format: "songId == %d", song.songId)
-                fetchRequest.fetchLimit = 1
-
-                let existingRecords = try self.context.fetch(fetchRequest)
-                let cdSong: CDSong
-
-                if let existingRecord = existingRecords.first {
-                    cdSong = existingRecord
-                } else {
-                    cdSong = CDSong(context: self.context)
-                }
-
+                let cdSong = try self.fetchOrCreateCDSong(withId: song.songId)
                 cdSong.songId = Int32(song.songId)
                 cdSong.book = Int32(song.book)
                 cdSong.songNo = Int32(song.songNo)
@@ -50,18 +37,17 @@ class SongDataManager {
                 cdSong.created = song.created
                 try self.context.save()
             } catch {
-                print("Failed to save song: \(error)")
+                print("❌ Failed to save song \(song.songId): \(error)")
             }
         }
     }
     
-    // Fetch all songs or songs for a specific book
     func fetchSongs() -> [Song] {
-        let fetchRequest: NSFetchRequest<CDSong> = CDSong.fetchRequest()        
+        let fetchRequest: NSFetchRequest<CDSong> = CDSong.fetchRequest()
         do {
             let cdSongs = try context.fetch(fetchRequest)
             return cdSongs.map { cdSong in
-                return Song(
+                Song(
                     book: Int(cdSong.book),
                     songId: Int(cdSong.songId),
                     songNo: Int(cdSong.songNo),
@@ -71,25 +57,18 @@ class SongDataManager {
                     views: Int(cdSong.views),
                     likes: Int(cdSong.likes),
                     liked: cdSong.liked,
-                    created: cdSong.created ?? "",
+                    created: cdSong.created ?? ""
                 )
             }
         } catch {
-            print("Failed to fetch songs: \(error)")
+            print("❌ Failed to fetch songs: \(error)")
             return []
         }
     }
     
-    // Fetch a single record by ID
     func fetchSong(withId id: Int) -> Song? {
-        let fetchRequest: NSFetchRequest<CDSong> = CDSong.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "songId == %d", id)
-        fetchRequest.fetchLimit = 1
-        
         do {
-            let results = try context.fetch(fetchRequest)
-            guard let cdSong = results.first else { return nil }
-            
+            guard let cdSong = try fetchCDSong(withId: id) else { return nil }
             return Song(
                 book: Int(cdSong.book),
                 songId: Int(cdSong.songId),
@@ -100,49 +79,56 @@ class SongDataManager {
                 views: Int(cdSong.views),
                 likes: Int(cdSong.likes),
                 liked: cdSong.liked,
-                created: cdSong.created ?? "",
+                created: cdSong.created ?? ""
             )
         } catch {
-            print("Failed to fetch song: \(error)")
+            print("❌ Failed to fetch song with ID \(id): \(error)")
             return nil
         }
     }
     
     func updateSong(_ song: Song) {
         context.perform {
-            let fetchRequest: NSFetchRequest<CDSong> = CDSong.fetchRequest()
-            fetchRequest.predicate = NSPredicate(format: "songId == %d", song.songId)
-            fetchRequest.fetchLimit = 1
-            
             do {
-                if let cdSong = try self.context.fetch(fetchRequest).first {
-                    cdSong.title = song.title
-                    cdSong.alias = song.alias
-                    cdSong.content = song.content
-                    cdSong.liked = song.liked
-                    
-                    try self.context.save()
-                } else {
-                    print("Song with ID \(song.songId) not found.")
+                guard let cdSong = try self.fetchCDSong(withId: song.songId) else {
+                    print("⚠️ Song with ID \(song.songId) not found.")
+                    return
                 }
+                cdSong.title = song.title
+                cdSong.alias = song.alias
+                cdSong.content = song.content
+                cdSong.liked = song.liked
+                try self.context.save()
             } catch {
-                print("Failed to update song: \(error)")
+                print("❌ Failed to update song \(song.songId): \(error)")
             }
         }
     }
-
+    
     func deleteSong(withId id: Int) {
-        let fetchRequest: NSFetchRequest<CDSong> = CDSong.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "songId == %d", id)
-        
-        do {
-            let results = try context.fetch(fetchRequest)
-            if let songToDelete = results.first {
-                context.delete(songToDelete)
-                try context.save()
+        context.perform {
+            do {
+                guard let cdSong = try self.fetchCDSong(withId: id) else { return }
+                self.context.delete(cdSong)
+                try self.context.save()
+            } catch {
+                print("❌ Failed to delete song with ID \(id): \(error)")
             }
-        } catch {
-            print("Failed to delete song: \(error)")
+        }
+    }
+    
+    private func fetchCDSong(withId id: Int) throws -> CDSong? {
+        let request: NSFetchRequest<CDSong> = CDSong.fetchRequest()
+        request.predicate = NSPredicate(format: "songId == %d", id)
+        request.fetchLimit = 1
+        return try context.fetch(request).first
+    }
+    
+    private func fetchOrCreateCDSong(withId id: Int) throws -> CDSong {
+        if let existing = try fetchCDSong(withId: id) {
+            return existing
+        } else {
+            return CDSong(context: context)
         }
     }
 }
