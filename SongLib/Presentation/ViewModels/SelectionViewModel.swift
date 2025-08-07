@@ -11,7 +11,9 @@ import SwiftUI
 final class SelectionViewModel: ObservableObject {
     @Published var books: [Selectable<Book>] = []
     @Published var songs: [Song] = []
-    @Published var uiState: ViewUiState = .idle
+    @Published var uiState: UiState = .idle
+    
+    @Published var progress: Int = 0
 
     private let prefsRepo: PrefsRepository
     private let bookRepo: BookRepositoryProtocol
@@ -95,16 +97,68 @@ final class SelectionViewModel: ObservableObject {
         }
     }
 
-    func saveSongs() {
-        self.uiState = .saving("Saving songs ...")
-                
+    func initializeStep2() {
         Task {
-            self.songRepo.saveSongsLocally(songs)
-            
+            await fetchAndSaveSongs()
+        }
+    }
+
+    func fetchAndSaveSongs() async {
+        await MainActor.run {
+            self.uiState = .loading("Fetching Songs ...")
+            self.progress = 0
+        }
+
+        do {
+            let fetchedSongs = try await songRepo.fetchRemoteSongs(for: prefsRepo.selectedBooks)
+
             await MainActor.run {
-                self.prefsRepo.isDataLoaded = true
+                self.songs = fetchedSongs.data
+
+                self.uiState = .saving("Saving songs ...")
+                self.progress = 0
+            }
+
+            try await saveSongs()
+
+            prefsRepo.isDataLoaded = true
+
+            await MainActor.run {
                 self.uiState = .saved
             }
+
+            print("✅ Songs fetched and saved successfully.")
+        } catch {
+            await MainActor.run {
+                self.uiState = .error("Failed: \(error.localizedDescription)")
+            }
+            print("❌ Initialization failed: \(error)")
+        }
+    }
+    
+    
+    private func saveSongs() async throws {
+        print("Now saving songs")
+        await MainActor.run {
+            self.progress = 0
+            self.uiState = .saving("Saving songs \(songs.count) ...")
+        }
+
+        for (index, song) in songs.enumerated() {
+            songRepo.saveSong(song)
+            await MainActor.run {
+                self.updateProgress(current: index + 1, total: songs.count)
+            }
+        }
+        print("✅ Songs saved successfully")
+    }
+    
+    @MainActor
+    private func updateProgress(current: Int, total: Int) {
+        guard total > 0 else { return }
+        let newProgress = Int((Double(current) / Double(total)) * 100)
+        if newProgress > progress {
+            self.progress = newProgress
         }
     }
 }

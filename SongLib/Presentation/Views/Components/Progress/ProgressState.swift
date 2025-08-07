@@ -45,6 +45,25 @@ struct ErrorView: View {
     }
 }
 
+struct EmptyState: View {
+    
+    var body: some View {
+        VStack(spacing: 20) {
+            Image(AppAssets.emptyIcon)
+                .resizable()
+                .frame(width: 200, height: 200)
+
+            Text("Nothing here at the moment")
+                .font(.title2)
+                .multilineTextAlignment(.center)
+                .foregroundColor(.primary1)
+                .padding(.horizontal)
+
+        }
+        .padding()
+    }
+}
+
 #Preview {
     LoadingView()
 }
