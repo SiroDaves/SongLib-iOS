@@ -7,8 +7,6 @@
 
 import SwiftUI
 
-import SwiftUI
-
 struct BookItem: View {
     let book: Book
     let isSelected: Bool
@@ -17,29 +15,28 @@ struct BookItem: View {
     @Environment(\.colorScheme) private var colorScheme
     
     var body: some View {
-        let unselectedColor = colorScheme == .light ? Color.white : .secondaryContainer
-        let backgroundColor = isSelected ? .onPrimary : unselectedColor
-        let foregroundColor = isSelected ? Color.white : Color.black
+        let bgColor = isSelected ? .primary1 : Color("inversePrimary")
+        let txtColor = isSelected ? Color("onPrimary") : .scrim
 
         return ZStack {
             RoundedRectangle(cornerRadius: 10)
-                .fill(backgroundColor)
+                .fill(bgColor)
                 .shadow(radius: 5)
             
             HStack(spacing: 15) {
                 Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
-                    .foregroundColor(foregroundColor)
+                    .foregroundColor(txtColor)
                     .font(.system(size: 24))
                     .padding(5)
                 
                 VStack(alignment: .leading, spacing: 4) {
                     Text(refineTitle(txt: book.title))
                         .font(.system(size: 20, weight: .bold))
-                        .foregroundColor(foregroundColor)
+                        .foregroundColor(txtColor)
 
                     Text("\(book.songs) \(book.subTitle) songs")
                         .font(.system(size: 18))
-                        .foregroundColor(foregroundColor)
+                        .foregroundColor(txtColor)
                 }
                 Spacer()
             }
@@ -65,7 +62,7 @@ struct BookItem: View {
             enabled: true,
             created: ""
         ),
-        isSelected: false,
+        isSelected: true,
         onTap: { print("Amen") }
     )
     .padding()
