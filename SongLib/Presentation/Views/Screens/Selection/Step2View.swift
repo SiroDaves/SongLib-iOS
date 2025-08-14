@@ -42,14 +42,14 @@ struct Step2View: View {
         case .loading(let msg):
             LoadingState(
                 title: msg ?? "Fetching songs ...",
-                fileName: "bar-loader"
+                fileName: "loading-hand"
             )
 
         case .saving(let msg):
             VStack {
                 LoadingState(
-                    title: msg ?? "Saving songs ...",
-                    fileName: "opener-loading",
+                    title: msg ?? "Saving your songs ...",
+                    fileName: "cloud-download",
                     showProgress: true,
                     progressValue: viewModel.progress
                 )

@@ -20,18 +20,18 @@ struct LoadingState: View {
 
             Text(title)
                 .font(.system(size: 25, weight: .bold))
-                .foregroundColor(.primaryDark2)
+                .foregroundColor(.onPrimaryContainer)
 
             if showProgress {
                 VStack(spacing: 8) {
                     HStack {
                         ProgressView(value: Double(progressValue) / 100)
-                            .progressViewStyle(LinearProgressViewStyle(tint: .primary1))
+                            .progressViewStyle(LinearProgressViewStyle(tint: .onPrimary))
                             .frame(height: 20)
                         Spacer().frame(width: 8)
                         Text("\(progressValue) %")
                             .font(.system(size: 20, weight: .bold))
-                            .foregroundColor(.primaryDark2)
+                            .foregroundColor(.onPrimaryContainer)
                     }
                 }
                 .padding(.horizontal)
@@ -39,7 +39,6 @@ struct LoadingState: View {
         }
         .padding(20)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(.accent2)
         .ignoresSafeArea()
     }
 }

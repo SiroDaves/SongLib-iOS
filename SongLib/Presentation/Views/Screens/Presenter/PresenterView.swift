@@ -51,7 +51,7 @@ struct PresenterView: View {
             case .loading:
                 ProgressView()
                     .scaleEffect(5)
-                    .tint(.primary1)
+                    .tint(.onPrimary)
             
             case .loaded:
                 mainContent
@@ -82,7 +82,7 @@ struct PresenterView: View {
             )
             .fixedSize(horizontal: false, vertical: true)
         }
-        .background(.accent2)
+        .background(.onPrimaryContainer)
         .navigationTitle(viewModel.title)
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
@@ -90,7 +90,7 @@ struct PresenterView: View {
                     viewModel.likeSong(song: song)
                 } label: {
                     Image(systemName: viewModel.isLiked ? "heart.fill" : "heart")
-                        .foregroundColor(.primaryDark2)
+                        .foregroundColor(.onPrimaryContainer)
                 }
             }
         }

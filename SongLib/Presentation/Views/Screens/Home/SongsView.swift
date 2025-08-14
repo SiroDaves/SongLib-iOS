@@ -33,7 +33,7 @@ struct SongsView: View {
                 Spacer()
                 SongsListView(songs: viewModel.filtered)
             }
-            .background(.accent1)
+            .background(.onPrimary)
             .padding(.vertical)
         }
     }

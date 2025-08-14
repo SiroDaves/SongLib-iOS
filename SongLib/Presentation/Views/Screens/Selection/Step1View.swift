@@ -23,11 +23,10 @@ struct Step1View: View {
         VStack {
             Text("Select Songbooks")
                 .font(.title2)
-                .fontWeight(.bold)
-                .foregroundColor(Color.white)
-            stateContent.background(Color.white)
+                .foregroundColor(.onPrimaryContainer)
+            stateContent.background(.surface)
         }
-        .background(.primary1)
+        .background(.primaryContainer)
         .alert(isPresented: $showNoSelectionAlert) {
             noSelectionAlert
         }
@@ -46,10 +45,16 @@ struct Step1View: View {
     private var stateContent: some View {
         switch viewModel.uiState {
             case .loading(let msg):
-                LoadingView(title: msg ?? "Loading...")
+                LoadingState(
+                    title: msg ?? "Loading books ...",
+                    fileName: "loading-hand"
+                )
                 
             case .saving(let msg):
-                LoadingView(title: msg ?? "Saving...")
+            LoadingState(
+                title: msg ?? "Loading books ...",
+                fileName: "cloud-download"
+            )
                 
             case .saved:
                 LoadingView()
@@ -119,13 +124,14 @@ struct BookSelectionView: View {
                     showConfirmationAlert = true
                 }
             }) {
-                HStack {
+                HStack(spacing: 5) {
                     Image(systemName: "checkmark")
                     Text("Proceed")
                 }
-                .foregroundColor(.white)
+                .frame(width: 150)
+                .foregroundColor(.onPrimaryContainer)
                 .padding()
-                .background(.primary1)
+                .background(.primaryContainer)
                 .cornerRadius(10)
             }
             .padding(.bottom)

@@ -29,7 +29,7 @@ struct HomeView: View {
             case .filtering:
                 ProgressView()
                     .scaleEffect(5)
-                    .tint(.primary1)
+                    .tint(.onPrimary)
             case .filtered:
                 NavigationStack {
                     TabView {
@@ -39,12 +39,12 @@ struct HomeView: View {
                             .tabItem {
                                 Label("Songs", systemImage: "magnifyingglass")
                             }
-                            .background(.accent2)
+                            .background(.onPrimary)
                         LikesView(viewModel: viewModel)
                             .tabItem {
                                 Label("Likes", systemImage: "heart.fill")
                             }
-                            .background(.accent2)
+                            .background(.onPrimary)
                     }
                     .toolbar {
                         ToolbarItem(placement: .navigationBarTrailing) {
@@ -53,7 +53,7 @@ struct HomeView: View {
                             }) {
                                 Image(systemName: "gear")
                                     .imageScale(.large)
-                                    .foregroundColor(.primary3)
+                                    .foregroundColor(.primary1)
 
                             }
                         }
@@ -90,7 +90,7 @@ struct LikesView: View {
             VStack(spacing: 12) {
                 SongsListView(songs: viewModel.likes)
             }
-            .background(.accent1)
+            .background(.onPrimary)
             .padding(.vertical)
         }
     }

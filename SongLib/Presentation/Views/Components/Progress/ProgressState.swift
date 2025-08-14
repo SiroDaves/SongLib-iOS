@@ -19,7 +19,7 @@ struct LoadingView: View {
             VStack(spacing: 100) {
                 ProgressView()
                     .scaleEffect(3)
-                    .tint(.primary1)
+                    .tint(.onPrimary)
                 Text(title)
                     .font(.title3)
                     .foregroundColor(.gray)
@@ -56,7 +56,7 @@ struct EmptyState: View {
             Text("Nothing here at the moment")
                 .font(.title2)
                 .multilineTextAlignment(.center)
-                .foregroundColor(.primary1)
+                .foregroundColor(.onPrimary)
                 .padding(.horizontal)
 
         }
