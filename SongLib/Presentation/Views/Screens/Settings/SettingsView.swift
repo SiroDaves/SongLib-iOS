@@ -5,7 +5,6 @@
 //  Created by Siro Daves on 05/08/2025.
 //
 
-
 import SwiftUI
 
 enum AppThemeMode: String, CaseIterable, Identifiable {
@@ -23,7 +22,8 @@ enum AppThemeMode: String, CaseIterable, Identifiable {
 
 struct SettingsView: View {
     @EnvironmentObject var themeManager: ThemeManager
-
+    private let prefs = PrefsRepository()
+    
     var body: some View {
         Form {
             Section(header: Text("App Theme")) {
@@ -37,10 +37,35 @@ struct SettingsView: View {
                 }
                 .pickerStyle(.inline)
             }
+
+            Section {
+                HStack {
+                    Image(systemName: "arrow.left.and.right")
+                        .frame(width: 24, height: 24)
+                        .foregroundColor(.accentColor)
+
+                    VStack(alignment: .leading) {
+                        Text("Song Slides")
+                        Text("Swipe verses horizontally")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+
+                    Spacer()
+
+                    Toggle("", isOn: Binding(
+                        get: { prefs.horizontalSlides },
+                        set: { prefs.horizontalSlides = $0 }
+                    ))
+                    .labelsHidden()
+                }
+                .contentShape(Rectangle())
+            }
         }
         .navigationTitle("Settings")
     }
 }
+
 #Preview {
     SettingsView()
         .environmentObject(ThemeManager())

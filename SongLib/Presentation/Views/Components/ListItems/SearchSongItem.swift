@@ -36,7 +36,7 @@ struct SearchSongItem: View {
             HStack(alignment: .center) {
                 Text(songItemTitle(number: song.songNo, title: song.title))
                     .font(.title3)
-                    .foregroundColor(.black)
+                    .foregroundColor(.scrim)
                     .fontWeight(.bold)
                     .lineLimit(1)
 
@@ -49,20 +49,21 @@ struct SearchSongItem: View {
                 }
 
                 Image(systemName: song.liked ? "heart.fill" : "heart")
-                    .foregroundColor(.primary)
+                    .foregroundColor(.scrim)
             }
 
             Text(refineContent(txt: verses.first ?? ""))
                 .lineLimit(2)
-                .foregroundColor(.black)
+                .foregroundColor(.scrim)
                 .font(.body)
 
             if isSearching {
                 TagItem(tagText: "Book \(song.book)", height: height)
             }
         }
-        .padding(3)
-        .background(isSelected ? .onPrimary : Color.clear)
+        .padding(.vertical, 5)
+        .padding(.horizontal, 10)
+        .background(isSelected ? .primary1 : Color.clear)
         .contentShape(Rectangle())
     }
 }

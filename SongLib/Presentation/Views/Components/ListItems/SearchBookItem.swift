@@ -13,19 +13,22 @@ struct SearchBookItem: View {
     let onPressed: (() -> Void)?
 
     var body: some View {
+        let bgColor = isSelected ? .primary1 : Color("onPrimary")
+        let txtColor = isSelected ? Color("onPrimary") : .scrim
+
         Button(action: {
             onPressed?()
         }) {
             Text(text)
                 .font(.title3)
                 .fontWeight(.bold)
-                .foregroundColor(.white)
+                .foregroundColor(txtColor)
                 .padding(.horizontal, 15)
                 .padding(.vertical, 5)
-                .background(isSelected ? .primary1 : .onPrimary)
+                .background(bgColor)
                 .cornerRadius(20)
         }
-        .padding(.leading, 5)
+        .padding(.bottom, 5)
         .buttonStyle(PlainButtonStyle())
         .shadow(color: .black.opacity(0.1), radius: 3, x: 0, y: 2)
     }

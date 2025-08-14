@@ -6,26 +6,37 @@
 //
 
 import SwiftUI
-
 struct PresenterTabs: View {
     let verses: [String]
     @Binding var selected: Int
+    private let prefs = PrefsRepository()
     
     var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 15)
-                .fill(.white)
+                .fill(.onPrimary)
                 .shadow(radius: 5)
             
-            TabView(selection: $selected) {
-                ForEach(verses.indices, id: \.self) { index in
-                    VerseContent(verse: verses[index])
-                        .tag(index)
-                        .rotationEffect(.degrees(-90))
+            if prefs.horizontalSlides {
+                TabView(selection: $selected) {
+                    ForEach(verses.indices, id: \.self) { index in
+                        VerseContent(verse: verses[index])
+                            .tag(index)
+                    }
                 }
-            }.rotationEffect(.degrees(90))
+                .tabViewStyle(.page(indexDisplayMode: .never))
+            } else {
+                TabView(selection: $selected) {
+                    ForEach(verses.indices, id: \.self) { index in
+                        VerseContent(verse: verses[index])
+                            .tag(index)
+                            .rotationEffect(.degrees(-90))
+                    }
+                }
+                .rotationEffect(.degrees(90))
                 .tabViewStyle(.page(indexDisplayMode: .never))
                 .frame(maxHeight: .infinity)
+            }
         }
         .padding()
     }
@@ -38,7 +49,7 @@ struct VerseContent: View {
         VStack(alignment: .leading, spacing: 15) {
             Text(verse)
                 .font(.largeTitle)
-                .foregroundColor(Color.black)
+                .foregroundColor(.scrim)
                 .multilineTextAlignment(.leading)
         }
         .padding(15)

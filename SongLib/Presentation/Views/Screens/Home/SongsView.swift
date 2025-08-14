@@ -33,7 +33,7 @@ struct SongsView: View {
                 Spacer()
                 SongsListView(songs: viewModel.filtered)
             }
-            .background(.onPrimary)
+            .background(.surface)
             .padding(.vertical)
         }
     }
@@ -56,7 +56,8 @@ struct BooksListView: View {
                 }
             }
         }
-        .frame(height: 40)
+        .padding(.leading, 5)
+        .frame(height: 35)
     }
 }
 
@@ -84,6 +85,5 @@ struct SongsListView: View {
                 }
             }
         }
-        .background(Color.white)
     }
 }

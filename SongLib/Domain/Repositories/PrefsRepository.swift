@@ -12,6 +12,7 @@ class PrefsRepository {
         static let isSelected = "dataIsSelectedKey"
         static let isLoaded = "dataIsLoadedKey"
         static let selectedBooks = "selectedBooksKey"
+        static let horizontalSlides = "horizontalSlidesKey"
     }
     
     private let userDefaults: UserDefaults
@@ -21,29 +22,22 @@ class PrefsRepository {
     }
     
     var isDataSelected: Bool {
-        get {
-            return userDefaults.bool(forKey: Keys.isSelected)
-        }
-        set {
-            userDefaults.set(newValue, forKey: Keys.isSelected)
-        }
+        get { userDefaults.bool(forKey: Keys.isSelected) }
+        set { userDefaults.set(newValue, forKey: Keys.isSelected) }
     }
     
     var isDataLoaded: Bool {
-        get {
-            return userDefaults.bool(forKey: Keys.isLoaded)
-        }
-        set {
-            userDefaults.set(newValue, forKey: Keys.isLoaded)
-        }
+        get { userDefaults.bool(forKey: Keys.isLoaded) }
+        set { userDefaults.set(newValue, forKey: Keys.isLoaded) }
     }
     
     var selectedBooks: String {
-        get {
-            return userDefaults.string(forKey: Keys.selectedBooks) ?? ""
-        }
-        set {
-            userDefaults.set(newValue, forKey: Keys.selectedBooks)
-        }
+        get { userDefaults.string(forKey: Keys.selectedBooks) ?? "" }
+        set { userDefaults.set(newValue, forKey: Keys.selectedBooks) }
+    }
+    
+    var horizontalSlides: Bool {
+        get { userDefaults.bool(forKey: Keys.horizontalSlides) }
+        set { userDefaults.set(newValue, forKey: Keys.horizontalSlides) }
     }
 }

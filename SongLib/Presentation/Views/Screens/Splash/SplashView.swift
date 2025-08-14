@@ -19,7 +19,7 @@ struct SplashView: View {
             Text(AppConstants.appTitle)
                 .font(.system(size: 50, weight: .bold))
                 .kerning(5)
-                .foregroundColor(.primary)
+                .foregroundColor(.primary1)
                 .padding(.top, 10)
 
             Spacer()

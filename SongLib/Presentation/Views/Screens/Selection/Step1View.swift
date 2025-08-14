@@ -15,7 +15,11 @@ struct Step1View: View {
 
     var body: some View {
         Group {
-            navigateToNextScreen ? AnyView(Step2View()) : AnyView(mainContent)
+            if navigateToNextScreen {
+                AnyView(Step2View())
+            } else {
+                AnyView(mainContent)
+            }
         }
     }
     
