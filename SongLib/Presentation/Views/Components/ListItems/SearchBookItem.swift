@@ -22,7 +22,7 @@ struct SearchBookItem: View {
                 .foregroundColor(.white)
                 .padding(.horizontal, 15)
                 .padding(.vertical, 5)
-                .background(isSelected ? .primary3 : .primary1)
+                .background(isSelected ? .primary3 : .onPrimary)
                 .cornerRadius(20)
         }
         .padding(.leading, 5)

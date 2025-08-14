@@ -27,7 +27,7 @@ struct Step1View: View {
                 .foregroundColor(Color.white)
             stateContent.background(Color.white)
         }
-        .background(.primary1)
+        .background(.primary2)
         .alert(isPresented: $showNoSelectionAlert) {
             noSelectionAlert
         }
@@ -46,10 +46,16 @@ struct Step1View: View {
     private var stateContent: some View {
         switch viewModel.uiState {
             case .loading(let msg):
-                LoadingView(title: msg ?? "Loading...")
+                LoadingState(
+                    title: msg ?? "Loading books ...",
+                    fileName: "loading-hand"
+                )
                 
             case .saving(let msg):
-                LoadingView(title: msg ?? "Saving...")
+            LoadingState(
+                title: msg ?? "Loading books ...",
+                fileName: "cloud-download"
+            )
                 
             case .saved:
                 LoadingView()
@@ -125,7 +131,7 @@ struct BookSelectionView: View {
                 }
                 .foregroundColor(.white)
                 .padding()
-                .background(.primary1)
+                .background(.onPrimary)
                 .cornerRadius(10)
             }
             .padding(.bottom)

@@ -29,7 +29,7 @@ struct HomeView: View {
             case .filtering:
                 ProgressView()
                     .scaleEffect(5)
-                    .tint(.primary1)
+                    .tint(.onPrimary)
             case .filtered:
                 NavigationStack {
                     TabView {

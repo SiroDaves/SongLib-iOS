@@ -26,7 +26,7 @@ struct LoadingState: View {
                 VStack(spacing: 8) {
                     HStack {
                         ProgressView(value: Double(progressValue) / 100)
-                            .progressViewStyle(LinearProgressViewStyle(tint: .primary1))
+                            .progressViewStyle(LinearProgressViewStyle(tint: .onPrimary))
                             .frame(height: 20)
                         Spacer().frame(width: 8)
                         Text("\(progressValue) %")

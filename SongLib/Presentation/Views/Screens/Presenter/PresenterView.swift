@@ -51,7 +51,7 @@ struct PresenterView: View {
             case .loading:
                 ProgressView()
                     .scaleEffect(5)
-                    .tint(.primary1)
+                    .tint(.onPrimary)
             
             case .loaded:
                 mainContent

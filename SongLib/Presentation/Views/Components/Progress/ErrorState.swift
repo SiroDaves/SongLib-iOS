@@ -27,7 +27,7 @@ struct ErrorState: View {
             Text(message)
                 .font(.title2)
                 .multilineTextAlignment(.center)
-                .foregroundColor(.primary1)
+                .foregroundColor(.onPrimary)
                 .padding(.horizontal)
 
             Button(action: retryAction) {
