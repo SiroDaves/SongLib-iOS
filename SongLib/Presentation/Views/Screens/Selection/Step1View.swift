@@ -23,11 +23,10 @@ struct Step1View: View {
         VStack {
             Text("Select Songbooks")
                 .font(.title2)
-                .fontWeight(.bold)
-                .foregroundColor(Color.white)
-            stateContent.background(Color.white)
+                .foregroundColor(.onPrimaryContainer)
+            stateContent.background(.surface)
         }
-        .background(.primary2)
+        .background(.primaryContainer)
         .alert(isPresented: $showNoSelectionAlert) {
             noSelectionAlert
         }
@@ -125,13 +124,14 @@ struct BookSelectionView: View {
                     showConfirmationAlert = true
                 }
             }) {
-                HStack {
+                HStack(spacing: 5) {
                     Image(systemName: "checkmark")
                     Text("Proceed")
                 }
-                .foregroundColor(.white)
+                .frame(width: 150)
+                .foregroundColor(.onPrimaryContainer)
                 .padding()
-                .background(.onPrimary)
+                .background(.primaryContainer)
                 .cornerRadius(10)
             }
             .padding(.bottom)

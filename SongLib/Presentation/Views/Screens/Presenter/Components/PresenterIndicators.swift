@@ -47,7 +47,7 @@ struct IndicatorButton: View {
                 .frame(width: 60, height: 40)
                 .background(
                     RoundedRectangle(cornerRadius: 10)
-                        .fill(isSelected ? .primary3 : .onPrimary)
+                        .fill(isSelected ? .primary1 : .onPrimary)
                 )
                 .overlay(
                     RoundedRectangle(cornerRadius: 10)
