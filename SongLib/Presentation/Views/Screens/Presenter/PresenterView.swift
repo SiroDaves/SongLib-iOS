@@ -70,19 +70,12 @@ struct PresenterView: View {
     }
     
     private var mainContent: some View {
-        VStack(spacing: 20) {
-            PresenterTabs(
-                verses: viewModel.verses,
-                selected: $selectedTabIndex
-            )
-            .frame(maxHeight: .infinity)
-            PresenterIndicators(
-                indicators: viewModel.indicators,
-                selected: $selectedTabIndex
-            )
-            .fixedSize(horizontal: false, vertical: true)
-        }
-        .background(.onPrimaryContainer)
+        PresenterContent(
+            verses: viewModel.verses,
+            indicators: viewModel.indicators,
+            selectedTabIndex: $selectedTabIndex
+        )
+        .background(.surface)
         .navigationTitle(viewModel.title)
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
@@ -90,9 +83,31 @@ struct PresenterView: View {
                     viewModel.likeSong(song: song)
                 } label: {
                     Image(systemName: viewModel.isLiked ? "heart.fill" : "heart")
-                        .foregroundColor(.onPrimaryContainer)
+                        .foregroundColor(.primary1)
                 }
             }
+        }
+    }
+}
+
+private struct PresenterContent: View {
+    let verses: [String]
+    let indicators: [String]
+    @Binding var selectedTabIndex: Int
+    
+    var body: some View {
+        VStack(spacing: 20) {
+            PresenterTabs(
+                verses: verses,
+                selected: $selectedTabIndex
+            )
+            .frame(maxHeight: .infinity)
+            
+            PresenterIndicators(
+                indicators: indicators,
+                selected: $selectedTabIndex
+            )
+            .fixedSize(horizontal: false, vertical: true)
         }
     }
 }

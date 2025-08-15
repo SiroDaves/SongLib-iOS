@@ -8,14 +8,19 @@
 import SwiftUI
 
 struct Step1View: View {
-    @StateObject private var viewModel: SelectionViewModel = DiContainer.shared.resolve(SelectionViewModel.self)
-    @State private var showNoSelectionAlert = false
-    @State private var showConfirmationAlert = false
+    @StateObject private var viewModel: SelectionViewModel = {
+        DiContainer.shared.resolve(SelectionViewModel.self)
+    }()
+    @State private var showAlertDialog = false
     @State private var navigateToNextScreen = false
 
     var body: some View {
         Group {
-            navigateToNextScreen ? AnyView(Step2View()) : AnyView(mainContent)
+            if navigateToNextScreen {
+                AnyView(Step2View())
+            } else {
+                AnyView(mainContent)
+            }
         }
     }
     
@@ -27,15 +32,8 @@ struct Step1View: View {
             stateContent.background(.surface)
         }
         .background(.primaryContainer)
-        .alert(isPresented: $showNoSelectionAlert) {
-            noSelectionAlert
-        }
-        .confirmationDialog(
-            "If you are done selecting please proceed ahead. We can always bring you back here to reselect afresh.",
-            isPresented: $showConfirmationAlert,
-            titleVisibility: .visible
-        ) {
-            confirmationDialogActions
+        .alert(isPresented: $showAlertDialog) {
+            selectionAlert
         }
         .task({viewModel.fetchBooks()})
         .onChange(of: viewModel.uiState, perform: handleStateChange)
@@ -67,26 +65,27 @@ struct Step1View: View {
             default:
                 BookSelectionView(
                     viewModel: viewModel,
-                    showNoSelectionAlert: $showNoSelectionAlert,
-                    showConfirmationAlert: $showConfirmationAlert
+                    showAlertDialog: $showAlertDialog
                 )
         }
     }
     
-    private var noSelectionAlert: Alert {
-        Alert(
-            title: Text("Oops! No selection found"),
-            message: Text("Please select at least 1 song book to proceed to the next step."),
-            dismissButton: .default(Text("OK"))
-        )
-    }
-    
-    private var confirmationDialogActions: some View {
-        Group {
-            Button("Proceed") {
-                viewModel.saveBooks()
-            }
-            Button("Cancel", role: .cancel) {}
+    private var selectionAlert: Alert {
+        if viewModel.selectedBooks().isEmpty {
+            Alert(
+                title: Text("Oops! No selection found"),
+                message: Text("Please select at least 1 song book to proceed to the next step."),
+                dismissButton: .default(Text("OKAY")),
+            )
+        } else {
+            Alert(
+                title: Text("Are you done selecting?"),
+                message: Text("If you are done selecting please proceed ahead. We can always bring you back here to reselect afresh."),
+                primaryButton: .default(Text("CANCEL")),
+                secondaryButton: .default(Text("OKAY")) {
+                    viewModel.saveBooks()
+                }
+            )
         }
     }
     
@@ -97,8 +96,7 @@ struct Step1View: View {
 
 struct BookSelectionView: View {
     @ObservedObject var viewModel: SelectionViewModel
-    @Binding var showNoSelectionAlert: Bool
-    @Binding var showConfirmationAlert: Bool
+    @Binding var showAlertDialog: Bool
 
     var body: some View {
         VStack {
@@ -118,11 +116,7 @@ struct BookSelectionView: View {
             }
 
             Button(action: {
-                if viewModel.selectedBooks().isEmpty {
-                    showNoSelectionAlert = true
-                } else {
-                    showConfirmationAlert = true
-                }
+                 showAlertDialog = true
             }) {
                 HStack(spacing: 5) {
                     Image(systemName: "checkmark")

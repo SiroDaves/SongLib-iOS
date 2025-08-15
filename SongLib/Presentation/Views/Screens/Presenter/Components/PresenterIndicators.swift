@@ -39,21 +39,24 @@ struct IndicatorButton: View {
     }
     
     var body: some View {
+        let bgColor = isSelected ? .primary1 : Color("onPrimary")
+        let txtColor = isSelected ? Color("onPrimary") : .scrim
+
         Button(action: action) {
             Text(title)
                 .font(.title3)
                 .fontWeight(.medium)
-                .foregroundColor(.white)
+                .foregroundColor(txtColor)
                 .frame(width: 60, height: 40)
                 .background(
-                    RoundedRectangle(cornerRadius: 10)
-                        .fill(isSelected ? .primary1 : .onPrimary)
+                    RoundedRectangle(cornerRadius: 10).fill(bgColor)
                 )
                 .overlay(
                     RoundedRectangle(cornerRadius: 10)
-                        .stroke(.onPrimary, lineWidth: isSelected ? 0 : 2)
+                        .stroke(bgColor, lineWidth: isSelected ? 0 : 2)
                 )
                 .animation(.easeInOut(duration: 0.2), value: isSelected)
+                .shadow(color: .black.opacity(0.1), radius: 3, x: 0, y: 2)
         }
     }
 }

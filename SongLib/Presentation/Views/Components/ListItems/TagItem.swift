@@ -16,10 +16,10 @@ struct TagItem: View {
             EmptyView()
         } else {
             Text(tagText)
-                .font(.caption)
+                .font(.caption2)
                 .italic()
-                .foregroundColor(.white)
-                .padding(.horizontal, 10)
+                .foregroundColor(.onPrimary)
+                .padding(.horizontal, 5)
                 .padding(.vertical, 3)
                 .background(.primary1)
                 .cornerRadius(5)

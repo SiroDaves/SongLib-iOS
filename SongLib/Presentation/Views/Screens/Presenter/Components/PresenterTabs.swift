@@ -6,26 +6,37 @@
 //
 
 import SwiftUI
-
 struct PresenterTabs: View {
     let verses: [String]
     @Binding var selected: Int
+    private let prefs = PrefsRepository()
     
     var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 15)
-                .fill(.white)
+                .fill(.onPrimary)
                 .shadow(radius: 5)
             
-            TabView(selection: $selected) {
-                ForEach(verses.indices, id: \.self) { index in
-                    VerseContent(verse: verses[index])
-                        .tag(index)
-                        .rotationEffect(.degrees(-90))
+            if prefs.horizontalSlides {
+                TabView(selection: $selected) {
+                    ForEach(verses.indices, id: \.self) { index in
+                        VerseContent(verse: verses[index])
+                            .tag(index)
+                    }
                 }
-            }.rotationEffect(.degrees(90))
+                .tabViewStyle(.page(indexDisplayMode: .never))
+            } else {
+                TabView(selection: $selected) {
+                    ForEach(verses.indices, id: \.self) { index in
+                        VerseContent(verse: verses[index])
+                            .tag(index)
+                            .rotationEffect(.degrees(-90))
+                    }
+                }
+                .rotationEffect(.degrees(90))
                 .tabViewStyle(.page(indexDisplayMode: .never))
                 .frame(maxHeight: .infinity)
+            }
         }
         .padding()
     }
@@ -38,7 +49,7 @@ struct VerseContent: View {
         VStack(alignment: .leading, spacing: 15) {
             Text(verse)
                 .font(.largeTitle)
-                .foregroundColor(Color.black)
+                .foregroundColor(.scrim)
                 .multilineTextAlignment(.leading)
         }
         .padding(15)
@@ -47,11 +58,7 @@ struct VerseContent: View {
 
 #Preview{
     PresenterTabs(
-        verses: [
-            "Fear not, little flock,\nfrom the cross to the throne,\nFrom death into life\nHe went for His own;\nAll power in earth,\nall power above,\nIs given to Him\nfor the flock of His love.",
-            "CHORUS\nOnly believe, only believe,\nAll things are possible,\nOnly believe, Only believe,\nonly believe,\nAll things are possible,\nonly believe.",
-            "Fear not, little flock,\nHe goeth ahead,\nYour Shepherd selecteth\nthe path you must tread;\nThe waters of Marah\nHe’ll sweeten for thee,\nHe drank all the bitter\nin Gethsemane."
-        ],
+        verses: String.sampleVerses,
         selected: .constant(0)
     )
 }

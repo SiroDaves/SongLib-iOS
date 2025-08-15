@@ -141,7 +141,7 @@ final class SelectionViewModel: ObservableObject {
         print("Now saving songs")
         await MainActor.run {
             self.progress = 0
-            self.uiState = .saving("Saving songs \(songs.count) ...")
+            self.uiState = .saving("Saving \(songs.count) songs")
         }
 
         for (index, song) in songs.enumerated() {
