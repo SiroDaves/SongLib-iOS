@@ -70,18 +70,7 @@ struct SearchSongItem: View {
 
 #Preview {
     SearchSongItem(
-        song: Song(
-            book: 1,
-            songId: 1,
-            songNo: 1,
-            title: "Amazing Grace",
-            alias: "",
-            content: "Amazing grace how sweet the sound",
-            views: 1200,
-            likes: 300,
-            liked: true,
-            created: "2024-01-01"
-        ),
+        song: Song.sampleSongs[0],
         height: 30,
         isSelected: false,
         isSearching: true,

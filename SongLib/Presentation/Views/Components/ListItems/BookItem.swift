@@ -52,16 +52,7 @@ struct BookItem: View {
 
 #Preview {
     BookItem(
-        book: Book(
-            bookId: 1,
-            title: "Songs of Worship",
-            subTitle: "worship",
-            songs: 750,
-            position: 1,
-            bookNo: 1,
-            enabled: true,
-            created: ""
-        ),
+        book: Book.sampleBooks[0],
         isSelected: true,
         onTap: { print("Amen") }
     )
