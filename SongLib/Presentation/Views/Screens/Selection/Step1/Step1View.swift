@@ -11,17 +11,15 @@ struct Step1View: View {
     @StateObject private var viewModel: SelectionViewModel = {
         DiContainer.shared.resolve(SelectionViewModel.self)
     }()
-    
-    @State private var showNoSelectionAlert = false
-    @State private var showConfirmationAlert = false
+    @State private var showAlertDialog = false
     @State private var navigateToNextScreen = false
 
     var body: some View {
         Group {
             if navigateToNextScreen {
-                Step2View()
+                AnyView(Step2View())
             } else {
-                mainContent
+                AnyView(mainContent)
             }
         }
     }
@@ -34,74 +32,104 @@ struct Step1View: View {
             stateContent.background(.surface)
         }
         .background(.primaryContainer)
-        .alert(isPresented: $showNoSelectionAlert) {
-            noSelectionAlert
+        .alert(isPresented: $showAlertDialog) {
+            selectionAlert
         }
-        .applyConfirmationUI(
-            message: "If you are done selecting please proceed ahead. We can always bring you back here to reselect afresh.",
-            isPresented: $showConfirmationAlert,
-            onProceed: { viewModel.saveBooks() }
-        )
-        .task { viewModel.fetchBooks() }
+        .task({viewModel.fetchBooks()})
         .onChange(of: viewModel.uiState, perform: handleStateChange)
     }
     
     @ViewBuilder
     private var stateContent: some View {
         switch viewModel.uiState {
-        case .loading(let msg):
+            case .loading(let msg):
+                LoadingState(
+                    title: msg ?? "Loading books ...",
+                    fileName: "loading-hand"
+                )
+                
+            case .saving(let msg):
             LoadingState(
                 title: msg ?? "Loading books ...",
-                fileName: "loading-hand"
-            )
-            
-        case .saving(let msg):
-            LoadingState(
-                title: msg ?? "Saving selection ...",
                 fileName: "cloud-download"
             )
-            
-        case .saved:
-            LoadingView()
-            
-        case .error(let msg):
-            ErrorView(message: msg) {
-                Task { viewModel.fetchBooks() }
-            }
-            
-        default:
-            BookSelectionView(
-                viewModel: viewModel,
-                showNoSelectionAlert: $showNoSelectionAlert,
-                showConfirmationAlert: $showConfirmationAlert
+                
+            case .saved:
+                LoadingView()
+                
+            case .error(let msg):
+                ErrorView(message: msg) {
+                    Task { viewModel.fetchBooks() }
+                }
+                
+            default:
+                BookSelectionView(
+                    viewModel: viewModel,
+                    showAlertDialog: $showAlertDialog
+                )
+        }
+    }
+    
+    private var selectionAlert: Alert {
+        if viewModel.selectedBooks().isEmpty {
+            Alert(
+                title: Text("Oops! No selection found"),
+                message: Text("Please select at least 1 song book to proceed to the next step."),
+                dismissButton: .default(Text("OKAY")),
+            )
+        } else {
+            Alert(
+                title: Text("Are you done selecting?"),
+                message: Text("If you are done selecting please proceed ahead. We can always bring you back here to reselect afresh."),
+                primaryButton: .default(Text("CANCEL")),
+                secondaryButton: .default(Text("OKAY")) {
+                    viewModel.saveBooks()
+                }
             )
         }
     }
     
-    private var noSelectionAlert: Alert {
-        Alert(
-            title: Text("Oops! No selection found"),
-            message: Text("Please select at least 1 song book to proceed to the next step."),
-            dismissButton: .default(Text("OK"))
-        )
-    }
-    
     private func handleStateChange(_ state: UiState) {
-        navigateToNextScreen = (.saved == state)
+        navigateToNextScreen = .saved == state
     }
 }
 
-extension View {
-    func applyConfirmationUI(
-        message: String,
-        isPresented: Binding<Bool>,
-        onProceed: @escaping () -> Void
-    ) -> some View {
-        self.modifier(ConfirmationUIModifier(
-            message: message,
-            isPresented: isPresented,
-            onProceed: onProceed
-        ))
+struct BookSelectionView: View {
+    @ObservedObject var viewModel: SelectionViewModel
+    @Binding var showAlertDialog: Bool
+
+    var body: some View {
+        VStack {
+            ScrollView {
+                LazyVStack(spacing: 12) {
+                    ForEach(viewModel.books.indices, id: \.self) { index in
+                        let selectable = viewModel.books[index]
+                        BookItem(
+                            book: selectable.data,
+                            isSelected: selectable.isSelected
+                        ) {
+                            viewModel.toggleSelection(for: selectable.data)
+                        }
+                    }
+                }
+                .padding()
+            }
+
+            Button(action: {
+                 showAlertDialog = true
+            }) {
+                HStack(spacing: 5) {
+                    Image(systemName: "checkmark")
+                    Text("Proceed")
+                }
+                .frame(width: 150)
+                .foregroundColor(.onPrimaryContainer)
+                .padding()
+                .background(.primaryContainer)
+                .cornerRadius(10)
+            }
+            .padding(.bottom)
+        }
     }
 }
 
