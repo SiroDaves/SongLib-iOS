@@ -58,11 +58,7 @@ struct VerseContent: View {
 
 #Preview{
     PresenterTabs(
-        verses: [
-            "Fear not, little flock,\nfrom the cross to the throne,\nFrom death into life\nHe went for His own;\nAll power in earth,\nall power above,\nIs given to Him\nfor the flock of His love.",
-            "CHORUS\nOnly believe, only believe,\nAll things are possible,\nOnly believe, Only believe,\nonly believe,\nAll things are possible,\nonly believe.",
-            "Fear not, little flock,\nHe goeth ahead,\nYour Shepherd selecteth\nthe path you must tread;\nThe waters of Marah\nHe’ll sweeten for thee,\nHe drank all the bitter\nin Gethsemane."
-        ],
+        verses: String.sampleVerses,
         selected: .constant(0)
     )
 }

@@ -28,7 +28,7 @@ struct Step2View: View {
         VStack {
             stateContent
         }
-        .background(.primaryContainer)
+//        .background(.primaryContainer)
         .onAppear {
             viewModel.initializeStep2()
         }
