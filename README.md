@@ -24,15 +24,22 @@ Built with **SwiftUI**, **Core Data**, and backed by **MongoDb**, the app offers
 Backend API: [`https://songlive.vercel.app/api`](https://songlive.vercel.app/api)
 
 ## 📸 Screenshots
-
+### 1. iPhone
 <table>
     <tr>
-        <td><img src="screenshots/image1.png" width="120px" /></td>
-        <td><img src="screenshots/image2.png" width="120px" /></td>
-        <td><img src="screenshots/image3.png" width="120px" /></td>
-        <td><img src="screenshots/image4.png" width="120px" /></td>
-        <td><img src="screenshots/image5.png" width="120px" /></td>
-        <td><img src="screenshots/image6.png" width="120px" /></td>
+        <td><img src="screenshots/iphone/image1.png" width="200px" /></td>
+        <td><img src="screenshots/iphone/image2.png" width="200px" /></td>
+        <td><img src="screenshots/iphone/image3.png" width="200px" /></td>
+        <td><img src="screenshots/iphone/image4.png" width="200px" /></td>
+    </tr>
+</table>
+
+### 1. iPad
+<table>
+    <tr>
+        <td><img src="screenshots/ipad/image1.png" width="200px" /></td>
+        <td><img src="screenshots/ipad/image3.png" width="200px" /></td>
+        <td><img src="screenshots/ipad/image4.png" width="200px" /></td>
     </tr>
 </table>
 
