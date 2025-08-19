@@ -123,8 +123,8 @@ struct BookSelectionView: View {
                     Text("Proceed")
                 }
                 .frame(width: 150)
-                .foregroundColor(.onPrimaryContainer)
                 .padding()
+                .foregroundColor(.onPrimaryContainer)
                 .background(.primaryContainer)
                 .cornerRadius(10)
             }

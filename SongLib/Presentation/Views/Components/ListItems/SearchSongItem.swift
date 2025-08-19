@@ -56,6 +56,7 @@ struct SearchSongItem: View {
                 .lineLimit(2)
                 .foregroundColor(.scrim)
                 .font(.body)
+                .multilineTextAlignment(.leading)
 
             if isSearching {
                 TagItem(tagText: "Book \(song.book)", height: height)
@@ -69,11 +70,8 @@ struct SearchSongItem: View {
 }
 
 #Preview {
-    SearchSongItem(
-        song: Song.sampleSongs[0],
-        height: 30,
-        isSelected: false,
-        isSearching: true,
+    SongsListView(
+        songs: Song.sampleSongs
     )
     .padding()
 }
