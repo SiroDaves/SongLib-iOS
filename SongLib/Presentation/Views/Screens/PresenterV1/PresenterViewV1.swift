@@ -6,35 +6,35 @@
 //
 
 import SwiftUI
-import SwiftUIPager
 
-struct PresenterView: View {
+struct PresenterViewV1: View {
     @StateObject private var viewModel: PresenterViewModel = {
         DiContainer.shared.resolve(PresenterViewModel.self)
     }()
     
     let song: Song
     
-    @StateObject private var selectedPage = Page.first()
+    @State private var selectedTabIndex = 0
     @State private var showToast = false
 
     var body: some View {
         ZStack {
-            NavigationStack {
-                stateContent
-            }
-
+           NavigationStack {
+               stateContent
+           }
+           
             if showToast {
                 let toastMessage = viewModel.isLiked
                     ? "\(song.title) added to your likes"
                     : "\(song.title) removed from your likes"
-
+                
                 ToastView(message: toastMessage)
                     .transition(.move(edge: .bottom).combined(with: .opacity))
                     .zIndex(1)
             }
-        }
-        .task { viewModel.loadSong(song: song) }
+
+       }
+        .task({viewModel.loadSong(song: song)})
         .onChange(of: viewModel.uiState) { newState in
             if case .liked = newState {
                 showToast = true
@@ -44,33 +44,36 @@ struct PresenterView: View {
             }
         }
     }
-
+    
     @ViewBuilder
     private var stateContent: some View {
         switch viewModel.uiState {
-        case .loading:
-            ProgressView()
-                .scaleEffect(5)
-                .tint(.onPrimary)
+            case .loading:
+                ProgressView()
+                    .scaleEffect(5)
+                    .tint(.onPrimary)
             
-        case .loaded, .liked:
-            mainContent
-
-        case .error(let msg):
-            ErrorView(message: msg) {
-                Task { viewModel.loadSong(song: song) }
-            }
-
-        default:
-            LoadingView()
+            case .loaded:
+                mainContent
+            
+            case .liked:
+                mainContent
+            
+            case .error(let msg):
+                ErrorView(message: msg) {
+                    Task { viewModel.loadSong(song: song) }
+                }
+                
+            default:
+                LoadingView()
         }
     }
-
+    
     private var mainContent: some View {
-        PresenterContent(
+        PresenterContentV1(
             verses: viewModel.verses,
             indicators: viewModel.indicators,
-            selected: selectedPage
+            selectedTabIndex: $selectedTabIndex
         )
         .background(.surface)
         .navigationTitle(viewModel.title)
@@ -87,22 +90,22 @@ struct PresenterView: View {
     }
 }
 
-private struct PresenterContent: View {
+private struct PresenterContentV1: View {
     let verses: [String]
     let indicators: [String]
-    @ObservedObject var selected: Page
+    @Binding var selectedTabIndex: Int
     
     var body: some View {
         VStack(spacing: 20) {
-            PresenterTabs(
+            PresenterTabsV1(
                 verses: verses,
-                selected: selected
+                selected: $selectedTabIndex
             )
             .frame(maxHeight: .infinity)
             
-            PresenterIndicators(
+            PresenterIndicatorsV1(
                 indicators: indicators,
-                selected: selected
+                selected: $selectedTabIndex
             )
             .fixedSize(horizontal: false, vertical: true)
         }
@@ -110,7 +113,7 @@ private struct PresenterContent: View {
 }
 
 #Preview{
-    PresenterView(
+    PresenterViewV1(
         song: Song.sampleSongs[0],
     )
 }

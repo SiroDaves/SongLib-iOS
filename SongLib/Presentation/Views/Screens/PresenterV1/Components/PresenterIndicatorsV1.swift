@@ -6,20 +6,19 @@
 //
 
 import SwiftUI
-import SwiftUIPager
 
-struct PresenterIndicators: View {
+struct PresenterIndicatorsV1: View {
     let indicators: [String]
-    @ObservedObject var selected: Page
+    @Binding var selected: Int
     
     var body: some View {
         ScrollView {
             LazyVGrid(columns: [GridItem(.adaptive(minimum: 60))], spacing: 10) {
                 ForEach(indicators.indices, id: \.self) { index in
-                    IndicatorButton(
+                    IndicatorButtonV1(
                         title: indicators[index],
-                        isSelected: index == selected.index,
-                        action: { selected.update(.new(index: index)) }
+                        isSelected: index == selected,
+                        action: { selected = index }
                     )
                 }
             }
@@ -28,7 +27,7 @@ struct PresenterIndicators: View {
     }
 }
 
-struct IndicatorButton: View {
+struct IndicatorButtonV1: View {
     let title: String
     let isSelected: Bool
     let action: () -> Void
