@@ -55,3 +55,58 @@ struct SongsListView: View {
         }
     }
 }
+
+struct SongsList: View {
+    @State private var searchQry: String = ""
+
+    var body: some View {
+        NavigationStack {
+            VStack(spacing: 1) {
+                SongsSearchBar(text: $searchQry, onCancel: {
+                    searchQry = ""
+                })
+                .onChange(of: searchQry) { newValue in
+                }
+
+                BooksListView(
+                    books: Book.sampleBooks,
+                    selectedBook: 0,
+                    onSelect: { book in
+                    }
+                )
+                
+                Spacer()
+                ZStack(alignment: .bottomTrailing) {
+                    SongsListView(songs: Song.sampleSongs)
+                    
+                    Button {
+                          
+                    } label: {
+                        Image(systemName: "circle.grid.3x3.fill")
+                            .font(.title.weight(.semibold))
+                            .padding()
+                            .foregroundColor(.onPrimaryContainer)
+                            .background(.primaryContainer)
+                            .clipShape(Circle())
+                            .shadow(radius: 4, x: 0, y: 4)
+
+                    }
+                    .padding()
+                    
+                    DialPadOverlay(
+                        onNumberClick: {_ in },
+                        onBackspaceClick: {},
+                        onSearchClick: {}
+                    )
+                    
+                }
+            }
+            .background(.surface)
+            .padding(.vertical)
+        }
+    }
+}
+
+#Preview {
+    SongsList()
+}

@@ -55,17 +55,16 @@ final class HomeViewModel: ObservableObject {
     }
     
     func searchSongs(qry: String, byNo: Bool = false) {
-        let allSongs = songs.filter { $0.book == books[selectedBook].bookNo }
         let query = qry.trimmingCharacters(in: .whitespacesAndNewlines)
         
         guard !query.isEmpty else {
-            filtered = allSongs
+            filtered = songs
             return
         }
         
         if byNo {
             if let number = Int(query) {
-                filtered = allSongs.filter { $0.songNo == number }
+                filtered = songs.filter { $0.songNo == number }
             } else {
                 filtered = []
             }
@@ -85,7 +84,7 @@ final class HomeViewModel: ObservableObject {
         let pattern = escapedWords.joined(separator: ".*")
         let regex = try! NSRegularExpression(pattern: pattern, options: [.caseInsensitive])
         
-        filtered = allSongs.filter { song in
+        filtered = songs.filter { song in
             let title = charsPattern.stringByReplacingMatches(in: song.title, range: NSRange(song.title.startIndex..., in: song.title), withTemplate: "").lowercased()
             let alias = charsPattern.stringByReplacingMatches(in: song.alias, range: NSRange(song.alias.startIndex..., in: song.alias), withTemplate: "").lowercased()
             let content = charsPattern.stringByReplacingMatches(in: song.content, range: NSRange(song.content.startIndex..., in: song.content), withTemplate: "").lowercased()

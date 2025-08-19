@@ -15,12 +15,13 @@ struct SongsView: View {
     var body: some View {
         NavigationStack {
             VStack(spacing: 1) {
-                TextField("Search for songs ...", text: $searchQry)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .padding(10)
-                    .onChange(of: searchQry) { newValue in
-                        viewModel.searchSongs(qry: newValue)
-                    }
+                SongsSearchBar(text: $searchQry, onCancel: {
+                    searchQry = ""
+                    viewModel.searchSongs(qry: "")
+                })
+                .onChange(of: searchQry) { newValue in
+                    viewModel.searchSongs(qry: newValue, byNo: searchByNo)
+                }
 
                 BooksListView(
                     books: viewModel.books,
@@ -35,15 +36,10 @@ struct SongsView: View {
                 ZStack(alignment: .bottomTrailing) {
                     SongsListView(songs: viewModel.filtered)
                     
-                    DialPadOverlay(
-                        visible: true,
-                        onNumberClick: {_ in },
-                        onBackspaceClick: {},
-                        onSearchClick: {}
-                    )
-                    
                     Button {
-                          
+                        searchByNo = true
+                        searchQry = ""
+                        viewModel.searchSongs(qry: "", byNo: true)
                     } label: {
                         Image(systemName: "circle.grid.3x3.fill")
                             .font(.title.weight(.semibold))
@@ -58,7 +54,6 @@ struct SongsView: View {
                     
                     if searchByNo {
                         DialPadOverlay(
-                            visible: true,
                             onNumberClick: { num in
                                 searchQry += num
                                 viewModel.searchSongs(qry: searchQry, byNo: true)
@@ -85,55 +80,42 @@ struct SongsView: View {
     }
 }
 
-struct SongsList: View {
-    @State private var searchText: String = ""
-
+struct SongsSearchBar: View {
+    @Binding var text: String
+    @FocusState private var isFocused: Bool
+    
+    var onCancel: (() -> Void)?
+    
     var body: some View {
-        NavigationStack {
-            VStack(spacing: 1) {
-                TextField("Search songs ...", text: $searchText)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .padding(10)
-                    .onChange(of: searchText) { newValue in
-                    }
-
-                BooksListView(
-                    books: Book.sampleBooks,
-                    selectedBook: 0,
-                    onSelect: { book in
-                    }
-                )
-                
-                Spacer()
-                ZStack(alignment: .bottomTrailing) {
-                    SongsListView(songs: Song.sampleSongs)
-                    
-                    Button {
-                          
-                    } label: {
-                        Image(systemName: "circle.grid.3x3.fill")
-                            .font(.title.weight(.semibold))
-                            .padding()
-                            .foregroundColor(.onPrimaryContainer)
-                            .background(.primaryContainer)
-                            .clipShape(Circle())
-                            .shadow(radius: 4, x: 0, y: 4)
-
-                    }
-                    .padding()
-                    
-                    DialPadOverlay(
-                        visible: true,
-                        onNumberClick: {_ in },
-                        onBackspaceClick: {},
-                        onSearchClick: {}
-                    )
-                    
+        HStack(alignment: .center) {
+            if isFocused {
+                Button(action: {
+                    text = ""
+                    isFocused = false
+                    hideKeyboard()
+                    onCancel?()
+                }) {
+                    Image(systemName: "chevron.backward")
+                        .font(.largeTitle)
+                        .foregroundColor(.onPrimaryContainer)
                 }
+                .padding(.bottom, 5)
             }
-            .background(.surface)
-            .padding(.vertical)
+            
+            TextField("Search for songs ...", text: $text) .textFieldStyle(RoundedBorderTextFieldStyle())
+                .padding(.bottom, 15)
+                .padding(.top, 7)
+                .focused($isFocused)
         }
+        .padding(.horizontal)
+        .animation(.easeInOut, value: isFocused)
+    }
+}
+
+extension View {
+    func hideKeyboard() {
+        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder),
+                                        to: nil, from: nil, for: nil)
     }
 }
 

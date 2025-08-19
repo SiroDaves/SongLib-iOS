@@ -8,25 +8,22 @@
 import SwiftUI
 
 struct DialPadOverlay: View {
-    let visible: Bool
     let onNumberClick: (String) -> Void
     let onBackspaceClick: () -> Void
     let onSearchClick: () -> Void
 
     var body: some View {
-        if visible {
-            VStack {
-                Spacer()
-                DialPad(
-                    onNumberClick: onNumberClick,
-                    onBackspaceClick: onBackspaceClick,
-                    onSearchClick: onSearchClick
-                )
-                .transition(.move(edge: .bottom).combined(with: .opacity))
-                .animation(.easeInOut, value: visible)
-            }
-            .edgesIgnoringSafeArea(.bottom)
+        VStack {
+            Spacer()
+            DialPad(
+                onNumberClick: onNumberClick,
+                onBackspaceClick: onBackspaceClick,
+                onSearchClick: onSearchClick
+            )
+            .transition(.move(edge: .bottom).combined(with: .opacity))
+            .animation(.easeInOut, value: true)
         }
+        .edgesIgnoringSafeArea(.bottom)
     }
 }
 
@@ -108,7 +105,6 @@ struct DialIconButton: View {
 
 #Preview {
     DialPadOverlay(
-        visible: true,
         onNumberClick: {_ in },
         onBackspaceClick: {},
         onSearchClick: {}
