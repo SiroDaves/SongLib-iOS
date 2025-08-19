@@ -6,11 +6,13 @@
 //
 
 import SwiftUI
+import SwiftUIPager
+
 struct PresenterTabs: View {
     let verses: [String]
-    @Binding var selected: Int
+    @ObservedObject var selected: Page
     private let prefs = PrefsRepository()
-    
+
     var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 15)
@@ -18,24 +20,13 @@ struct PresenterTabs: View {
                 .shadow(radius: 5)
             
             if prefs.horizontalSlides {
-                TabView(selection: $selected) {
-                    ForEach(verses.indices, id: \.self) { index in
-                        VerseContent(verse: verses[index])
-                            .tag(index)
-                    }
+                Pager(page: selected, data: verses, id: \.self) {
+                    VerseContent(verse: $0)
                 }
-                .tabViewStyle(.page(indexDisplayMode: .never))
             } else {
-                TabView(selection: $selected) {
-                    ForEach(verses.indices, id: \.self) { index in
-                        VerseContent(verse: verses[index])
-                            .tag(index)
-                            .rotationEffect(.degrees(-90))
-                    }
-                }
-                .rotationEffect(.degrees(90))
-                .tabViewStyle(.page(indexDisplayMode: .never))
-                .frame(maxHeight: .infinity)
+                Pager(page: selected, data: verses, id: \.self) {
+                    VerseContent(verse: $0)
+                }.vertical()
             }
         }
         .padding()
@@ -57,8 +48,7 @@ struct VerseContent: View {
 }
 
 #Preview{
-    PresenterTabs(
-        verses: String.sampleVerses,
-        selected: .constant(0)
+    PresenterView(
+        song: Song.sampleSongs[3],
     )
 }

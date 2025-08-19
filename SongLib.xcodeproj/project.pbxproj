@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		173314E42DC159DB00318DD8 /* Swinject in Frameworks */ = {isa = PBXBuildFile; productRef = 173314E32DC159DB00318DD8 /* Swinject */; };
+		1796FDF92E5484FD00298DBF /* SwiftUIPager in Frameworks */ = {isa = PBXBuildFile; productRef = 1796FDF82E5484FD00298DBF /* SwiftUIPager */; };
 		17DDC8182E41D4B400B54D2C /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = 17DDC8172E41D4B400B54D2C /* Lottie */; };
 /* End PBXBuildFile section */
 
@@ -59,6 +60,7 @@
 			files = (
 				173314E42DC159DB00318DD8 /* Swinject in Frameworks */,
 				17DDC8182E41D4B400B54D2C /* Lottie in Frameworks */,
+				1796FDF92E5484FD00298DBF /* SwiftUIPager in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -129,6 +131,7 @@
 			packageProductDependencies = (
 				173314E32DC159DB00318DD8 /* Swinject */,
 				17DDC8172E41D4B400B54D2C /* Lottie */,
+				1796FDF82E5484FD00298DBF /* SwiftUIPager */,
 			);
 			productName = SongLib;
 			productReference = 175D13A72DC112BB00A6191A /* SongLib.app */;
@@ -215,6 +218,7 @@
 			packageReferences = (
 				1733149D2DC1499100318DD8 /* XCRemoteSwiftPackageReference "Swinject" */,
 				171CB4262E4115B700915485 /* XCRemoteSwiftPackageReference "lottie-ios" */,
+				1796FDF72E5484BE00298DBF /* XCRemoteSwiftPackageReference "SwiftUIPager" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 175D13A82DC112BB00A6191A /* Products */;
@@ -422,7 +426,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = SongLib;
-				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.books";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -457,7 +461,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = SongLib;
-				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.books";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -611,6 +615,14 @@
 				minimumVersion = 2.9.1;
 			};
 		};
+		1796FDF72E5484BE00298DBF /* XCRemoteSwiftPackageReference "SwiftUIPager" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/fermoya/SwiftUIPager.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.5.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -618,6 +630,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 1733149D2DC1499100318DD8 /* XCRemoteSwiftPackageReference "Swinject" */;
 			productName = Swinject;
+		};
+		1796FDF82E5484FD00298DBF /* SwiftUIPager */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1796FDF72E5484BE00298DBF /* XCRemoteSwiftPackageReference "SwiftUIPager" */;
+			productName = SwiftUIPager;
 		};
 		17DDC8172E41D4B400B54D2C /* Lottie */ = {
 			isa = XCSwiftPackageProductDependency;
