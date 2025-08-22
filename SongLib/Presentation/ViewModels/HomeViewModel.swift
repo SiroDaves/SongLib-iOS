@@ -7,8 +7,10 @@
 
 import Foundation
 import SwiftUI
+import RevenueCat
 
 final class HomeViewModel: ObservableObject {
+    @Published var hasActiveSubscription: Bool = false
     @Published var books: [Book] = []
     @Published var songs: [Song] = []
     @Published var likes: [Song] = []
@@ -30,6 +32,17 @@ final class HomeViewModel: ObservableObject {
         self.songRepo = songRepo
     }
     
+    func checkSubscription() {
+        Purchases.shared.getCustomerInfo { [weak self] customerInfo, error in
+            guard let self = self, let customerInfo = customerInfo, error == nil else {
+                self?.hasActiveSubscription = false
+                return
+            }
+
+            self.hasActiveSubscription = customerInfo.entitlements[AppConstants.entitlements]?.isActive == true
+        }
+    }
+    
     func fetchData() {
         self.uiState = .loading("Fetching data ...")
 
@@ -37,6 +50,7 @@ final class HomeViewModel: ObservableObject {
             await MainActor.run {
                 self.books = bookRepo.fetchLocalBooks()
                 self.songs = songRepo.fetchLocalSongs()
+                self.checkSubscription()
                 self.uiState = .fetched
             }
         }

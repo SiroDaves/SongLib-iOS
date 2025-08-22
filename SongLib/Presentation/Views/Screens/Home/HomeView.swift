@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import RevenueCatUI
 
 struct HomeView: View {
     @StateObject private var viewModel: HomeViewModel = {
@@ -13,6 +14,7 @@ struct HomeView: View {
     }()
     
     @State private var showSettings: Bool = false
+    @State private var showPaywall: Bool = false
     
     var body: some View {
         stateContent
@@ -57,6 +59,14 @@ struct HomeView: View {
 
                             }
                         }
+                    }
+                    .onAppear {
+                        if !viewModel.hasActiveSubscription {
+                            showPaywall = true
+                        }
+                    }
+                    .sheet(isPresented: self.$showPaywall) {
+                        PaywallView(displayCloseButton: true)
                     }
                     .navigationTitle("SongLib")
                     .navigationBarTitleDisplayMode(.inline)
