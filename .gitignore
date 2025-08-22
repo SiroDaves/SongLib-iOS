@@ -1,6 +1,6 @@
 //
 //  .gitignore
-//  SwahiLib
+//  SongLib
 //
 //  Created by Siro Daves on 21/06/2025.
 //
@@ -49,3 +49,4 @@ fastlane/test_output
 
 # Environment config (optional — see below)
 Config.xcconfig
+SongLib/Secrets.plist
