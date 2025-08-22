@@ -1,5 +1,5 @@
 {
-  "originHash" : "da07d82b84b096de990c67a340800423c1945fde98dfe0cbe317c59d6173c935",
+  "originHash" : "cd9e9da0ed729d4b01c453f2b3371a3c3c888464622e43ed614430b135805b22",
   "pins" : [
     {
       "identity" : "lottie-ios",
@@ -8,6 +8,15 @@
       "state" : {
         "revision" : "a004050748dc197c56256a14dca49a035d74726c",
         "version" : "4.5.2"
+      }
+    },
+    {
+      "identity" : "purchases-ios-spm",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/RevenueCat/purchases-ios-spm.git",
+      "state" : {
+        "revision" : "b2a5f6c6fb4de109fc6dd6491d7f0657fbc983bf",
+        "version" : "5.35.0"
       }
     },
     {
