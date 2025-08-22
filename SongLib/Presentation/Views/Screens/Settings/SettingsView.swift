@@ -6,6 +6,8 @@
 //
 
 import SwiftUI
+import RevenueCat
+import RevenueCatUI
 
 enum AppThemeMode: String, CaseIterable, Identifiable {
     case light, dark, system
@@ -22,6 +24,8 @@ enum AppThemeMode: String, CaseIterable, Identifiable {
 
 struct SettingsView: View {
     @EnvironmentObject var themeManager: ThemeManager
+    @State private var showPaywall: Bool = false
+    
     private let prefs = PrefsRepository()
     
     var body: some View {
@@ -61,6 +65,28 @@ struct SettingsView: View {
                 }
                 .contentShape(Rectangle())
             }
+            
+            Section {
+                Button(action: {
+                    showPaywall = true
+                }) {
+                    HStack(spacing: 12) {
+                        Image(systemName: "star.fill")
+                            .foregroundColor(.yellow)
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("SongLib Pro")
+                                .font(.headline)
+                            Text("Join na SongLib Pro, and enjoy advanced search, lots of exclusive features as a way to support the developer of SongLib")
+                                .font(.subheadline)
+                                .foregroundColor(.secondary)
+                        }
+                    }
+                    .padding(.vertical, 4)
+                }
+            }
+        }
+        .sheet(isPresented: $showPaywall) {
+            PaywallView(displayCloseButton: true)
         }
         .navigationTitle("Settings")
     }
