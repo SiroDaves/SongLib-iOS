@@ -1,0 +1,37 @@
+//
+//  HomeLikes.swift
+//  SongLib
+//
+//  Created by Siro Daves on 25/08/2025.
+//
+
+import SwiftUI
+
+struct HomeLikes: View {
+    @ObservedObject var viewModel: HomeViewModel
+
+    var body: some View {
+        NavigationStack {
+            ScrollView {
+                VStack(spacing: 1) {
+                    BooksListView(
+                        books: viewModel.books,
+                        selectedBook: viewModel.selectedBook,
+                        onSelect: { book in
+                            viewModel.selectedBook = viewModel.books.firstIndex(of: book) ?? 0
+                            viewModel.filterSongs(book: book.bookId)
+                        }
+                    )
+                    
+                    Spacer()
+                    SongsListView(songs: viewModel.likes)
+                }
+                .background(.surface)
+                .padding(.vertical)
+            }
+            .navigationTitle("Liked Songs")
+            .navigationBarTitleDisplayMode(.large)
+            .toolbarBackground(.regularMaterial, for: .navigationBar)
+        }
+    }
+}

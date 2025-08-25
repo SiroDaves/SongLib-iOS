@@ -10,7 +10,15 @@ import SwiftUI
 import RevenueCat
 
 final class HomeViewModel: ObservableObject {
-    @Published var hasActiveSubscription: Bool = false
+    private let prefsRepo: PrefsRepository
+    private let bookRepo: BookRepositoryProtocol
+    private let songRepo: SongRepositoryProtocol
+    private let subsRepo: SubscriptionRepositoryProtocol
+    private let reviewRepo: ReviewReqRepositoryProtocol
+    
+    @Published var isActiveSubscriber: Bool = false
+    @Published var showReviewPrompt: Bool = false
+    
     @Published var books: [Book] = []
     @Published var songs: [Song] = []
     @Published var likes: [Song] = []
@@ -18,29 +26,39 @@ final class HomeViewModel: ObservableObject {
     @Published var uiState: UiState = .idle
     @Published var selectedBook: Int = 0
 
-    private let prefsRepo: PrefsRepository
-    private let bookRepo: BookRepositoryProtocol
-    private let songRepo: SongRepositoryProtocol
-
     init(
         prefsRepo: PrefsRepository,
         bookRepo: BookRepositoryProtocol,
-        songRepo: SongRepositoryProtocol
+        songRepo: SongRepositoryProtocol,
+        subsRepo: SubscriptionRepositoryProtocol,
+        reviewRepo: ReviewReqRepositoryProtocol
     ) {
         self.prefsRepo = prefsRepo
         self.bookRepo = bookRepo
         self.songRepo = songRepo
+        self.subsRepo = subsRepo
+        self.reviewRepo = reviewRepo
     }
     
     func checkSubscription() {
-        Purchases.shared.getCustomerInfo { [weak self] customerInfo, error in
-            guard let self = self, let customerInfo = customerInfo, error == nil else {
-                self?.hasActiveSubscription = false
-                return
+        subsRepo.isActiveSubscriber { [weak self] isActive in
+            DispatchQueue.main.async {
+                self?.isActiveSubscriber = isActive
             }
-
-            self.hasActiveSubscription = customerInfo.entitlements[AppConstants.entitlements]?.isActive == true
         }
+    }
+    
+    func appDidEnterBackground() {
+        reviewRepo.endSession()
+        showReviewPrompt = reviewRepo.shouldPromptReview()
+    }
+    
+    func appDidBecomeActive() {
+        reviewRepo.startSession()
+    }
+    
+    func requestReview() {
+        reviewRepo.requestReview()
     }
     
     func fetchData() {

@@ -13,7 +13,6 @@ struct HomeView: View {
         DiContainer.shared.resolve(HomeViewModel.self)
     }()
     
-    @State private var showSettings: Bool = false
     @State private var showPaywall: Bool = false
     
     var body: some View {
@@ -33,46 +32,34 @@ struct HomeView: View {
                     .scaleEffect(5)
                     .tint(.primary1)
             case .filtered:
-                NavigationStack {
-                    TabView {
-                        SongsView(viewModel: viewModel)
-                            .tabItem {
-                                Label("Songs", systemImage: "magnifyingglass")
-                            }
-                            .background(.primaryContainer)
-                        LikesView(viewModel: viewModel)
+                TabView {
+                    HomeSearch(viewModel: viewModel)
+                        .tabItem {
+                            Label("Search", systemImage: "magnifyingglass")
+                        }
+                        .background(.primaryContainer)
+                    if viewModel.isActiveSubscriber {
+                        HomeLikes(viewModel: viewModel)
                             .tabItem {
                                 Label("Likes", systemImage: "heart.fill")
                             }
-                            .background(.primaryContainer)
                     }
-                    .toolbar {
-                        ToolbarItem(placement: .navigationBarTrailing) {
-                            Button(action: {
-                                showSettings = true
-                            }) {
-                                Image(systemName: "gear")
-                                    .imageScale(.large)
-                                    .foregroundColor(.primary1)
-
-                            }
+                    SettingsView()
+                        .tabItem {
+                            Label("Settings", systemImage: "gear")
                         }
-                    }
-                    .onAppear {
-                        #if !DEBUG
-                            showPaywall = !viewModel.isActiveSubscriber
-                        #endif
-                    }
-                    .sheet(isPresented: self.$showPaywall) {
-                        #if !DEBUG
-                            PaywallView(displayCloseButton: true)
-                        #endif
-                    }
-                    .navigationTitle("SongLib")
-                    .navigationBarTitleDisplayMode(.inline)
-                    .navigationDestination(isPresented: $showSettings) {
-                        SettingsView()
-                    }
+                        .background(.primaryContainer)
+                }
+                .onAppear {
+                    #if !DEBUG
+                        showPaywall = !viewModel.isActiveSubscriber
+                    #endif
+                    viewModel.requestReview()
+                }
+                .sheet(isPresented: $showPaywall) {
+                    #if !DEBUG
+                        PaywallView(displayCloseButton: true)
+                    #endif
                 }
                
             case .error(let msg):
@@ -88,21 +75,6 @@ struct HomeView: View {
     private func handleStateChange(_ state: UiState) {
         if case .fetched = state {
             viewModel.filterSongs(book: viewModel.books[viewModel.selectedBook].bookId)
-        }
-    }
-    
-}
-
-struct LikesView: View {
-    @ObservedObject var viewModel: HomeViewModel
-
-    var body: some View {
-        NavigationStack {
-            VStack(spacing: 12) {
-                SongsListView(songs: viewModel.likes)
-            }
-            .background(.surface)
-            .padding(.vertical)
         }
     }
 }
