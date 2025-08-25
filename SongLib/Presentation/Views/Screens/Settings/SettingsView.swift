@@ -9,19 +9,6 @@ import SwiftUI
 import RevenueCat
 import RevenueCatUI
 
-enum AppThemeMode: String, CaseIterable, Identifiable {
-    case light, dark, system
-    var id: String { rawValue }
-
-    var displayName: String {
-        switch self {
-        case .light: return "Light Theme"
-        case .dark: return "Dark Theme"
-        case .system: return "System Default"
-        }
-    }
-}
-
 struct SettingsView: View {
     @EnvironmentObject var themeManager: ThemeManager
     @State private var showPaywall: Bool = false
@@ -76,7 +63,7 @@ struct SettingsView: View {
                         VStack(alignment: .leading, spacing: 2) {
                             Text("SongLib Pro")
                                 .font(.headline)
-                            Text("Join na SongLib Pro, and enjoy advanced search, lots of exclusive features as a way to support the developer of SongLib")
+                            Text("Join SongLib Pro, Exprience advanced search, lots of exclusive features as a way to support the developer of SongLib")
                                 .font(.subheadline)
                                 .foregroundColor(.secondary)
                         }

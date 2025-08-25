@@ -135,4 +135,18 @@ class BookDataManager {
             return nil
         }
     }
+    
+    func deleteAllBooks() {
+        let fetchRequest: NSFetchRequest<NSFetchRequestResult> = CDBook.fetchRequest()
+        let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+        
+        do {
+            try context.execute(batchDeleteRequest)
+            try context.save()
+            print("🗑️ All books deleted successfully")
+        } catch {
+            print("❌ Failed to delete songs: \(error)")
+        }
+    }
+
 }

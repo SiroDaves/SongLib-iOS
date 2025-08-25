@@ -11,6 +11,7 @@ protocol BookRepositoryProtocol {
     func fetchRemoteBooks() async throws -> BookResponse
     func fetchLocalBooks() -> [Book]
     func saveBooksLocally(_ books: [Book])
+    func deleteLocalData()
 }
 
 class BookRepository: BookRepositoryProtocol {
@@ -34,4 +35,9 @@ class BookRepository: BookRepositoryProtocol {
     func saveBooksLocally(_ books: [Book]) {
         bookData.saveBooks(books)
     }
+    
+    func deleteLocalData() {
+        bookData.deleteAllBooks()
+    }
+    
 }

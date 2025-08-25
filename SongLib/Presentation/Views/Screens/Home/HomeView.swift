@@ -35,9 +35,7 @@ struct HomeView: View {
             case .filtered:
                 NavigationStack {
                     TabView {
-                        SongsView(
-                            viewModel: viewModel,
-                        )
+                        SongsView(viewModel: viewModel)
                             .tabItem {
                                 Label("Songs", systemImage: "magnifyingglass")
                             }
@@ -61,12 +59,14 @@ struct HomeView: View {
                         }
                     }
                     .onAppear {
-                        if !viewModel.hasActiveSubscription {
-                            showPaywall = true
-                        }
+                        #if !DEBUG
+                            showPaywall = !viewModel.isActiveSubscriber
+                        #endif
                     }
                     .sheet(isPresented: self.$showPaywall) {
-                        PaywallView(displayCloseButton: true)
+                        #if !DEBUG
+                            PaywallView(displayCloseButton: true)
+                        #endif
                     }
                     .navigationTitle("SongLib")
                     .navigationBarTitleDisplayMode(.inline)

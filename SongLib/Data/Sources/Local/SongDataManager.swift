@@ -131,4 +131,18 @@ class SongDataManager {
             return CDSong(context: context)
         }
     }
+    
+    func deleteAllSongs() {
+        let fetchRequest: NSFetchRequest<NSFetchRequestResult> = CDSong.fetchRequest()
+        let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+        
+        do {
+            try context.execute(batchDeleteRequest)
+            try context.save()
+            print("🗑️ All songs deleted successfully")
+        } catch {
+            print("❌ Failed to delete songs: \(error)")
+        }
+    }
+
 }
