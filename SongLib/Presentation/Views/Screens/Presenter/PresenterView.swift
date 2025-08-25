@@ -32,6 +32,7 @@ struct PresenterView: View {
                     .zIndex(1)
             }
         }
+        .toolbar(.hidden, for: .tabBar)
         .task { viewModel.loadSong(song: song) }
         .onChange(of: viewModel.uiState) { newState in
             if case .liked = newState {

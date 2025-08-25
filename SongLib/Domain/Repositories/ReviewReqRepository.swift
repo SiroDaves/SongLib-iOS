@@ -11,7 +11,7 @@ protocol ReviewReqRepositoryProtocol {
     func startSession()
     func endSession()
     func shouldPromptReview() -> Bool
-    func requestReview()
+    func promptReview(force: Bool)
 }
 
 final class ReviewReqRepository: ReviewReqRepositoryProtocol {
@@ -47,8 +47,8 @@ final class ReviewReqRepository: ReviewReqRepositoryProtocol {
         return eligibleByInstall && eligibleByUsage && eligibleByLastPrompt
     }
     
-    func requestReview() {
-        guard shouldPromptReview() else { return }
+    func promptReview(force: Bool = false) {
+        guard force || shouldPromptReview() else { return }
         
         if let scene = UIApplication.shared.connectedScenes
             .first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene {

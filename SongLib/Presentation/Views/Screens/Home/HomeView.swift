@@ -37,7 +37,7 @@ struct HomeView: View {
                         .tabItem {
                             Label("Search", systemImage: "magnifyingglass")
                         }
-                        .background(.primaryContainer)
+                    .background(.primaryContainer)
                     if viewModel.isActiveSubscriber {
                         HomeLikes(viewModel: viewModel)
                             .tabItem {
@@ -48,13 +48,13 @@ struct HomeView: View {
                         .tabItem {
                             Label("Settings", systemImage: "gear")
                         }
-                        .background(.primaryContainer)
+                    .background(.primaryContainer)
                 }
                 .onAppear {
                     #if !DEBUG
                         showPaywall = !viewModel.isActiveSubscriber
                     #endif
-                    viewModel.requestReview()
+                    viewModel.promptReview()
                 }
                 .sheet(isPresented: $showPaywall) {
                     #if !DEBUG

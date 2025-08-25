@@ -30,7 +30,6 @@ struct HomeLikes: View {
                 .padding(.vertical)
             }
             .navigationTitle("Liked Songs")
-            .navigationBarTitleDisplayMode(.large)
             .toolbarBackground(.regularMaterial, for: .navigationBar)
         }
     }

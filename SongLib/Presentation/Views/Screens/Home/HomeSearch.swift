@@ -79,7 +79,6 @@ struct HomeSearch: View {
                 .padding(.vertical)
             }
             .navigationTitle("SongLib")
-            .navigationBarTitleDisplayMode(.large)
             .toolbarBackground(.regularMaterial, for: .navigationBar)
         }
     }

@@ -56,8 +56,8 @@ final class HomeViewModel: ObservableObject {
         reviewRepo.startSession()
     }
     
-    func requestReview() {
-        reviewRepo.requestReview()
+    func promptReview() {
+        reviewRepo.promptReview(force: false)
     }
     
     func fetchData() {

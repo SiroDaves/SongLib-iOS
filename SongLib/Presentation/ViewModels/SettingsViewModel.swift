@@ -44,7 +44,7 @@ final class SettingsViewModel: ObservableObject {
     }
     
     func promptReview() {
-        reviewRepo.requestReview()
+        reviewRepo.promptReview(force: true)
     }
     
     func checkSettings() {
