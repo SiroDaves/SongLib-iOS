@@ -5,7 +5,6 @@
 //  Created by Siro Daves on 25/08/2025.
 //
 
-
 import Foundation
 import SwiftUI
 
@@ -17,7 +16,7 @@ final class SettingsViewModel: ObservableObject {
     private let reviewRepo: ReviewReqRepositoryProtocol
 
     @Published var isActiveSubscriber: Bool = false
-    @Published var showReviewPrompt: Bool = false
+    @Published var horizontalSlides: Bool = false
     
     @Published var uiState: UiState = .idle
     
@@ -36,6 +35,7 @@ final class SettingsViewModel: ObservableObject {
     }
     
     func checkSubscription() {
+        self.horizontalSlides = prefsRepo.horizontalSlides
         subsRepo.isActiveSubscriber { [weak self] isActive in
             DispatchQueue.main.async {
                 self?.isActiveSubscriber = isActive
@@ -43,16 +43,7 @@ final class SettingsViewModel: ObservableObject {
         }
     }
     
-    func appDidEnterBackground() {
-        reviewRepo.endSession()
-        showReviewPrompt = reviewRepo.shouldPromptReview()
-    }
-    
-    func appDidBecomeActive() {
-        reviewRepo.startSession()
-    }
-    
-    func requestReview() {
+    func promptReview() {
         reviewRepo.requestReview()
     }
     
@@ -71,6 +62,8 @@ final class SettingsViewModel: ObservableObject {
             self.bookRepo.deleteLocalData()
             self.songRepo.deleteLocalData()
             
+            prefsRepo.selectedBooks = ""
+            prefsRepo.isDataSelected = false
             prefsRepo.isDataLoaded = false
             self.uiState = .loaded
         }

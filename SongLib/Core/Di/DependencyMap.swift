@@ -60,7 +60,7 @@ struct DependencyMap {
         
         container.register(ReviewReqRepositoryProtocol.self) { resolver in
             ReviewReqRepository(
-                prefs: resolver.resolve(PrefsRepository.self)!
+                prefsRepo: resolver.resolve(PrefsRepository.self)!
             )
         }.inObjectScope(.container)
         

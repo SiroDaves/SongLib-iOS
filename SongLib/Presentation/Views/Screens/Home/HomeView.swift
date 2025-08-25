@@ -26,11 +26,11 @@ struct HomeView: View {
     private var stateContent: some View {
         switch viewModel.uiState {
             case .loading(let msg):
-                LoadingView(title: msg!)
+                LoadingState(title: msg!)
+            
             case .filtering:
-                ProgressView()
-                    .scaleEffect(5)
-                    .tint(.primary1)
+                LoadingState()
+            
             case .filtered:
                 TabView {
                     HomeSearch(viewModel: viewModel)
@@ -68,7 +68,7 @@ struct HomeView: View {
                 }
                 
             default:
-                LoadingView()
+                LoadingState()
         }
     }
     

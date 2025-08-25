@@ -7,7 +7,6 @@
 
 import Foundation
 import SwiftUI
-import RevenueCat
 
 final class HomeViewModel: ObservableObject {
     private let prefsRepo: PrefsRepository
@@ -62,7 +61,7 @@ final class HomeViewModel: ObservableObject {
     }
     
     func fetchData() {
-        self.uiState = .loading("Fetching data ...")
+        self.uiState = .loading("")
 
         Task {
             await MainActor.run {

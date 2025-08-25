@@ -16,54 +16,86 @@ struct SettingsView: View {
     @EnvironmentObject var themeManager: ThemeManager
     @State private var showPaywall: Bool = false
     @State private var showResetAlert: Bool = false
+    @State private var restartTheApp = false
     
     var body: some View {
-        Form {
-            ThemeSectionView(
-                selectedTheme: $themeManager.selectedTheme
-            )
-
-            Section {
-                HStack {
-                    Image(systemName: "arrow.left.and.right")
-                        .frame(width: 24, height: 24)
-                        .foregroundColor(.accentColor)
-
-                    VStack(alignment: .leading) {
-                        Text("Song Slides")
-                        Text("Swipe verses horizontally")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                    }
-
-                    Spacer()
-
-                    Toggle("", isOn: Binding(
-                        get: { prefs.horizontalSlides },
-                        set: { prefs.horizontalSlides = $0 }
-                    ))
-                    .labelsHidden()
-                }
-                .contentShape(Rectangle())
+        Group {
+            if restartTheApp {
+                AnyView(SplashView())
+            } else {
+                AnyView(mainContent)
             }
+        }
+    }
+    
+    private var mainContent: some View {
+        stateContent
+        .edgesIgnoringSafeArea(.bottom)
+        .task { viewModel.checkSettings() }
+    }
+    
+    @ViewBuilder
+    private var stateContent: some View {
+        switch viewModel.uiState {
+            case .loading(let msg):
+                LoadingState(
+                    title: msg!,
+                    fileName: "circle-loader",
+                )
             
-            #if !DEBUG
-            if !viewModel.isActiveSubscriber {
-                ProSectionView { showPaywall = true }
-            }
-            #endif
+            case .fetched:
+                NavigationStack {
+                    Form {
+                        ThemeSectionView(
+                            selectedTheme: $themeManager.selectedTheme
+                        )
 
-            ReviewSectionView(
-                onReview: viewModel.requestReview,
-                onEmail: viewModel.sendEmail
-            )
+                        SlidesSectionView(
+                            isOn: Binding(
+                                get: { viewModel.horizontalSlides },
+                                set: { viewModel.horizontalSlides = $0 }
+                            )
+                        )
+                        
+                        #if !DEBUG
+                        if !viewModel.isActiveSubscriber {
+                            ProSectionView { showPaywall = true }
+                        }
+                        #endif
 
-            ResetSectionView { showResetAlert = true }
+                        ReviewSectionView(
+                            onReview: { viewModel.promptReview() },
+                            onEmail: { viewModel.sendEmail() }
+                        )
+
+                        ResetSectionView { viewModel.promptReview() }
+                    }
+                    .alert(L10n.resetDataAlert, isPresented: $showResetAlert) {
+                        Button(L10n.cancel, role: .cancel) { }
+                        Button(L10n.okay, role: .destructive) {
+                            viewModel.clearAllData()
+                        }
+                    } message: {
+                        Text(L10n.resetDataAlertDesc)
+                    }
+                    .sheet(isPresented: $showPaywall) {
+                        PaywallView(displayCloseButton: true)
+                    }
+                    .navigationTitle("Settings")
+                    .navigationBarTitleDisplayMode(.large)
+                    .toolbarBackground(.regularMaterial, for: .navigationBar)
+                }
+               
+            case .error(let msg):
+                ErrorState(message: msg) { }
+                
+            default:
+                LoadingState()
         }
-        .sheet(isPresented: $showPaywall) {
-            PaywallView(displayCloseButton: true)
-        }
-        .navigationTitle("Settings")
+    }
+    
+    private func handleStateChange(_ state: UiState) {
+        restartTheApp = .loaded == state
     }
 }
 
@@ -82,6 +114,33 @@ private struct ThemeSectionView: View {
     }
 }
 
+private struct SlidesSectionView: View {
+    @Binding var isOn: Bool
+    
+    var body: some View {
+        Section {
+            HStack {
+                Image(systemName: "arrow.left.and.right")
+                    .frame(width: 24, height: 24)
+                    .foregroundColor(.accentColor)
+
+                VStack(alignment: .leading) {
+                    Text("Song Slides")
+                    Text("Swipe verses horizontally")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+
+                Spacer()
+
+                Toggle("", isOn: $isOn)
+                    .labelsHidden()
+            }
+            .contentShape(Rectangle())
+        }
+    }
+}
+
 private struct ProSectionView: View {
     let onTap: () -> Void
     
@@ -92,9 +151,8 @@ private struct ProSectionView: View {
                     Image(systemName: "star.fill")
                         .foregroundColor(.yellow)
                     VStack(alignment: .leading, spacing: 2) {
-                        Text("Join SongLib Pro")
-                            .font(.headline)
-                        Text("Join SongLib Pro, Exprience advanced search, lots of exclusive features as a way to support the developer of SongLib")
+                        Text(L10n.joinPro).font(.headline)
+                        Text(L10n.joinProDesc)
                             .font(.subheadline)
                             .foregroundColor(.secondary)
                     }
@@ -110,15 +168,15 @@ private struct ReviewSectionView: View {
     let onEmail: () -> Void
 
     var body: some View {
-        Section(header: Text("MAONI")) {
+        Section(header: Text("FEEDBACK")) {
             VStack(alignment: .leading, spacing: 2) {
                 Button(action: onReview) {
                     HStack(spacing: 12) {
                         Image(systemName: "text.badge.star")
                         VStack(alignment: .leading, spacing: 2) {
-                            Text("Tupe review")
+                            Text(L10n.leaveReview)
                                 .font(.headline)
-                            Text("Unaweza kutupa review ili kitumizi hizi kionekane kwa wengine")
+                            Text(L10n.leaveReviewDesc)
                                 .font(.subheadline)
                                 .foregroundColor(.secondary)
                         }
@@ -130,9 +188,8 @@ private struct ReviewSectionView: View {
                     HStack(spacing: 12) {
                         Image(systemName: "envelope")
                         VStack(alignment: .leading, spacing: 2) {
-                            Text("Wasiliana nasi")
-                                .font(.headline)
-                            Text("Iwapo una malalamishi/maoni, tutumie barua pepe. Usikose kuweka picha za skrini (screenshot) nyingi uwezavyo.")
+                            Text(L10n.contactUs).font(.headline)
+                            Text(L10n.contactUsDesc)
                                 .font(.subheadline)
                                 .foregroundColor(.secondary)
                         }
@@ -148,15 +205,14 @@ private struct ResetSectionView: View {
     let onTap: () -> Void
     
     var body: some View {
-        Section(header: Text("HATARI").foregroundColor(.red)) {
+        Section(header: Text("DANGER").foregroundColor(.red)) {
             Button(action: onTap) {
                 HStack(spacing: 12) {
                     Image(systemName: "exclamationmark.triangle.fill")
                         .foregroundColor(.red)
                     VStack(alignment: .leading, spacing: 2) {
-                        Text("Weka upya data")
-                            .font(.headline).foregroundColor(.red)
-                        Text("Unaweza kufuta data yote iliyoko na uanze kudondoa upya")
+                        Text(L10n.resetData).font(.headline).foregroundColor(.red)
+                        Text(L10n.resetDataDesc)
                             .font(.subheadline)
                             .foregroundColor(.secondary)
                     }

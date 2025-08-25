@@ -7,37 +7,50 @@
 
 import Foundation
 
-class PrefsRepository {
-    private enum Keys {
-        static let isSelected = "dataIsSelectedKey"
-        static let isLoaded = "dataIsLoadedKey"
-        static let selectedBooks = "selectedBooksKey"
-        static let horizontalSlides = "horizontalSlidesKey"
-    }
-    
+class PrefsRepository {    
     private let userDefaults: UserDefaults
     
     init(userDefaults: UserDefaults = .standard) {
         self.userDefaults = userDefaults
     }
     
+    var installDate: Date {
+        get { userDefaults.object(forKey: PrefConstants.installDate) as? Date ?? Date() }
+        set { userDefaults.set(newValue, forKey: PrefConstants.installDate) }
+    }
+    
+    var reviewRequested: Bool {
+        get { userDefaults.bool(forKey: PrefConstants.reviewRequested) }
+        set { userDefaults.set(newValue, forKey: PrefConstants.reviewRequested) }
+    }
+    
+    var lastReviewPrompt: Date {
+        get { userDefaults.object(forKey: PrefConstants.lastReviewPrompt) as? Date ?? .distantPast }
+        set { userDefaults.set(newValue, forKey: PrefConstants.lastReviewPrompt) }
+    }
+    
+    var usageTime: TimeInterval {
+        get { userDefaults.double(forKey: PrefConstants.usageTime) }
+        set { userDefaults.set(newValue, forKey: PrefConstants.usageTime) }
+    }
+    
     var isDataSelected: Bool {
-        get { userDefaults.bool(forKey: Keys.isSelected) }
-        set { userDefaults.set(newValue, forKey: Keys.isSelected) }
+        get { userDefaults.bool(forKey: PrefConstants.isSelected) }
+        set { userDefaults.set(newValue, forKey: PrefConstants.isSelected) }
     }
     
     var isDataLoaded: Bool {
-        get { userDefaults.bool(forKey: Keys.isLoaded) }
-        set { userDefaults.set(newValue, forKey: Keys.isLoaded) }
+        get { userDefaults.bool(forKey: PrefConstants.isLoaded) }
+        set { userDefaults.set(newValue, forKey: PrefConstants.isLoaded) }
     }
     
     var selectedBooks: String {
-        get { userDefaults.string(forKey: Keys.selectedBooks) ?? "" }
-        set { userDefaults.set(newValue, forKey: Keys.selectedBooks) }
+        get { userDefaults.string(forKey: PrefConstants.selectedBooks) ?? "" }
+        set { userDefaults.set(newValue, forKey: PrefConstants.selectedBooks) }
     }
     
     var horizontalSlides: Bool {
-        get { userDefaults.bool(forKey: Keys.horizontalSlides) }
-        set { userDefaults.set(newValue, forKey: Keys.horizontalSlides) }
+        get { userDefaults.bool(forKey: PrefConstants.horizontalSlides) }
+        set { userDefaults.set(newValue, forKey: PrefConstants.horizontalSlides) }
     }
 }

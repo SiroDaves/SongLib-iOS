@@ -25,9 +25,7 @@ struct PresenterView: View {
             }
 
             if showToast {
-                let toastMessage = viewModel.isLiked
-                    ? "\(song.title) added to your likes"
-                    : "\(song.title) removed from your likes"
+                let toastMessage = L10n.likedSong(for: song.title, isLiked: viewModel.isLiked)
 
                 ToastView(message: toastMessage)
                     .transition(.move(edge: .bottom).combined(with: .opacity))
