@@ -46,11 +46,8 @@ final class SettingsViewModel: ObservableObject {
     }
     
     func checkSettings() {
-        Task { @MainActor in
-            self.horizontalSlides = prefsRepo.horizontalSlides
-            self.checkSubscription()
-            self.uiState = .fetched
-        }
+        self.horizontalSlides = prefsRepo.horizontalSlides
+        self.uiState = .fetched
     }
     
     func updateSlides(value: Bool) {

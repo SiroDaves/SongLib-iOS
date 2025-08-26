@@ -13,6 +13,8 @@ struct SettingsView: View {
     @StateObject private var viewModel: SettingsViewModel = {
         DiContainer.shared.resolve(SettingsViewModel.self)
     }()
+    let isActiveSubscriber: Bool
+    
     @EnvironmentObject var themeManager: ThemeManager
     @State private var showPaywall: Bool = false
     @State private var showResetAlert: Bool = false
@@ -51,7 +53,7 @@ struct SettingsView: View {
                     )
                     
                     #if !DEBUG
-                    if !viewModel.isActiveSubscriber {
+                    if !isActiveSubscriber {
                         ProSectionView { showPaywall = true }
                     }
                     #endif
@@ -88,6 +90,6 @@ struct SettingsView: View {
 }
 
 #Preview {
-    SettingsView()
+    SettingsView(isActiveSubscriber: false)
         .environmentObject(ThemeManager())
 }

@@ -12,7 +12,6 @@ struct PresenterView: View {
     @StateObject private var viewModel: PresenterViewModel = {
         DiContainer.shared.resolve(PresenterViewModel.self)
     }()
-    
     let song: Song
     
     @StateObject private var selectedPage = Page.first()

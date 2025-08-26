@@ -44,7 +44,9 @@ struct HomeView: View {
                                 Label("Likes", systemImage: "heart.fill")
                             }
                     }
-                    SettingsView()
+                    SettingsView(
+                        isActiveSubscriber: viewModel.isActiveSubscriber
+                    )
                         .tabItem {
                             Label("Settings", systemImage: "gear")
                         }
