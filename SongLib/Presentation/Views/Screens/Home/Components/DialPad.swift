@@ -7,26 +7,6 @@
 
 import SwiftUI
 
-struct DialPadOverlay: View {
-    let onNumberClick: (String) -> Void
-    let onBackspaceClick: () -> Void
-    let onSearchClick: () -> Void
-
-    var body: some View {
-        VStack {
-            Spacer()
-            DialPad(
-                onNumberClick: onNumberClick,
-                onBackspaceClick: onBackspaceClick,
-                onSearchClick: onSearchClick
-            )
-            .transition(.move(edge: .bottom).combined(with: .opacity))
-            .animation(.easeInOut, value: true)
-        }
-        .edgesIgnoringSafeArea(.bottom)
-    }
-}
-
 struct DialPad: View {
     let onNumberClick: (String) -> Void
     let onBackspaceClick: () -> Void
@@ -64,10 +44,11 @@ struct DialPad: View {
         }
         .padding(16)
         .background(
-            RoundedRectangle(cornerRadius: 16)
+            RoundedRectangle(cornerRadius: 24)
                 .fill(Color(.systemBackground))
                 .shadow(radius: 8)
         )
+        .padding(.horizontal, 16)
     }
 }
 
@@ -104,7 +85,7 @@ struct DialIconButton: View {
 }
 
 #Preview {
-    DialPadOverlay(
+    DialPad(
         onNumberClick: {_ in },
         onBackspaceClick: {},
         onSearchClick: {}

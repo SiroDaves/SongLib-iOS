@@ -81,22 +81,6 @@ class AppUtils {
         return myString.count <= cutoff ? myString : "\(myString.prefix(cutoff))..."
     }
     
-    func refineTitle(txt: String) -> String {
-        return txt.replacingOccurrences(of: "''", with: "'")
-    }
-    
-    func refineContent(txt: String) -> String {
-        return txt.replacingOccurrences(of: "''", with: "'").replacingOccurrences(of: "#", with: " ")
-    }
-    
-    func songItemTitle(number: Int, title: String) -> String {
-        return number != 0 ? "\(number). \(refineTitle(txt: title))" : refineTitle(txt: title)
-    }
-    
-    func getSongVerses(songContent: String) -> [String] {
-        return songContent.split(separator: "##").map { $0.replacingOccurrences(of: "#", with: "\n") }
-    }
-    
     func songCopyString(title: String, content: String) -> String {
         return "\(title)\n\n\(content)"
     }
@@ -107,14 +91,6 @@ class AppUtils {
     
     func lyricsString(lyrics: String) -> String {
         return lyrics.replacingOccurrences(of: "#", with: "\n").replacingOccurrences(of: "''", with: "'")
-    }
-    
-    func songViewerTitle(number: Int, title: String, alias: String) -> String {
-        var songTitle = "\(number). \(refineTitle(txt: title))"
-        if alias.count > 2 && title != alias {
-            songTitle = "\(songTitle) (\(refineTitle(txt: alias)))"
-        }
-        return songTitle
     }
     
     func songShareString(title: String, content: String) -> String {

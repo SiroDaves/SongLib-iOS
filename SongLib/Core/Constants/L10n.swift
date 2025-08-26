@@ -32,5 +32,5 @@ struct L10n {
     static let resetData = "Reset Data."
     static let resetDataDesc = "You can clear all the data and do the selection afresh."
     static let contactUs = "Contact Us"
-    static let contactUsDesc = "In case you have compliment/comoplaints, email us. Don't fail to attach as many screenshots as you can."
+    static let contactUsDesc = "Got any compliment/complaints? Just email now. Don't fail to attach as many screenshots as you can."
 }

@@ -63,6 +63,7 @@ final class MainViewModel: ObservableObject {
     
     func updateSlides(value: Bool) {
         prefsRepo.horizontalSlides = value
+        horizontalSlides = value
     }
     
     func fetchData() {
@@ -108,5 +109,4 @@ final class MainViewModel: ObservableObject {
             self.uiState = .loaded
         }
     }
-    
 }

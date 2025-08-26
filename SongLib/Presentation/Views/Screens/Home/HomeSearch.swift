@@ -14,69 +14,68 @@ struct HomeSearch: View {
 
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack(spacing: 1) {
-                    SongsSearchBar(text: $searchQry, onCancel: {
-                        searchQry = ""
-                        viewModel.searchSongs(qry: "")
-                    })
-                    .onChange(of: searchQry) { newValue in
-                        viewModel.searchSongs(qry: newValue, byNo: searchByNo)
-                    }
-
-                    BooksListView(
-                        books: viewModel.books,
-                        selectedBook: viewModel.selectedBook,
-                        onSelect: { book in
-                            viewModel.selectedBook = viewModel.books.firstIndex(of: book) ?? 0
-                            viewModel.filterSongs(book: book.bookId)
-                        }
-                    )
-                    
-                    Spacer()
-                    ZStack(alignment: .bottomTrailing) {
-                        SongsListView(songs: viewModel.filtered)
-                        
-                        Button {
-                            searchByNo = true
+            ZStack(alignment: .bottomTrailing) {
+                ScrollView {
+                    VStack(spacing: 1) {
+                        SongsSearchBar(text: $searchQry, onCancel: {
                             searchQry = ""
-                            viewModel.searchSongs(qry: "", byNo: true)
-                        } label: {
-                            Image(systemName: "circle.grid.3x3.fill")
-                                .font(.title.weight(.semibold))
-                                .padding()
-                                .foregroundColor(.onPrimaryContainer)
-                                .background(.primaryContainer)
-                                .clipShape(Circle())
-                                .shadow(radius: 4, x: 0, y: 4)
+                            viewModel.searchSongs(qry: "")
+                        })
+                        .onChange(of: searchQry) { newValue in
+                            viewModel.searchSongs(qry: newValue, byNo: searchByNo)
+                        }
 
-                        }
-                        .padding()
-                        
-                        if searchByNo {
-                            DialPadOverlay(
-                                onNumberClick: { num in
-                                    searchQry += num
+                        BooksList(
+                            books: viewModel.books,
+                            selectedBook: viewModel.selectedBook,
+                            onSelect: { book in
+                                viewModel.selectedBook = viewModel.books.firstIndex(of: book) ?? 0
+                                viewModel.filterSongs(book: book.bookId)
+                            }
+                        )
+
+                        SongsList(songs: viewModel.filtered)
+                    }
+                    .background(.surface)
+                    .padding(.vertical)
+                }
+                
+                if viewModel.isActiveSubscriber {
+                    Button {
+                        searchByNo = true
+                        searchQry = ""
+                        viewModel.searchSongs(qry: "", byNo: true)
+                    } label: {
+                        Image(systemName: "circle.grid.3x3.fill")
+                            .font(.title.weight(.semibold))
+                            .padding()
+                            .foregroundColor(.onPrimaryContainer)
+                            .background(.primaryContainer)
+                            .clipShape(Circle())
+                            .shadow(radius: 4, x: 0, y: 4)
+                    }
+                    .padding()
+                    
+                    if searchByNo {
+                        DialPad(
+                            onNumberClick: { num in
+                                searchQry += num
+                                viewModel.searchSongs(qry: searchQry, byNo: true)
+                            },
+                            onBackspaceClick: {
+                                if !searchQry.isEmpty {
+                                    searchQry.removeLast()
                                     viewModel.searchSongs(qry: searchQry, byNo: true)
-                                },
-                                onBackspaceClick: {
-                                    if !searchQry.isEmpty {
-                                        searchQry.removeLast()
-                                        viewModel.searchSongs(qry: searchQry, byNo: true)
-                                    }
-                                },
-                                onSearchClick: {
-                                    viewModel.searchSongs(qry: searchQry, byNo: true)
-                                    searchByNo = false
                                 }
-                            )
-                            .transition(.move(edge: .bottom).combined(with: .opacity))
-                            .animation(.easeInOut, value: searchByNo)
-                        }
+                            },
+                            onSearchClick: {
+                                viewModel.searchSongs(qry: searchQry, byNo: true)
+                                searchByNo = false
+                            }
+                        )
+                        .animation(.easeInOut, value: true)
                     }
                 }
-                .background(.surface)
-                .padding(.vertical)
             }
             .navigationTitle("SongLib")
             .toolbarBackground(.regularMaterial, for: .navigationBar)
@@ -121,8 +120,4 @@ extension View {
         UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder),
                                         to: nil, from: nil, for: nil)
     }
-}
-
-#Preview {
-    SongsList()
 }

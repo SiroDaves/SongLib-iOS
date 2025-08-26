@@ -5,7 +5,6 @@
 //  Created by Siro Daves on 06/05/2025.
 //
 
-
 import Foundation
 import SwiftUI
 
@@ -37,9 +36,9 @@ final class PresenterViewModel: ObservableObject {
         verses = []
 
         hasChorus = song.content.contains("CHORUS")
-        title = songItemTitle(number: song.songNo, title: song.title)
+        title = SongUtils.songItemTitle(number: song.songNo, title: song.title)
 
-        let songVerses = getSongVerses(songContent: song.content)
+        let songVerses = SongUtils.getSongVerses(songContent: song.content)
         let verseCount = songVerses.count
 
         if hasChorus {

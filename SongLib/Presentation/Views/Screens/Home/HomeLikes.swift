@@ -14,7 +14,7 @@ struct HomeLikes: View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 1) {
-                    BooksListView(
+                    BooksList(
                         books: viewModel.books,
                         selectedBook: viewModel.selectedBook,
                         onSelect: { book in
@@ -24,7 +24,7 @@ struct HomeLikes: View {
                     )
                     
                     Spacer()
-                    SongsListView(songs: viewModel.likes)
+                    SongsList(songs: viewModel.likes)
                 }
                 .background(.surface)
                 .padding(.vertical)

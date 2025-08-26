@@ -8,6 +8,31 @@
 import Foundation
 
 class SongUtils {
+    
+    static func refineTitle(txt: String) -> String {
+        return txt.replacingOccurrences(of: "''", with: "'")
+    }
+    
+    static func refineContent(txt: String) -> String {
+        return txt.replacingOccurrences(of: "''", with: "'").replacingOccurrences(of: "#", with: " ")
+    }
+    
+    static func songItemTitle(number: Int, title: String) -> String {
+        return number != 0 ? "\(number). \(refineTitle(txt: title))" : refineTitle(txt: title)
+    }
+    
+    static func getSongVerses(songContent: String) -> [String] {
+        return songContent.split(separator: "##").map { $0.replacingOccurrences(of: "#", with: "\n") }
+    }
+    
+    static func songViewerTitle(number: Int, title: String, alias: String) -> String {
+        var songTitle = "\(number). \(refineTitle(txt: title))"
+        if alias.count > 2 && title != alias {
+            songTitle = "\(songTitle) (\(refineTitle(txt: alias)))"
+        }
+        return songTitle
+    }
+    
     static func searchSongs(
         songs: [Song],
         qry: String,
@@ -23,6 +48,10 @@ class SongUtils {
             } else {
                 return []
             }
+        }
+        
+        if query.count <= 3, let number = Int(query) {
+            return songs.filter { $0.songNo == number }
         }
         
         let charsPattern = try! NSRegularExpression(pattern: "[!,]", options: [])
@@ -65,4 +94,5 @@ class SongUtils {
             }
         }
     }
+
 }

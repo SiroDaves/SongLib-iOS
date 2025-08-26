@@ -39,13 +39,11 @@ struct HomeView: View {
                             Label("Search", systemImage: "magnifyingglass")
                         }
                     .background(.primaryContainer)
-                    if viewModel.isActiveSubscriber {
-                        HomeLikes(viewModel: viewModel)
-                            .tabItem {
-                                Label("Likes", systemImage: "heart.fill")
-                            }
-                            .background(.primaryContainer)
-                    }
+                    HomeLikes(viewModel: viewModel)
+                        .tabItem {
+                            Label("Likes", systemImage: "heart.fill")
+                        }
+                        .background(.primaryContainer)
                     SettingsView(viewModel: viewModel)
                         .tabItem {
                             Label("Settings", systemImage: "gear")
