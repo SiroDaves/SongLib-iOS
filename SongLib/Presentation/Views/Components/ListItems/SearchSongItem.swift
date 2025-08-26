@@ -34,7 +34,9 @@ struct SearchSongItem: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 2) {
             HStack(alignment: .center) {
-                Text(songItemTitle(number: song.songNo, title: song.title))
+                Text(
+                    SongUtils.songItemTitle(number: song.songNo, title: song.title)
+                )
                     .font(.title3)
                     .foregroundColor(.scrim)
                     .fontWeight(.bold)
@@ -52,7 +54,7 @@ struct SearchSongItem: View {
                     .foregroundColor(.scrim)
             }
 
-            Text(refineContent(txt: verses.first ?? ""))
+            Text(SongUtils.refineContent(txt: verses.first ?? ""))
                 .lineLimit(2)
                 .foregroundColor(.scrim)
                 .font(.body)
@@ -70,7 +72,7 @@ struct SearchSongItem: View {
 }
 
 #Preview {
-    SongsListView(
+    SongsList(
         songs: Song.sampleSongs
     )
     .padding()

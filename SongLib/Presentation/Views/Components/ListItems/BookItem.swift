@@ -30,7 +30,7 @@ struct BookItem: View {
                     .padding(5)
                 
                 VStack(alignment: .leading, spacing: 4) {
-                    Text(refineTitle(txt: book.title))
+                    Text(SongUtils.refineTitle(txt: book.title))
                         .font(.system(size: 20, weight: .bold))
                         .foregroundColor(txtColor)
 
