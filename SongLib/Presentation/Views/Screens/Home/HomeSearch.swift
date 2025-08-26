@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct HomeSearch: View {
-    @ObservedObject var viewModel: HomeViewModel
+    @ObservedObject var viewModel: MainViewModel
     @State private var searchQry: String = ""
     @State private var searchByNo: Bool = false
 

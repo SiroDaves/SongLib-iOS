@@ -10,10 +10,7 @@ import RevenueCat
 import RevenueCatUI
 
 struct SettingsView: View {
-    @StateObject private var viewModel: SettingsViewModel = {
-        DiContainer.shared.resolve(SettingsViewModel.self)
-    }()
-    let isActiveSubscriber: Bool
+    @ObservedObject var viewModel: MainViewModel
     
     @EnvironmentObject var themeManager: ThemeManager
     @State private var showPaywall: Bool = false
@@ -31,65 +28,46 @@ struct SettingsView: View {
     }
     
     private var mainContent: some View {
-        stateContent
-        .edgesIgnoringSafeArea(.bottom)
-        .task { viewModel.checkSettings() }
-    }
-    
-    @ViewBuilder
-    private var stateContent: some View {
-        switch viewModel.uiState {
-            case .fetched:
-                Form {
-                    ThemeSectionView(
-                        selectedTheme: $themeManager.selectedTheme
+        NavigationStack {
+            Form {
+                ThemeSectionView(
+                    selectedTheme: $themeManager.selectedTheme
+                )
+
+                SlidesSectionView(
+                    isOn: Binding(
+                        get: { viewModel.horizontalSlides },
+                        set: { viewModel.updateSlides(value: $0) }
                     )
-
-                    SlidesSectionView(
-                        isOn: Binding(
-                            get: { viewModel.horizontalSlides },
-                            set: { viewModel.updateSlides(value: $0) }
-                        )
-                    )
-                    
-                    #if !DEBUG
-                    if !isActiveSubscriber {
-                        ProSectionView { showPaywall = true }
-                    }
-                    #endif
-
-                    ReviewSectionView(onReviewReq: viewModel.promptReview, onContactUs: viewModel.sendEmail)
-
-                    ResetSectionView { showResetAlert = true }
-                }
-                .alert(L10n.resetDataAlert, isPresented: $showResetAlert) {
-                    Button(L10n.cancel, role: .cancel) { }
-                    Button(L10n.okay, role: .destructive) {
-                        viewModel.clearAllData()
-                    }
-                } message: {
-                    Text(L10n.resetDataAlertDesc)
-                }
-                .sheet(isPresented: $showPaywall) {
-                    PaywallView(displayCloseButton: true)
-                }
-                .navigationTitle("Settings")
-                .toolbarBackground(.regularMaterial, for: .navigationBar)
-               
-            case .error(let msg):
-                ErrorState(message: msg) { }
+                )
                 
-            default:
-                LoadingState()
+                #if !DEBUG
+                if !isActiveSubscriber {
+                    ProSectionView { showPaywall = true }
+                }
+                #endif
+
+                ReviewSectionView(
+                    onReviewReq: viewModel.promptReview,
+                    onContactUs: AppUtils.sendEmail,
+                )
+
+                ResetSectionView { showResetAlert = true }
+            }
+            .alert(L10n.resetDataAlert, isPresented: $showResetAlert) {
+                Button(L10n.cancel, role: .cancel) { }
+                Button(L10n.okay, role: .destructive) {
+                    viewModel.clearAllData()
+                }
+            } message: {
+                Text(L10n.resetDataAlertDesc)
+            }
+            .sheet(isPresented: $showPaywall) {
+                PaywallView(displayCloseButton: true)
+            }
+            .navigationTitle("Settings")
+            .toolbarBackground(.regularMaterial, for: .navigationBar)
         }
     }
     
-    private func handleStateChange(_ state: UiState) {
-        restartTheApp = .loaded == state
-    }
-}
-
-#Preview {
-    SettingsView(isActiveSubscriber: false)
-        .environmentObject(ThemeManager())
 }

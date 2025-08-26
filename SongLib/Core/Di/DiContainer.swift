@@ -31,9 +31,8 @@ final class DiContainer {
             { self.container.resolve(SubscriptionRepositoryProtocol.self) },
             { self.container.resolve(ReviewReqRepositoryProtocol.self) },
             { self.container.resolve(SelectionViewModel.self) },
-            { self.container.resolve(HomeViewModel.self) },
+            { self.container.resolve(MainViewModel.self) },
             { self.container.resolve(PresenterViewModel.self) },
-            { self.container.resolve(SettingsViewModel.self) },
         ]
 
         for resolve in dependencies {

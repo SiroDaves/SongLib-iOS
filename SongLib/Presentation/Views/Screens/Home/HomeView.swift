@@ -9,10 +9,11 @@ import SwiftUI
 import RevenueCatUI
 
 struct HomeView: View {
-    @StateObject private var viewModel: HomeViewModel = {
-        DiContainer.shared.resolve(HomeViewModel.self)
+    @StateObject private var viewModel: MainViewModel = {
+        DiContainer.shared.resolve(MainViewModel.self)
     }()
     
+    @State private var showSettings: Bool = false
     @State private var showPaywall: Bool = false
     
     var body: some View {
@@ -29,7 +30,7 @@ struct HomeView: View {
                 LoadingState(title: msg!)
             
             case .filtering:
-                LoadingState()
+                ProgressView().tint(.onPrimary)
             
             case .filtered:
                 TabView {
@@ -43,10 +44,9 @@ struct HomeView: View {
                             .tabItem {
                                 Label("Likes", systemImage: "heart.fill")
                             }
+                            .background(.primaryContainer)
                     }
-                    SettingsView(
-                        isActiveSubscriber: viewModel.isActiveSubscriber
-                    )
+                    SettingsView(viewModel: viewModel)
                         .tabItem {
                             Label("Settings", systemImage: "gear")
                         }

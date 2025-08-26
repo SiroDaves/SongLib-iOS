@@ -72,8 +72,8 @@ struct DependencyMap {
             )
         }.inObjectScope(.container)
         
-        container.register(HomeViewModel.self) { resolver in
-            HomeViewModel(
+        container.register(MainViewModel.self) { resolver in
+            MainViewModel(
                 prefsRepo: resolver.resolve(PrefsRepository.self)!,
                 bookRepo: resolver.resolve(BookRepositoryProtocol.self)!,
                 songRepo: resolver.resolve(SongRepositoryProtocol.self)!,
@@ -86,16 +86,6 @@ struct DependencyMap {
             PresenterViewModel(
                 prefsRepo: resolver.resolve(PrefsRepository.self)!,
                 songRepo: resolver.resolve(SongRepositoryProtocol.self)!,
-            )
-        }.inObjectScope(.container)
-        
-        container.register(SettingsViewModel.self) { resolver in
-            SettingsViewModel(
-                prefsRepo: resolver.resolve(PrefsRepository.self)!,
-                bookRepo: resolver.resolve(BookRepositoryProtocol.self)!,
-                songRepo: resolver.resolve(SongRepositoryProtocol.self)!,
-                subsRepo: resolver.resolve(SubscriptionRepositoryProtocol.self)!,
-                reviewRepo: resolver.resolve(ReviewReqRepositoryProtocol.self)!,
             )
         }.inObjectScope(.container)
         
