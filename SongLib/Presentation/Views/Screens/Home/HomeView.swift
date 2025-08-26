@@ -9,8 +9,8 @@ import SwiftUI
 import RevenueCatUI
 
 struct HomeView: View {
-    @StateObject private var viewModel: HomeViewModel = {
-        DiContainer.shared.resolve(HomeViewModel.self)
+    @StateObject private var viewModel: MainViewModel = {
+        DiContainer.shared.resolve(MainViewModel.self)
     }()
     
     @State private var showSettings: Bool = false
@@ -27,52 +27,41 @@ struct HomeView: View {
     private var stateContent: some View {
         switch viewModel.uiState {
             case .loading(let msg):
-                LoadingView(title: msg!)
+                LoadingState(title: msg!)
+            
             case .filtering:
-                ProgressView()
-                    .scaleEffect(5)
-                    .tint(.primary1)
+                ProgressView().tint(.onPrimary)
+            
             case .filtered:
-                NavigationStack {
-                    TabView {
-                        SongsView(
-                            viewModel: viewModel,
-                        )
-                            .tabItem {
-                                Label("Songs", systemImage: "magnifyingglass")
-                            }
-                            .background(.primaryContainer)
-                        LikesView(viewModel: viewModel)
+                TabView {
+                    HomeSearch(viewModel: viewModel)
+                        .tabItem {
+                            Label("Search", systemImage: "magnifyingglass")
+                        }
+                    .background(.primaryContainer)
+                    if viewModel.isActiveSubscriber {
+                        HomeLikes(viewModel: viewModel)
                             .tabItem {
                                 Label("Likes", systemImage: "heart.fill")
                             }
                             .background(.primaryContainer)
                     }
-                    .toolbar {
-                        ToolbarItem(placement: .navigationBarTrailing) {
-                            Button(action: {
-                                showSettings = true
-                            }) {
-                                Image(systemName: "gear")
-                                    .imageScale(.large)
-                                    .foregroundColor(.primary1)
-
-                            }
+                    SettingsView(viewModel: viewModel)
+                        .tabItem {
+                            Label("Settings", systemImage: "gear")
                         }
-                    }
-                    .onAppear {
-                        if !viewModel.hasActiveSubscription {
-                            showPaywall = true
-                        }
-                    }
-                    .sheet(isPresented: self.$showPaywall) {
+                    .background(.primaryContainer)
+                }
+                .onAppear {
+                    #if !DEBUG
+                        showPaywall = !viewModel.isActiveSubscriber
+                    #endif
+                    viewModel.promptReview()
+                }
+                .sheet(isPresented: $showPaywall) {
+                    #if !DEBUG
                         PaywallView(displayCloseButton: true)
-                    }
-                    .navigationTitle("SongLib")
-                    .navigationBarTitleDisplayMode(.inline)
-                    .navigationDestination(isPresented: $showSettings) {
-                        SettingsView()
-                    }
+                    #endif
                 }
                
             case .error(let msg):
@@ -81,28 +70,13 @@ struct HomeView: View {
                 }
                 
             default:
-                LoadingView()
+                LoadingState()
         }
     }
     
     private func handleStateChange(_ state: UiState) {
         if case .fetched = state {
             viewModel.filterSongs(book: viewModel.books[viewModel.selectedBook].bookId)
-        }
-    }
-    
-}
-
-struct LikesView: View {
-    @ObservedObject var viewModel: HomeViewModel
-
-    var body: some View {
-        NavigationStack {
-            VStack(spacing: 12) {
-                SongsListView(songs: viewModel.likes)
-            }
-            .background(.surface)
-            .padding(.vertical)
         }
     }
 }

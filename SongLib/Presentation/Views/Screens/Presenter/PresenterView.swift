@@ -12,7 +12,6 @@ struct PresenterView: View {
     @StateObject private var viewModel: PresenterViewModel = {
         DiContainer.shared.resolve(PresenterViewModel.self)
     }()
-    
     let song: Song
     
     @StateObject private var selectedPage = Page.first()
@@ -25,15 +24,14 @@ struct PresenterView: View {
             }
 
             if showToast {
-                let toastMessage = viewModel.isLiked
-                    ? "\(song.title) added to your likes"
-                    : "\(song.title) removed from your likes"
+                let toastMessage = L10n.likedSong(for: song.title, isLiked: viewModel.isLiked)
 
                 ToastView(message: toastMessage)
                     .transition(.move(edge: .bottom).combined(with: .opacity))
                     .zIndex(1)
             }
         }
+        .toolbar(.hidden, for: .tabBar)
         .task { viewModel.loadSong(song: song) }
         .onChange(of: viewModel.uiState) { newState in
             if case .liked = newState {

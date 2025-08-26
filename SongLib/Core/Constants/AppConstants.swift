@@ -14,6 +14,18 @@ struct AppConstants {
     static let entitlements = "songlib_offering_1"
 }
 
+struct PrefConstants {
+    static let installDate = "installDateKey"
+    static let reviewRequested = "reviewRequestedKey"
+    static let lastReviewPrompt = "lastReviewPromptKey"
+    static let usageTime = "usageTimeKey"
+    
+    static let isSelected = "dataIsSelectedKey"
+    static let isLoaded = "dataIsLoadedKey"
+    static let selectedBooks = "selectedBooksKey"
+    static let horizontalSlides = "horizontalSlidesKey"
+}
+
 struct AppSecrets {
     static let rc_api_key: String = {
         guard let path = Bundle.main.path(forResource: "Secrets", ofType: "plist"),

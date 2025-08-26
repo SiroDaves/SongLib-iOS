@@ -12,6 +12,7 @@ protocol SongRepositoryProtocol {
     func fetchLocalSongs() -> [Song]
     func saveSong(_ song: Song)
     func updateSong(_ song: Song)
+    func deleteLocalData()
 }
 
 class SongRepository: SongRepositoryProtocol {
@@ -39,4 +40,9 @@ class SongRepository: SongRepositoryProtocol {
     func saveSong(_ song: Song) {
         songData.saveSong(song)
     }
+    
+    func deleteLocalData() {
+        songData.deleteAllSongs()
+    }
+    
 }

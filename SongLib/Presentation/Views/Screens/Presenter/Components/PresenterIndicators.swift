@@ -63,8 +63,8 @@ struct IndicatorButton: View {
 }
 
 #Preview{
-    PresenterIndicatorsV1(
+    PresenterIndicators(
         indicators: ["1", "C", "2" ],
-        selected: .constant(0)
+        selected: Page.first()
     )
 }

@@ -9,8 +9,8 @@ import SwiftUI
 import Lottie
 
 struct LoadingState: View {
-    let title: String
-    let fileName: String
+    var title: String = ""
+    var fileName: String = "loading-hand"
     var showProgress: Bool = false
     var progressValue: Int = 0
 

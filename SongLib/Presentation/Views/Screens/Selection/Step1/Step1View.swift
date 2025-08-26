@@ -49,10 +49,10 @@ struct Step1View: View {
                 )
                 
             case .saving(let msg):
-            LoadingState(
-                title: msg ?? "Loading books ...",
-                fileName: "cloud-download"
-            )
+                LoadingState(
+                    title: msg ?? "Loading books ...",
+                    fileName: "cloud-download"
+                )
                 
             case .saved:
                 LoadingView()

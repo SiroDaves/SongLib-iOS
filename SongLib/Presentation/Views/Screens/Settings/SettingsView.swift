@@ -9,90 +9,65 @@ import SwiftUI
 import RevenueCat
 import RevenueCatUI
 
-enum AppThemeMode: String, CaseIterable, Identifiable {
-    case light, dark, system
-    var id: String { rawValue }
-
-    var displayName: String {
-        switch self {
-        case .light: return "Light Theme"
-        case .dark: return "Dark Theme"
-        case .system: return "System Default"
-        }
-    }
-}
-
 struct SettingsView: View {
+    @ObservedObject var viewModel: MainViewModel
+    
     @EnvironmentObject var themeManager: ThemeManager
     @State private var showPaywall: Bool = false
-    
-    private let prefs = PrefsRepository()
+    @State private var showResetAlert: Bool = false
+    @State private var restartTheApp = false
     
     var body: some View {
-        Form {
-            Section(header: Text("App Theme")) {
-                Picker("Select your Theme", selection: Binding(
-                    get: { themeManager.selectedTheme },
-                    set: { themeManager.selectedTheme = $0 }
-                )) {
-                    ForEach(AppThemeMode.allCases) { mode in
-                        Text(mode.displayName).tag(mode)
-                    }
-                }
-                .pickerStyle(.inline)
-            }
-
-            Section {
-                HStack {
-                    Image(systemName: "arrow.left.and.right")
-                        .frame(width: 24, height: 24)
-                        .foregroundColor(.accentColor)
-
-                    VStack(alignment: .leading) {
-                        Text("Song Slides")
-                        Text("Swipe verses horizontally")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                    }
-
-                    Spacer()
-
-                    Toggle("", isOn: Binding(
-                        get: { prefs.horizontalSlides },
-                        set: { prefs.horizontalSlides = $0 }
-                    ))
-                    .labelsHidden()
-                }
-                .contentShape(Rectangle())
-            }
-            
-            Section {
-                Button(action: {
-                    showPaywall = true
-                }) {
-                    HStack(spacing: 12) {
-                        Image(systemName: "star.fill")
-                            .foregroundColor(.yellow)
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text("SongLib Pro")
-                                .font(.headline)
-                            Text("Join na SongLib Pro, and enjoy advanced search, lots of exclusive features as a way to support the developer of SongLib")
-                                .font(.subheadline)
-                                .foregroundColor(.secondary)
-                        }
-                    }
-                    .padding(.vertical, 4)
-                }
+        Group {
+            if restartTheApp {
+                AnyView(SplashView())
+            } else {
+                AnyView(mainContent)
             }
         }
-        .sheet(isPresented: $showPaywall) {
-            PaywallView(displayCloseButton: true)
-        }
-        .navigationTitle("Settings")
     }
-}
+    
+    private var mainContent: some View {
+        NavigationStack {
+            Form {
+                ThemeSectionView(
+                    selectedTheme: $themeManager.selectedTheme
+                )
 
-#Preview {
-    SettingsView()
-        .environmentObject(ThemeManager())
+                SlidesSectionView(
+                    isOn: Binding(
+                        get: { viewModel.horizontalSlides },
+                        set: { viewModel.updateSlides(value: $0) }
+                    )
+                )
+                
+                #if !DEBUG
+                if !isActiveSubscriber {
+                    ProSectionView { showPaywall = true }
+                }
+                #endif
+
+                ReviewSectionView(
+                    onReviewReq: viewModel.promptReview,
+                    onContactUs: AppUtils.sendEmail,
+                )
+
+                ResetSectionView { showResetAlert = true }
+            }
+            .alert(L10n.resetDataAlert, isPresented: $showResetAlert) {
+                Button(L10n.cancel, role: .cancel) { }
+                Button(L10n.okay, role: .destructive) {
+                    viewModel.clearAllData()
+                }
+            } message: {
+                Text(L10n.resetDataAlertDesc)
+            }
+            .sheet(isPresented: $showPaywall) {
+                PaywallView(displayCloseButton: true)
+            }
+            .navigationTitle("Settings")
+            .toolbarBackground(.regularMaterial, for: .navigationBar)
+        }
+    }
+    
 }
