@@ -37,49 +37,42 @@ struct SettingsView: View {
     @ViewBuilder
     private var stateContent: some View {
         switch viewModel.uiState {
-            case .loading(let msg):
-                LoadingState(
-                    title: msg!,
-                    fileName: "circle-loader",
-                )
-            
             case .fetched:
-                
-                    Form {
-                        ThemeSectionView(
-                            selectedTheme: $themeManager.selectedTheme
+                Form {
+                    ThemeSectionView(
+                        selectedTheme: $themeManager.selectedTheme
+                    )
+
+                    SlidesSectionView(
+                        isOn: Binding(
+                            get: { viewModel.horizontalSlides },
+                            set: { viewModel.updateSlides(value: $0) }
                         )
-
-                        SlidesSectionView(
-                            isOn: Binding(
-                                get: { viewModel.horizontalSlides },
-                                set: { viewModel.horizontalSlides = $0 }
-                            )
-                        )
-                        
-                        #if !DEBUG
-                        if !viewModel.isActiveSubscriber {
-                            ProSectionView { showPaywall = true }
-                        }
-                        #endif
-
-                        ReviewSectionView(onReviewReq: viewModel.promptReview, onContactUs: viewModel.sendEmail)
-
-                        ResetSectionView { showResetAlert = true }
+                    )
+                    
+                    #if !DEBUG
+                    if !viewModel.isActiveSubscriber {
+                        ProSectionView { showPaywall = true }
                     }
-                    .alert(L10n.resetDataAlert, isPresented: $showResetAlert) {
-                        Button(L10n.cancel, role: .cancel) { }
-                        Button(L10n.okay, role: .destructive) {
-                            viewModel.clearAllData()
-                        }
-                    } message: {
-                        Text(L10n.resetDataAlertDesc)
+                    #endif
+
+                    ReviewSectionView(onReviewReq: viewModel.promptReview, onContactUs: viewModel.sendEmail)
+
+                    ResetSectionView { showResetAlert = true }
+                }
+                .alert(L10n.resetDataAlert, isPresented: $showResetAlert) {
+                    Button(L10n.cancel, role: .cancel) { }
+                    Button(L10n.okay, role: .destructive) {
+                        viewModel.clearAllData()
                     }
-                    .sheet(isPresented: $showPaywall) {
-                        PaywallView(displayCloseButton: true)
-                    }
-                    .navigationTitle("Settings")
-                    .toolbarBackground(.regularMaterial, for: .navigationBar)
+                } message: {
+                    Text(L10n.resetDataAlertDesc)
+                }
+                .sheet(isPresented: $showPaywall) {
+                    PaywallView(displayCloseButton: true)
+                }
+                .navigationTitle("Settings")
+                .toolbarBackground(.regularMaterial, for: .navigationBar)
                
             case .error(let msg):
                 ErrorState(message: msg) { }

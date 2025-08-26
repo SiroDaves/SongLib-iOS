@@ -17,7 +17,6 @@ final class SettingsViewModel: ObservableObject {
 
     @Published var isActiveSubscriber: Bool = false
     @Published var horizontalSlides: Bool = false
-    
     @Published var uiState: UiState = .idle
     
     init(
@@ -35,7 +34,6 @@ final class SettingsViewModel: ObservableObject {
     }
     
     func checkSubscription() {
-        self.horizontalSlides = prefsRepo.horizontalSlides
         subsRepo.isActiveSubscriber { [weak self] isActive in
             DispatchQueue.main.async {
                 self?.isActiveSubscriber = isActive
@@ -49,14 +47,19 @@ final class SettingsViewModel: ObservableObject {
     
     func checkSettings() {
         Task { @MainActor in
+            self.horizontalSlides = prefsRepo.horizontalSlides
             self.checkSubscription()
             self.uiState = .fetched
         }
     }
     
+    func updateSlides(value: Bool) {
+        prefsRepo.horizontalSlides = value
+    }
+    
     func clearAllData() {
         print("Clearing data")
-        self.uiState = .loading("Loading data ...")
+        self.uiState = .loading("Clearing data ...")
 
         Task { @MainActor in
             self.bookRepo.deleteLocalData()
