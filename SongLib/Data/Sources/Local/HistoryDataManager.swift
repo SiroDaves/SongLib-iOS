@@ -47,7 +47,7 @@ class HistoryDataManager {
     }
     
     // Fetch all records from Core Data
-    func fetchHistoryes() -> [History] {
+    func fetchHistories() -> [History] {
         let fetchRequest: NSFetchRequest<CDHistory> = CDHistory.fetchRequest()
         do {
             let cdHistoryes = try context.fetch(fetchRequest)
