@@ -52,7 +52,11 @@ struct PresenterView: View {
                 .tint(.onPrimary)
             
         case .loaded, .liked:
-            mainContent
+            PresenterContent(
+                viewModel: viewModel,
+                selected: selectedPage,
+                song: song
+            )
 
         case .error(let msg):
             ErrorView(message: msg) {
@@ -61,48 +65,6 @@ struct PresenterView: View {
 
         default:
             LoadingView()
-        }
-    }
-
-    private var mainContent: some View {
-        PresenterContent(
-            verses: viewModel.verses,
-            indicators: viewModel.indicators,
-            selected: selectedPage
-        )
-        .background(.surface)
-        .navigationTitle(viewModel.title)
-        .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing) {
-                Button {
-                    viewModel.likeSong(song: song)
-                } label: {
-                    Image(systemName: viewModel.isLiked ? "heart.fill" : "heart")
-                        .foregroundColor(.primary1)
-                }
-            }
-        }
-    }
-}
-
-private struct PresenterContent: View {
-    let verses: [String]
-    let indicators: [String]
-    @ObservedObject var selected: Page
-    
-    var body: some View {
-        VStack(spacing: 20) {
-            PresenterTabs(
-                verses: verses,
-                selected: selected
-            )
-            .frame(maxHeight: .infinity)
-            
-            PresenterIndicators(
-                indicators: indicators,
-                selected: selected
-            )
-            .fixedSize(horizontal: false, vertical: true)
         }
     }
 }

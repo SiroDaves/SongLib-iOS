@@ -40,40 +40,41 @@ struct HomeSearch: View {
                     .padding(.vertical)
                 }
                 
-                Button {
-                    searchByNo = true
-                    searchQry = ""
-                    viewModel.searchSongs(qry: "", byNo: true)
-                } label: {
-                    Image(systemName: "circle.grid.3x3.fill")
-                        .font(.title.weight(.semibold))
-                        .padding()
-                        .foregroundColor(.onPrimaryContainer)
-                        .background(.primaryContainer)
-                        .clipShape(Circle())
-                        .shadow(radius: 4, x: 0, y: 4)
-                }
-                .padding()
-                
-                if searchByNo {
-                    DialPad(
-                        onNumberClick: { num in
-                            searchQry += num
-                            viewModel.searchSongs(qry: searchQry, byNo: true)
-                        },
-                        onBackspaceClick: {
-                            if !searchQry.isEmpty {
-                                searchQry.removeLast()
+                if viewModel.isActiveSubscriber {
+                    Button {
+                        searchByNo = true
+                        searchQry = ""
+                        viewModel.searchSongs(qry: "", byNo: true)
+                    } label: {
+                        Image(systemName: "circle.grid.3x3.fill")
+                            .font(.title.weight(.semibold))
+                            .padding()
+                            .foregroundColor(.onPrimaryContainer)
+                            .background(.primaryContainer)
+                            .clipShape(Circle())
+                            .shadow(radius: 4, x: 0, y: 4)
+                    }
+                    .padding()
+                    
+                    if searchByNo {
+                        DialPad(
+                            onNumberClick: { num in
+                                searchQry += num
                                 viewModel.searchSongs(qry: searchQry, byNo: true)
+                            },
+                            onBackspaceClick: {
+                                if !searchQry.isEmpty {
+                                    searchQry.removeLast()
+                                    viewModel.searchSongs(qry: searchQry, byNo: true)
+                                }
+                            },
+                            onSearchClick: {
+                                viewModel.searchSongs(qry: searchQry, byNo: true)
+                                searchByNo = false
                             }
-                        },
-                        onSearchClick: {
-                            viewModel.searchSongs(qry: searchQry, byNo: true)
-                            searchByNo = false
-                        }
-                    )
-//                    .transition(.move(edge: .bottom).combined(with: .opacity))
-//                    .animation(.easeInOut, value: searchByNo)
+                        )
+                        .animation(.easeInOut, value: true)
+                    }
                 }
             }
             .navigationTitle("SongLib")
