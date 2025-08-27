@@ -33,13 +33,6 @@ struct DependencyMap {
             BookDataManager(coreDataManager: resolver.resolve(CoreDataManager.self)!)
         }.inObjectScope(.container)
         
-        container.register(BookRepositoryProtocol.self) { resolver in
-            BookRepository(
-                apiService: resolver.resolve(ApiServiceProtocol.self)!,
-                bookData: resolver.resolve(BookDataManager.self)!
-            )
-        }.inObjectScope(.container)
-        
         container.register(SongDataManager.self) { resolver in
             SongDataManager(
                 coreDataManager: resolver.resolve(CoreDataManager.self)!,
@@ -47,9 +40,10 @@ struct DependencyMap {
             )
         }.inObjectScope(.container)
         
-        container.register(SongRepositoryProtocol.self) { resolver in
-            SongRepository(
+        container.register(SongBookRepositoryProtocol.self) { resolver in
+            SongBookRepository(
                 apiService: resolver.resolve(ApiServiceProtocol.self)!,
+                bookData: resolver.resolve(BookDataManager.self)!,
                 songData: resolver.resolve(SongDataManager.self)!
             )
         }.inObjectScope(.container)
@@ -67,25 +61,23 @@ struct DependencyMap {
         container.register(SelectionViewModel.self) { resolver in
             SelectionViewModel(
                 prefsRepo: resolver.resolve(PrefsRepository.self)!,
-                bookRepo: resolver.resolve(BookRepositoryProtocol.self)!,
-                songRepo: resolver.resolve(SongRepositoryProtocol.self)!,
+                songbkRepo: resolver.resolve(SongBookRepositoryProtocol.self)!,
             )
         }.inObjectScope(.container)
         
         container.register(MainViewModel.self) { resolver in
             MainViewModel(
                 prefsRepo: resolver.resolve(PrefsRepository.self)!,
-                bookRepo: resolver.resolve(BookRepositoryProtocol.self)!,
-                songRepo: resolver.resolve(SongRepositoryProtocol.self)!,
-                subsRepo: resolver.resolve(SubscriptionRepositoryProtocol.self)!,
+                songbkRepo: resolver.resolve(SongBookRepositoryProtocol.self)!,
                 reviewRepo: resolver.resolve(ReviewReqRepositoryProtocol.self)!,
+                subsRepo: resolver.resolve(SubscriptionRepositoryProtocol.self)!,
             )
         }.inObjectScope(.container)
         
         container.register(PresenterViewModel.self) { resolver in
             PresenterViewModel(
                 prefsRepo: resolver.resolve(PrefsRepository.self)!,
-                songRepo: resolver.resolve(SongRepositoryProtocol.self)!,
+                songbkRepo: resolver.resolve(SongBookRepositoryProtocol.self)!,
             )
         }.inObjectScope(.container)
         

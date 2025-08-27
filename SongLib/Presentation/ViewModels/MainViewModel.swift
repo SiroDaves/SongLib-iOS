@@ -10,10 +10,9 @@ import SwiftUI
 
 final class MainViewModel: ObservableObject {
     private let prefsRepo: PrefsRepository
-    private let bookRepo: BookRepositoryProtocol
-    private let songRepo: SongRepositoryProtocol
-    private let subsRepo: SubscriptionRepositoryProtocol
+    private let songbkRepo: SongBookRepositoryProtocol
     private let reviewRepo: ReviewReqRepositoryProtocol
+    private let subsRepo: SubscriptionRepositoryProtocol
     
     @Published var isActiveSubscriber: Bool = false
     @Published var horizontalSlides: Bool = false
@@ -28,16 +27,14 @@ final class MainViewModel: ObservableObject {
 
     init(
         prefsRepo: PrefsRepository,
-        bookRepo: BookRepositoryProtocol,
-        songRepo: SongRepositoryProtocol,
-        subsRepo: SubscriptionRepositoryProtocol,
-        reviewRepo: ReviewReqRepositoryProtocol
+        songbkRepo: SongBookRepositoryProtocol,
+        reviewRepo: ReviewReqRepositoryProtocol,
+        subsRepo: SubscriptionRepositoryProtocol
     ) {
         self.prefsRepo = prefsRepo
-        self.bookRepo = bookRepo
-        self.songRepo = songRepo
-        self.subsRepo = subsRepo
+        self.songbkRepo = songbkRepo
         self.reviewRepo = reviewRepo
+        self.subsRepo = subsRepo
     }
     
     func checkSubscription() {
@@ -71,8 +68,8 @@ final class MainViewModel: ObservableObject {
         Task {
             await MainActor.run {
                 self.horizontalSlides = prefsRepo.horizontalSlides
-                self.books = bookRepo.fetchLocalBooks()
-                self.songs = songRepo.fetchLocalSongs()
+                self.books = songbkRepo.fetchLocalBooks()
+                self.songs = songbkRepo.fetchLocalSongs()
                 self.checkSubscription()
                 self.uiState = .fetched
             }
@@ -100,8 +97,7 @@ final class MainViewModel: ObservableObject {
         self.uiState = .loading("Clearing data ...")
 
         Task { @MainActor in
-            self.bookRepo.deleteLocalData()
-            self.songRepo.deleteLocalData()
+            self.songbkRepo.deleteLocalData()
             
             prefsRepo.selectedBooks = ""
             prefsRepo.isDataSelected = false

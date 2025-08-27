@@ -43,7 +43,7 @@ class ListingDataManager {
                 
                 try self.context.save()
             } catch {
-                print("❌ Failed to save listinges: \(error)")
+                print("❌ Failed to save listings: \(error)")
             }
         }
     }
@@ -64,7 +64,7 @@ class ListingDataManager {
                 )
             }
         } catch {
-            print("❌ Failed to fetch listinges: \(error)")
+            print("❌ Failed to fetch listings: \(error)")
             return []
         }
     }

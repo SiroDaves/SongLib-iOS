@@ -11,7 +11,7 @@ import SwiftUI
 final class PresenterViewModel: ObservableObject {
 
     private let prefsRepo: PrefsRepository
-    private let songRepo: SongRepositoryProtocol
+    private let songbkRepo: SongBookRepositoryProtocol
 
     @Published var uiState: UiState = .idle
     @Published var title: String = ""
@@ -23,10 +23,10 @@ final class PresenterViewModel: ObservableObject {
 
     init(
         prefsRepo: PrefsRepository,
-        songRepo: SongRepositoryProtocol
+        songbkRepo: SongBookRepositoryProtocol
     ) {
         self.prefsRepo = prefsRepo
-        self.songRepo = songRepo
+        self.songbkRepo = songbkRepo
     }
 
     func loadSong(song: Song) {
@@ -80,7 +80,7 @@ final class PresenterViewModel: ObservableObject {
             created: song.created
         )
         
-        songRepo.updateSong(updatedSong)
+        songbkRepo.updateSong(updatedSong)
         isLiked = updatedSong.liked
         uiState = .liked
     }
