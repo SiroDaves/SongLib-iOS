@@ -28,7 +28,6 @@ struct ListingItem: View {
         }
         .padding(.vertical, 5)
         .padding(.horizontal, 10)
-        .background(isSelected ? .primary1 : Color.clear)
         .contentShape(Rectangle())
     }
 }

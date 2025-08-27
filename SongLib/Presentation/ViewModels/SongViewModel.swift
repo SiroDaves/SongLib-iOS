@@ -1,5 +1,5 @@
 //
-//  PresenterViewModel.swift
+//  SongViewModel.swift
 //  SongLib
 //
 //  Created by Siro Daves on 06/05/2025.
@@ -8,9 +8,9 @@
 import Foundation
 import SwiftUI
 
-final class PresenterViewModel: ObservableObject {
+final class SongViewModel: ObservableObject {
 
-    private let prefsRepo: PrefsRepository
+    private let prefsRepo: PreferencesRepository
     private let songbkRepo: SongBookRepositoryProtocol
 
     @Published var uiState: UiState = .idle
@@ -22,7 +22,7 @@ final class PresenterViewModel: ObservableObject {
     @Published var isLiked: Bool = false
 
     init(
-        prefsRepo: PrefsRepository,
+        prefsRepo: PreferencesRepository,
         songbkRepo: SongBookRepositoryProtocol
     ) {
         self.prefsRepo = prefsRepo

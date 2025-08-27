@@ -104,7 +104,7 @@ struct BookSelectionView: View {
                 LazyVStack(spacing: 12) {
                     ForEach(viewModel.books.indices, id: \.self) { index in
                         let selectable = viewModel.books[index]
-                        BookItem(
+                        SongBook(
                             book: selectable.data,
                             isSelected: selectable.isSelected
                         ) {

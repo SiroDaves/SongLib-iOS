@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 
 final class MainViewModel: ObservableObject {
-    private let prefsRepo: PrefsRepository
+    private let prefsRepo: PreferencesRepository
     private let songbkRepo: SongBookRepositoryProtocol
     private let reviewRepo: ReviewReqRepositoryProtocol
     private let subsRepo: SubscriptionRepositoryProtocol
@@ -27,7 +27,7 @@ final class MainViewModel: ObservableObject {
     @Published var uiState: UiState = .idle
 
     init(
-        prefsRepo: PrefsRepository,
+        prefsRepo: PreferencesRepository,
         songbkRepo: SongBookRepositoryProtocol,
         reviewRepo: ReviewReqRepositoryProtocol,
         subsRepo: SubscriptionRepositoryProtocol

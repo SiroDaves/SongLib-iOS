@@ -15,11 +15,11 @@ final class SelectionViewModel: ObservableObject {
     
     @Published var progress: Int = 0
 
-    private let prefsRepo: PrefsRepository
+    private let prefsRepo: PreferencesRepository
     private let songbkRepo: SongBookRepositoryProtocol
 
     init(
-        prefsRepo: PrefsRepository,
+        prefsRepo: PreferencesRepository,
         songbkRepo: SongBookRepositoryProtocol
     ) {
         self.prefsRepo = prefsRepo

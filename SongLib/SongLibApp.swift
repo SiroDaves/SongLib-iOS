@@ -28,7 +28,7 @@ struct SongLibApp: App {
     
     var body: some Scene {
         WindowGroup {
-            ContentView(prefsRepo: PrefsRepository())
+            ContentView(prefsRepo: PreferencesRepository())
             .environmentObject(themeManager)
             .preferredColorScheme({
                 switch themeManager.selectedTheme {

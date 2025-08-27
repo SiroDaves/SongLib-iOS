@@ -18,7 +18,7 @@ protocol SongBookRepositoryProtocol {
     func saveListing(_ listing: Listing)
     func updateSong(_ song: Song)
     func updateListing(_ listing: Listing)
-    func deleteListing(withId id: Int)
+    func deleteListing(withId id: UUID)
     func deleteLocalData()
 }
 
@@ -26,18 +26,18 @@ class SongBookRepository: SongBookRepositoryProtocol {
     private let apiService: ApiServiceProtocol
     private let bookData: BookDataManager
     private let songData: SongDataManager
-    private let listingData: ListingDataManager
+    private let listData: ListingDataManager
     
     init(
         apiService: ApiServiceProtocol,
         bookData: BookDataManager,
         songData: SongDataManager,
-        listingData: ListingDataManager,
+        listData: ListingDataManager,
     ) {
         self.apiService = apiService
         self.bookData = bookData
         self.songData = songData
-        self.listingData = listingData
+        self.listData = listData
     }
     
     func fetchRemoteBooks() async throws -> BookResponse {
@@ -59,7 +59,7 @@ class SongBookRepository: SongBookRepositoryProtocol {
     }
     
     func fetchListings() -> [Listing] {
-        let listings = listingData.fetchListings()
+        let listings = listData.fetchListings()
         return listings.sorted { $0.createdAt < $1.createdAt }
     }
     
@@ -72,7 +72,7 @@ class SongBookRepository: SongBookRepositoryProtocol {
     }
     
     func saveListing(_ listing: Listing) {
-        listingData.saveListing(listing)
+        listData.saveListing(listing)
     }
     
     func updateSong(_ song: Song) {
@@ -80,17 +80,17 @@ class SongBookRepository: SongBookRepositoryProtocol {
     }
     
     func updateListing(_ listing: Listing) {
-        listingData.updateListing(listing)
+        listData.updateListing(listing)
     }
     
-    func deleteListing(withId id: Int) {
-        listingData.deleteListing(withId: id)
+    func deleteListing(withId id: UUID) {
+        listData.deleteListing(withId: id)
     }
     
     func deleteLocalData() {
         bookData.deleteAllBooks()
         songData.deleteAllSongs()
-        listingData.deleteAllListings()
+        listData.deleteAllListings()
     }
     
 }

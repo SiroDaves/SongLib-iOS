@@ -34,22 +34,26 @@ struct HomeView: View {
             
             case .filtered:
                 TabView {
-                    HomeSearch(viewModel: viewModel)
-                        .tabItem {
-                            Label("Search", systemImage: "magnifyingglass")
-                        }
-                    .background(.primaryContainer)
-                    HomeLikes(viewModel: viewModel)
-                        .tabItem {
-                            Label("Likes", systemImage: "heart.fill")
-                        }
-                        .background(.primaryContainer)
-                    if viewModel.activeSubscriber {
-                        HomeListings(viewModel: viewModel)
+                    if viewModel.songs.isEmpty {
+                        
+                    } else {
+                        HomeSearch(viewModel: viewModel)
                             .tabItem {
-                                Label("Listings", systemImage: "list.number")
+                                Label("Search", systemImage: "magnifyingglass")
+                            }
+                        .background(.primaryContainer)
+                        HomeLikes(viewModel: viewModel)
+                            .tabItem {
+                                Label("Likes", systemImage: "heart.fill")
                             }
                             .background(.primaryContainer)
+                        if viewModel.activeSubscriber {
+                            HomeListings(viewModel: viewModel)
+                                .tabItem {
+                                    Label("Listings", systemImage: "list.number")
+                                }
+                                .background(.primaryContainer)
+                        }
                     }
                     SettingsView(viewModel: viewModel)
                         .tabItem {

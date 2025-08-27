@@ -9,8 +9,8 @@ import SwiftUI
 import SwiftUIPager
 
 struct ListingView: View {
-    @StateObject private var viewModel: PresenterViewModel = {
-        DiContainer.shared.resolve(PresenterViewModel.self)
+    @StateObject private var viewModel: SongViewModel = {
+        DiContainer.shared.resolve(SongViewModel.self)
     }()
     let listing: Listing
     
