@@ -19,20 +19,23 @@ final class DiContainer {
 
     private func validateDependencies() {
         let dependencies: [() -> Any?] = [
-            { self.container.resolve(PrefsRepository.self) },
-            { self.container.resolve(CoreDataManager.self) },
-            { self.container.resolve(ApiServiceProtocol.self) },
             { self.container.resolve(AnalyticsServiceProtocol.self) },
             { self.container.resolve(LoggerProtocol.self) },
+            { self.container.resolve(ApiServiceProtocol.self) },
+            { self.container.resolve(CoreDataManager.self) },
             { self.container.resolve(BookDataManager.self) },
-            { self.container.resolve(BookRepositoryProtocol.self) },
             { self.container.resolve(SongDataManager.self) },
-            { self.container.resolve(SongRepositoryProtocol.self) },
+            { self.container.resolve(ListingDataManager.self) },
+            { self.container.resolve(SearchDataManager.self) },
+            { self.container.resolve(HistoryDataManager.self) },
+            { self.container.resolve(PreferencesRepository.self) },
+            { self.container.resolve(SongBookRepositoryProtocol.self) },
+            { self.container.resolve(ListingRepositoryProtocol.self) },
             { self.container.resolve(SubscriptionRepositoryProtocol.self) },
             { self.container.resolve(ReviewReqRepositoryProtocol.self) },
             { self.container.resolve(SelectionViewModel.self) },
             { self.container.resolve(MainViewModel.self) },
-            { self.container.resolve(PresenterViewModel.self) },
+            { self.container.resolve(SongViewModel.self) },
         ]
 
         for resolve in dependencies {

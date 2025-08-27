@@ -12,22 +12,34 @@ struct HomeLikes: View {
 
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack(spacing: 1) {
-                    BooksList(
-                        books: viewModel.books,
-                        selectedBook: viewModel.selectedBook,
-                        onSelect: { book in
-                            viewModel.selectedBook = viewModel.books.firstIndex(of: book) ?? 0
-                            viewModel.filterSongs(book: book.bookId)
-                        }
+            Group {
+                if viewModel.likes.isEmpty {
+                    EmptyState(
+                        message: "Start liking songs when you view them,\n If you don't want to see this again",
+                        messageIcon: Image(systemName: "heart.fill")
                     )
-                    
-                    Spacer()
-                    SongsList(songs: viewModel.likes)
+                } else {
+                    ScrollView {
+                        VStack(spacing: 1) {
+                            BooksList(
+                                books: viewModel.books,
+                                selectedBook: viewModel.selectedBook,
+                                onSelect: { book in
+                                    viewModel.selectedBook = viewModel.books.firstIndex(of: book) ?? 0
+                                    viewModel.filterSongs(book: book.bookId)
+                                }
+                            )
+
+                            Spacer()
+                            SongsList(
+                                viewModel: viewModel,
+                                songs: viewModel.likes,
+                            )
+                        }
+                        .background(.surface)
+                        .padding(.vertical)
+                    }
                 }
-                .background(.surface)
-                .padding(.vertical)
             }
             .navigationTitle("Liked Songs")
             .toolbarBackground(.regularMaterial, for: .navigationBar)

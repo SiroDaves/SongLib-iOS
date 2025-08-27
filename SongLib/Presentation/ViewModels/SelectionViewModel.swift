@@ -15,18 +15,15 @@ final class SelectionViewModel: ObservableObject {
     
     @Published var progress: Int = 0
 
-    private let prefsRepo: PrefsRepository
-    private let bookRepo: BookRepositoryProtocol
-    private let songRepo: SongRepositoryProtocol
+    private let prefsRepo: PreferencesRepository
+    private let songbkRepo: SongBookRepositoryProtocol
 
     init(
-        prefsRepo: PrefsRepository,
-        bookRepo: BookRepositoryProtocol,
-        songRepo: SongRepositoryProtocol
+        prefsRepo: PreferencesRepository,
+        songbkRepo: SongBookRepositoryProtocol
     ) {
         self.prefsRepo = prefsRepo
-        self.bookRepo = bookRepo
-        self.songRepo = songRepo
+        self.songbkRepo = songbkRepo
     }
     
     func toggleSelection(for book: Book) {
@@ -50,7 +47,7 @@ final class SelectionViewModel: ObservableObject {
 
         Task {
             do {
-                let resp: BookResponse = try await bookRepo.fetchRemoteBooks()
+                let resp: BookResponse = try await songbkRepo.fetchRemoteBooks()
                 let data = resp.data.map { Selectable(data: $0, isSelected: false) }
                 await MainActor.run {
                     self.books = data
@@ -69,7 +66,7 @@ final class SelectionViewModel: ObservableObject {
         print("Selected books: \(selectedBooks())")
                 
         Task {
-            self.bookRepo.saveBooksLocally(selectedBooks())
+            self.songbkRepo.saveBooks(selectedBooks())
             
             await MainActor.run {
                 self.prefsRepo.isDataSelected = true
@@ -84,7 +81,7 @@ final class SelectionViewModel: ObservableObject {
 
         Task {
             do {
-                let resp: SongResponse = try await songRepo.fetchRemoteSongs(for: prefsRepo.selectedBooks)
+                let resp: SongResponse = try await songbkRepo.fetchRemoteSongs(for: prefsRepo.selectedBooks)
                 await MainActor.run {
                     self.songs = resp.data
                     self.uiState = .fetched
@@ -110,7 +107,7 @@ final class SelectionViewModel: ObservableObject {
         }
 
         do {
-            let fetchedSongs = try await songRepo.fetchRemoteSongs(for: prefsRepo.selectedBooks)
+            let fetchedSongs = try await songbkRepo.fetchRemoteSongs(for: prefsRepo.selectedBooks)
 
             await MainActor.run {
                 self.songs = fetchedSongs.data
@@ -145,7 +142,7 @@ final class SelectionViewModel: ObservableObject {
         }
 
         for (index, song) in songs.enumerated() {
-            songRepo.saveSong(song)
+            songbkRepo.saveSong(song)
             await MainActor.run {
                 self.updateProgress(current: index + 1, total: songs.count)
             }

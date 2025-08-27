@@ -1,5 +1,5 @@
 //
-//  PresenterViewModel.swift
+//  SongViewModel.swift
 //  SongLib
 //
 //  Created by Siro Daves on 06/05/2025.
@@ -8,10 +8,11 @@
 import Foundation
 import SwiftUI
 
-final class PresenterViewModel: ObservableObject {
+final class SongViewModel: ObservableObject {
 
-    private let prefsRepo: PrefsRepository
-    private let songRepo: SongRepositoryProtocol
+    private let prefsRepo: PreferencesRepository
+    private let songbkRepo: SongBookRepositoryProtocol
+    private let listingRepo: ListingRepositoryProtocol
 
     @Published var uiState: UiState = .idle
     @Published var title: String = ""
@@ -22,11 +23,13 @@ final class PresenterViewModel: ObservableObject {
     @Published var isLiked: Bool = false
 
     init(
-        prefsRepo: PrefsRepository,
-        songRepo: SongRepositoryProtocol
+        prefsRepo: PreferencesRepository,
+        songbkRepo: SongBookRepositoryProtocol,
+        listingRepo: ListingRepositoryProtocol
     ) {
         self.prefsRepo = prefsRepo
-        self.songRepo = songRepo
+        self.songbkRepo = songbkRepo
+        self.listingRepo = listingRepo
     }
 
     func loadSong(song: Song) {
@@ -67,21 +70,8 @@ final class PresenterViewModel: ObservableObject {
     }
     
     func likeSong(song: Song) {
-        let updatedSong = Song(
-            book: song.book,
-            songId: song.songId,
-            songNo: song.songNo,
-            title: song.title,
-            alias: song.alias,
-            content: song.content,
-            views: song.views,
-            likes: song.likes,
-            liked: !song.liked,
-            created: song.created
-        )
-        
-        songRepo.updateSong(updatedSong)
-        isLiked = updatedSong.liked
+        songbkRepo.likeSong(song)
+        isLiked = !song.liked
         uiState = .liked
     }
 

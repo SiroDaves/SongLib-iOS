@@ -145,7 +145,7 @@ class BookDataManager {
             try context.save()
             print("🗑️ All books deleted successfully")
         } catch {
-            print("❌ Failed to delete songs: \(error)")
+            print("❌ Failed to delete books: \(error)")
         }
     }
 

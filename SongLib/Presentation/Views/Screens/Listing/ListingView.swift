@@ -1,20 +1,19 @@
 //
-//  PresenterView.swift
+//  ListingView.swift
 //  SongLib
 //
-//  Created by Siro Daves on 06/05/2025.
+//  Created by Siro Daves on 27/08/2025.
 //
 
 import SwiftUI
 import SwiftUIPager
 
-struct PresenterView: View {
+struct ListingView: View {
     @StateObject private var viewModel: SongViewModel = {
         DiContainer.shared.resolve(SongViewModel.self)
     }()
-    let song: Song
+    let listing: Listing
     
-    @StateObject private var selectedPage = Page.first()
     @State private var showToast = false
 
     var body: some View {
@@ -23,16 +22,16 @@ struct PresenterView: View {
                 stateContent
             }
 
-            if showToast {
-                let toastMessage = L10n.likedSong(for: song.title, isLiked: viewModel.isLiked)
-
-                ToastView(message: toastMessage)
-                    .transition(.move(edge: .bottom).combined(with: .opacity))
-                    .zIndex(1)
-            }
+//            if showToast {
+//                let toastMessage = L10n.likedSong(for: song.title, isLiked: viewModel.isLiked)
+//
+//                ToastView(message: toastMessage)
+//                    .transition(.move(edge: .bottom).combined(with: .opacity))
+//                    .zIndex(1)
+//            }
         }
         .toolbar(.hidden, for: .tabBar)
-        .task { viewModel.loadSong(song: song) }
+        .task {  }
         .onChange(of: viewModel.uiState) { newState in
             if case .liked = newState {
                 showToast = true
@@ -52,25 +51,13 @@ struct PresenterView: View {
                 .tint(.onPrimary)
             
         case .loaded, .liked:
-            PresenterContent(
-                viewModel: viewModel,
-                selected: selectedPage,
-                song: song
-            )
+            LoadingView()
 
         case .error(let msg):
-            ErrorView(message: msg) {
-                Task { viewModel.loadSong(song: song) }
-            }
+            ErrorView(message: msg) { }
 
         default:
             LoadingView()
         }
     }
-}
-
-#Preview{
-    PresenterView(
-        song: Song.sampleSongs[0],
-    )
 }

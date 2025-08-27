@@ -1,5 +1,5 @@
 //
-//  AppPrefences.swift
+//  PreferencesRepository.swift
 //  SongLib
 //
 //  Created by Siro Daves on 30/04/2025.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-class PrefsRepository {    
+class PreferencesRepository {
     private let userDefaults: UserDefaults
     
     init(userDefaults: UserDefaults = .standard) {
@@ -52,5 +52,11 @@ class PrefsRepository {
     var horizontalSlides: Bool {
         get { userDefaults.bool(forKey: PrefConstants.horizontalSlides) }
         set { userDefaults.set(newValue, forKey: PrefConstants.horizontalSlides) }
+    }
+    
+    func resetPrefs() {
+        selectedBooks = ""
+        isDataSelected = false
+        isDataLoaded = false
     }
 }

@@ -10,7 +10,7 @@ import SwiftUIPager
 
 struct PresenterContent: View {
     @Environment(\.presentationMode) var presentationMode
-    @ObservedObject var viewModel: PresenterViewModel
+    @ObservedObject var viewModel: SongViewModel
     @ObservedObject var selected: Page
     let song: Song
     
@@ -47,12 +47,12 @@ struct PresenterContent: View {
                         .foregroundColor(.primary1)
                 }
 
-//                ShareLink(
-//                    item: viewModel.shareText(song: song),
-//                ) {
-//                    Image(systemName: "square.and.arrow.up")
-//                        .foregroundColor(.primary1)
-//                }
+                ShareLink(
+                    item: SongUtils.shareText(song: song),
+                ) {
+                    Image(systemName: "square.and.arrow.up")
+                        .foregroundColor(.primary1)
+                }
             }
         }
     }

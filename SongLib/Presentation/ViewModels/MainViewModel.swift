@@ -9,13 +9,13 @@ import Foundation
 import SwiftUI
 
 final class MainViewModel: ObservableObject {
-    private let prefsRepo: PrefsRepository
-    private let bookRepo: BookRepositoryProtocol
-    private let songRepo: SongRepositoryProtocol
-    private let subsRepo: SubscriptionRepositoryProtocol
+    private let prefsRepo: PreferencesRepository
+    private let songbkRepo: SongBookRepositoryProtocol
+    private let listingRepo: ListingRepositoryProtocol
     private let reviewRepo: ReviewReqRepositoryProtocol
+    private let subsRepo: SubscriptionRepositoryProtocol
     
-    @Published var isActiveSubscriber: Bool = false
+    @Published var activeSubscriber: Bool = false
     @Published var horizontalSlides: Bool = false
     @Published var showReviewPrompt: Bool = false
     
@@ -23,27 +23,28 @@ final class MainViewModel: ObservableObject {
     @Published var songs: [Song] = []
     @Published var likes: [Song] = []
     @Published var filtered: [Song] = []
+    @Published var listings: [Listing] = []
     @Published var selectedBook: Int = 0
     @Published var uiState: UiState = .idle
 
     init(
-        prefsRepo: PrefsRepository,
-        bookRepo: BookRepositoryProtocol,
-        songRepo: SongRepositoryProtocol,
-        subsRepo: SubscriptionRepositoryProtocol,
-        reviewRepo: ReviewReqRepositoryProtocol
+        prefsRepo: PreferencesRepository,
+        songbkRepo: SongBookRepositoryProtocol,
+        listingRepo: ListingRepositoryProtocol,
+        reviewRepo: ReviewReqRepositoryProtocol,
+        subsRepo: SubscriptionRepositoryProtocol
     ) {
         self.prefsRepo = prefsRepo
-        self.bookRepo = bookRepo
-        self.songRepo = songRepo
-        self.subsRepo = subsRepo
+        self.songbkRepo = songbkRepo
+        self.listingRepo = listingRepo
         self.reviewRepo = reviewRepo
+        self.subsRepo = subsRepo
     }
     
     func checkSubscription() {
         subsRepo.isActiveSubscriber { [weak self] isActive in
             DispatchQueue.main.async {
-                self?.isActiveSubscriber = isActive
+                self?.activeSubscriber = isActive
             }
         }
     }
@@ -67,46 +68,63 @@ final class MainViewModel: ObservableObject {
     }
     
     func fetchData() {
-        self.uiState = .loading("")
+        uiState = .loading("")
         Task {
             await MainActor.run {
-                self.horizontalSlides = prefsRepo.horizontalSlides
-                self.books = bookRepo.fetchLocalBooks()
-                self.songs = songRepo.fetchLocalSongs()
-                self.checkSubscription()
-                self.uiState = .fetched
+                horizontalSlides = prefsRepo.horizontalSlides
+                books = songbkRepo.fetchLocalBooks()
+                songs = songbkRepo.fetchLocalSongs()
+                listings = listingRepo.fetchListings()
+                checkSubscription()
+                uiState = .fetched
             }
         }
     }
     
     func filterSongs(book: Int) {
-        self.uiState = .filtering
-
         Task {
             await MainActor.run {
-                self.filtered = songs.filter { $0.book == book }
-                self.likes = songs.filter { $0.liked }
-                self.uiState = .filtered
+                filtered = songs.filter { $0.book == book }
+                likes = songs.filter { $0.liked }
+                uiState = .filtered
             }
         }
     }
     
     func searchSongs(qry: String, byNo: Bool = false) {
         filtered = SongUtils.searchSongs(songs: songs, qry: qry, byNo: byNo)
+        self.uiState = .filtered
+    }
+    
+    func addListing(title: String) {
+        listingRepo.addListing(title)
+        Task { @MainActor in
+            listings = listingRepo.fetchListings()
+            uiState = .filtered
+        }
+    }
+    
+    func likeSong(song: Song) {
+        songbkRepo.likeSong(song)
+        uiState = .filtered
+    }
+    
+    func addSong(song: Song, listing: Listing) {
+        listingRepo.addSongToListing(song: song, listing: listing)
+        Task { @MainActor in
+            listings = listingRepo.fetchListings()
+            uiState = .filtered
+        }
     }
     
     func clearAllData() {
         print("Clearing data")
-        self.uiState = .loading("Clearing data ...")
-
+        uiState = .loading("Clearing data ...")
         Task { @MainActor in
-            self.bookRepo.deleteLocalData()
-            self.songRepo.deleteLocalData()
-            
-            prefsRepo.selectedBooks = ""
-            prefsRepo.isDataSelected = false
-            prefsRepo.isDataLoaded = false
-            self.uiState = .loaded
+            songbkRepo.deleteLocalData()
+            listingRepo.deleteListings()
+            prefsRepo.resetPrefs()
+            uiState = .loaded
         }
     }
 }

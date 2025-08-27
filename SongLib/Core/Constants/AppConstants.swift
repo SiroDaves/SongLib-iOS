@@ -12,6 +12,7 @@ struct AppConstants {
     static let appCredits1 = "Siro"
     static let appCredits2 = "Titus"
     static let entitlements = "songlib_offering_1"
+    static let appLink = "https://songlib.vercel.app"
 }
 
 struct PrefConstants {
