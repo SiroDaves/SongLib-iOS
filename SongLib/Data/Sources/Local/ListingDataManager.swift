@@ -6,7 +6,6 @@
 //
 
 import CoreData
-import CoreData
 
 class ListingDataManager {
     private let coreDataManager: CoreDataManager
@@ -30,6 +29,7 @@ class ListingDataManager {
                 cdListing.createdAt = listing.createdAt
                 cdListing.updatedAt = listing.updatedAt
                 try self.context.save()
+                print("✅ New listing \(listing.title) added")
             } catch {
                 print("❌ Failed to save listing \(listing.id): \(error)")
             }
@@ -46,13 +46,16 @@ class ListingDataManager {
                       let createdAt = cdListing.createdAt,
                       let updatedAt = cdListing.updatedAt else { return nil }
                 
+                let songCount = fetchChildListingCount(for: id)
+
                 return Listing(
                     id: id,
                     parentId: parentId,
                     songId: Int(cdListing.songId),
                     title: cdListing.title ?? "",
                     createdAt: createdAt,
-                    updatedAt: updatedAt
+                    updatedAt: updatedAt,
+                    songCount: songCount
                 )
             }
         } catch {
@@ -60,7 +63,19 @@ class ListingDataManager {
             return []
         }
     }
-    
+
+    private func fetchChildListingCount(for parentId: UUID) -> Int {
+        let request: NSFetchRequest<CDListing> = CDListing.fetchRequest()
+        request.predicate = NSPredicate(format: "parentId == %@", parentId as CVarArg)
+
+        do {
+            return try context.count(for: request)
+        } catch {
+            print("❌ Failed to count child listings for parent \(parentId): \(error)")
+            return 0
+        }
+    }
+
     func fetchListing(withId id: UUID) -> Listing? {
         do {
             guard let cdListing = try fetchCDListing(withId: id) else { return nil }
@@ -138,4 +153,3 @@ class ListingDataManager {
         }
     }
 }
-

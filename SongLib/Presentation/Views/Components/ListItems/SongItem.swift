@@ -70,10 +70,3 @@ struct SongItem: View {
         .contentShape(Rectangle())
     }
 }
-
-#Preview {
-    SongsList(
-        songs: Song.sampleSongs
-    )
-    .padding()
-}

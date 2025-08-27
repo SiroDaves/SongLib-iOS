@@ -12,6 +12,7 @@ final class SongViewModel: ObservableObject {
 
     private let prefsRepo: PreferencesRepository
     private let songbkRepo: SongBookRepositoryProtocol
+    private let listingRepo: ListingRepositoryProtocol
 
     @Published var uiState: UiState = .idle
     @Published var title: String = ""
@@ -23,10 +24,12 @@ final class SongViewModel: ObservableObject {
 
     init(
         prefsRepo: PreferencesRepository,
-        songbkRepo: SongBookRepositoryProtocol
+        songbkRepo: SongBookRepositoryProtocol,
+        listingRepo: ListingRepositoryProtocol
     ) {
         self.prefsRepo = prefsRepo
         self.songbkRepo = songbkRepo
+        self.listingRepo = listingRepo
     }
 
     func loadSong(song: Song) {
@@ -67,21 +70,8 @@ final class SongViewModel: ObservableObject {
     }
     
     func likeSong(song: Song) {
-        let updatedSong = Song(
-            book: song.book,
-            songId: song.songId,
-            songNo: song.songNo,
-            title: song.title,
-            alias: song.alias,
-            content: song.content,
-            views: song.views,
-            likes: song.likes,
-            liked: !song.liked,
-            created: song.created
-        )
-        
-        songbkRepo.updateSong(updatedSong)
-        isLiked = updatedSong.liked
+        songbkRepo.likeSong(song)
+        isLiked = !song.liked
         uiState = .liked
     }
 

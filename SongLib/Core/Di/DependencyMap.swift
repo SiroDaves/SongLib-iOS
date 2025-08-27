@@ -63,6 +63,11 @@ struct DependencyMap {
                 apiService: resolver.resolve(ApiServiceProtocol.self)!,
                 bookData: resolver.resolve(BookDataManager.self)!,
                 songData: resolver.resolve(SongDataManager.self)!,
+            )
+        }.inObjectScope(.container)
+        
+        container.register(ListingRepositoryProtocol.self) { resolver in
+            ListingRepository(
                 listData: resolver.resolve(ListingDataManager.self)!
             )
         }.inObjectScope(.container)
@@ -88,6 +93,7 @@ struct DependencyMap {
             MainViewModel(
                 prefsRepo: resolver.resolve(PreferencesRepository.self)!,
                 songbkRepo: resolver.resolve(SongBookRepositoryProtocol.self)!,
+                listingRepo: resolver.resolve(ListingRepositoryProtocol.self)!,
                 reviewRepo: resolver.resolve(ReviewReqRepositoryProtocol.self)!,
                 subsRepo: resolver.resolve(SubscriptionRepositoryProtocol.self)!,
             )
@@ -97,6 +103,7 @@ struct DependencyMap {
             SongViewModel(
                 prefsRepo: resolver.resolve(PreferencesRepository.self)!,
                 songbkRepo: resolver.resolve(SongBookRepositoryProtocol.self)!,
+                listingRepo: resolver.resolve(ListingRepositoryProtocol.self)!,
             )
         }.inObjectScope(.container)
         

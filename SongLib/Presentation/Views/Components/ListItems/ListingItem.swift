@@ -11,23 +11,27 @@ struct ListingItem: View {
     let listing: Listing
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 2) {
-            HStack(alignment: .center) {
-                Text(listing.title)
-                    .font(.title3)
-                    .foregroundColor(.scrim)
-                    .fontWeight(.bold)
-                    .lineLimit(1)
-            }
-
-            Text("...")
-                .lineLimit(2)
+        VStack(alignment: .leading, spacing: 6) {
+            Text(listing.title)
+                .font(.title3)
                 .foregroundColor(.scrim)
-                .font(.body)
-                .multilineTextAlignment(.leading)
+                .fontWeight(.bold)
+                .lineLimit(1)
+
+            HStack {
+                Text("\(listing.songCount) \(listing.songCount == 1 ? "song" : "songs")")
+                    .font(.subheadline)
+                    .foregroundColor(.scrim)
+
+                Spacer()
+
+                Text("updated \(listing.relativeUpdatedAt)")
+                    .font(.subheadline)
+                    .foregroundColor(.scrim)
+            }
         }
-        .padding(.vertical, 5)
-        .padding(.horizontal, 10)
+        .padding(.vertical, 8)
+        .padding(.horizontal, 12)
         .contentShape(Rectangle())
     }
 }

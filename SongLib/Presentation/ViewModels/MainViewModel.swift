@@ -11,6 +11,7 @@ import SwiftUI
 final class MainViewModel: ObservableObject {
     private let prefsRepo: PreferencesRepository
     private let songbkRepo: SongBookRepositoryProtocol
+    private let listingRepo: ListingRepositoryProtocol
     private let reviewRepo: ReviewReqRepositoryProtocol
     private let subsRepo: SubscriptionRepositoryProtocol
     
@@ -29,11 +30,13 @@ final class MainViewModel: ObservableObject {
     init(
         prefsRepo: PreferencesRepository,
         songbkRepo: SongBookRepositoryProtocol,
+        listingRepo: ListingRepositoryProtocol,
         reviewRepo: ReviewReqRepositoryProtocol,
         subsRepo: SubscriptionRepositoryProtocol
     ) {
         self.prefsRepo = prefsRepo
         self.songbkRepo = songbkRepo
+        self.listingRepo = listingRepo
         self.reviewRepo = reviewRepo
         self.subsRepo = subsRepo
     }
@@ -65,46 +68,63 @@ final class MainViewModel: ObservableObject {
     }
     
     func fetchData() {
-        self.uiState = .loading("")
+        uiState = .loading("")
         Task {
             await MainActor.run {
-                self.horizontalSlides = prefsRepo.horizontalSlides
-                self.books = songbkRepo.fetchLocalBooks()
-                self.songs = songbkRepo.fetchLocalSongs()
-                self.listings = songbkRepo.fetchListings()
-                self.checkSubscription()
-                self.uiState = .fetched
+                horizontalSlides = prefsRepo.horizontalSlides
+                books = songbkRepo.fetchLocalBooks()
+                songs = songbkRepo.fetchLocalSongs()
+                listings = listingRepo.fetchListings()
+                checkSubscription()
+                uiState = .fetched
             }
         }
     }
     
     func filterSongs(book: Int) {
-        self.uiState = .filtering
-
         Task {
             await MainActor.run {
-                self.filtered = songs.filter { $0.book == book }
-                self.likes = songs.filter { $0.liked }
-                self.uiState = .filtered
+                filtered = songs.filter { $0.book == book }
+                likes = songs.filter { $0.liked }
+                uiState = .filtered
             }
         }
     }
     
     func searchSongs(qry: String, byNo: Bool = false) {
         filtered = SongUtils.searchSongs(songs: songs, qry: qry, byNo: byNo)
+        self.uiState = .filtered
+    }
+    
+    func addListing(title: String) {
+        listingRepo.addListing(title)
+        Task { @MainActor in
+            listings = listingRepo.fetchListings()
+            uiState = .filtered
+        }
+    }
+    
+    func likeSong(song: Song) {
+        songbkRepo.likeSong(song)
+        uiState = .filtered
+    }
+    
+    func addSong(song: Song, listing: Listing) {
+        listingRepo.addSongToListing(song: song, listing: listing)
+        Task { @MainActor in
+            listings = listingRepo.fetchListings()
+            uiState = .filtered
+        }
     }
     
     func clearAllData() {
         print("Clearing data")
-        self.uiState = .loading("Clearing data ...")
-
+        uiState = .loading("Clearing data ...")
         Task { @MainActor in
-            self.songbkRepo.deleteLocalData()
-            
-            prefsRepo.selectedBooks = ""
-            prefsRepo.isDataSelected = false
-            prefsRepo.isDataLoaded = false
-            self.uiState = .loaded
+            songbkRepo.deleteLocalData()
+            listingRepo.deleteListings()
+            prefsRepo.resetPrefs()
+            uiState = .loaded
         }
     }
 }

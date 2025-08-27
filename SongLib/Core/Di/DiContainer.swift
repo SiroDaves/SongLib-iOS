@@ -30,6 +30,7 @@ final class DiContainer {
             { self.container.resolve(HistoryDataManager.self) },
             { self.container.resolve(PreferencesRepository.self) },
             { self.container.resolve(SongBookRepositoryProtocol.self) },
+            { self.container.resolve(ListingRepositoryProtocol.self) },
             { self.container.resolve(SubscriptionRepositoryProtocol.self) },
             { self.container.resolve(ReviewReqRepositoryProtocol.self) },
             { self.container.resolve(SelectionViewModel.self) },

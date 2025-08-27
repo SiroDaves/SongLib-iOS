@@ -9,28 +9,64 @@ import Foundation
 
 protocol ListingRepositoryProtocol {
     func fetchListings() -> [Listing]
+    func addListing(_ listing: String)
     func saveListing(_ listing: Listing)
-    func deleteListing()
+    func addSongToListing(song: Song, listing: Listing)
+    func updateListing(_ listing: Listing)
+    func deleteListing(withId id: UUID)
+    func deleteListings()
 }
 
 class ListingRepository: ListingRepositoryProtocol {
-    private let listingData: ListingDataManager
+    private let listData: ListingDataManager
     
-    init(listingData: ListingDataManager) {
-        self.listingData = listingData
+    init(listData: ListingDataManager) {
+        self.listData = listData
     }
     
     func fetchListings() -> [Listing] {
-        let listings = listingData.fetchListings()
-        return listings.sorted { $0.createdAt < $1.createdAt }
+        let listings = listData.fetchListings()
+        return listings.sorted { $1.updatedAt < $0.updatedAt }
+    }
+    
+    func addListing(_ title: String) {
+        let newListing = Listing(
+            id: UUID(),
+            parentId: UUID(),
+            songId: 0,
+            title: title,
+            createdAt: Date(),
+            updatedAt: Date(),
+        )
+        listData.saveListing(newListing)
+    }
+    
+    func addSongToListing(song: Song, listing: Listing) {
+        let newListing = Listing(
+            id: UUID(),
+            parentId: listing.id,
+            songId: song.songId,
+            title: song.title,
+            createdAt: Date(),
+            updatedAt: Date(),
+        )
+        listData.saveListing(newListing)
+    }
+    
+    func updateListing(_ listing: Listing) {
+        listData.updateListing(listing)
+    }
+    
+    func deleteListing(withId id: UUID) {
+        listData.deleteListing(withId: id)
     }
     
     func saveListing(_ listing: Listing) {
-        listingData.saveListing(listing)
+        listData.saveListing(listing)
     }
     
-    func deleteListing() {
-        listingData.deleteAllListings()
+    func deleteListings() {
+        listData.deleteAllListings()
     }
     
 }

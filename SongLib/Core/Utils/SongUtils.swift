@@ -17,6 +17,10 @@ class SongUtils {
         return txt.replacingOccurrences(of: "''", with: "'").replacingOccurrences(of: "#", with: " ")
     }
     
+    static func refineShareContent(txt: String) -> String {
+        return txt.replacingOccurrences(of: "''", with: "'").replacingOccurrences(of: "#", with: "\n")
+    }
+    
     static func songItemTitle(number: Int, title: String) -> String {
         return number != 0 ? "\(number). \(refineTitle(txt: title))" : refineTitle(txt: title)
     }
@@ -93,6 +97,14 @@ class SongUtils {
                 regex.firstMatch(in: field, range: NSRange(field.startIndex..., in: field)) != nil
             }
         }
+    }
+    
+    static func shareText(song: Song) -> String {
+        var text = "\(SongUtils.songItemTitle(number: song.songNo, title: song.title))\n\n"
+        text += SongUtils.refineContent(txt: song.content)
+        text += "\n\n\(AppConstants.appTitle)\n\(AppConstants.appLink)\n"
+        
+        return text
     }
 
 }

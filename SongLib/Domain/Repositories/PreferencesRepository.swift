@@ -53,4 +53,10 @@ class PreferencesRepository {
         get { userDefaults.bool(forKey: PrefConstants.horizontalSlides) }
         set { userDefaults.set(newValue, forKey: PrefConstants.horizontalSlides) }
     }
+    
+    func resetPrefs() {
+        selectedBooks = ""
+        isDataSelected = false
+        isDataLoaded = false
+    }
 }

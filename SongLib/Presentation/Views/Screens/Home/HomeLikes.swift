@@ -31,8 +31,13 @@ struct HomeLikes: View {
                             )
 
                             Spacer()
-                            SongsList(songs: viewModel.likes)
+                            SongsList(
+                                viewModel: viewModel,
+                                songs: viewModel.likes,
+                            )
                         }
+                        .background(.surface)
+                        .padding(.vertical)
                     }
                 }
             }
