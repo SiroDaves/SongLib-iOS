@@ -44,6 +44,13 @@ struct HomeView: View {
                             Label("Likes", systemImage: "heart.fill")
                         }
                         .background(.primaryContainer)
+                    if viewModel.activeSubscriber {
+                        HomeListings(viewModel: viewModel)
+                            .tabItem {
+                                Label("Listings", systemImage: "list.number")
+                            }
+                            .background(.primaryContainer)
+                    }
                     SettingsView(viewModel: viewModel)
                         .tabItem {
                             Label("Settings", systemImage: "gear")
@@ -52,7 +59,7 @@ struct HomeView: View {
                 }
                 .onAppear {
                     #if !DEBUG
-                        showPaywall = !viewModel.isActiveSubscriber
+                        showPaywall = !viewModel.activeSubscriber
                     #endif
                     viewModel.promptReview()
                 }

@@ -83,13 +83,30 @@ class ListingDataManager {
                 id: cdListing.id!,
                 parentId: cdListing.parentId!,
                 songId: Int(cdListing.songId),
-                title: cdListing.title ?? "",
+                title: cdListing.title ?? "Untitled Listing",
                 createdAt: cdListing.createdAt!,
                 updatedAt: cdListing.updatedAt!
             )
         } catch {
             print("❌ Failed to fetch listing: \(error)")
             return nil
+        }
+    }
+    
+    func updateListing(_ listing: Listing) {
+        context.perform {
+            do {
+                guard let cdListing = try self.fetchListing(withId: listing.id) else {
+                    print("⚠️ Listing with ID \(listing.id) not found.")
+                    return
+                }
+                cdListing.parentId = listing.parentId
+                cdListing.title = listing.title
+                cdListing.songId = listing.songId
+                try self.context.save()
+            } catch {
+                print("❌ Failed to update listing \(listing.id): \(error)")
+            }
         }
     }
     

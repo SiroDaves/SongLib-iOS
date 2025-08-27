@@ -1,61 +1,43 @@
 //
-//  BookItemView.swift
+//  SearchBookItem.swift
 //  SongLib
 //
-//  Created by Siro Daves on 02/05/2025.
+//  Created by Siro Daves on 04/05/2025.
 //
 
 import SwiftUI
 
 struct BookItem: View {
-    let book: Book
+    let text: String
     let isSelected: Bool
-    let onTap: () -> Void
-    
-    @Environment(\.colorScheme) private var colorScheme
-    
+    let onPressed: (() -> Void)?
+
     var body: some View {
-        let bgColor = isSelected ? .primary1 : Color("inversePrimary")
+        let bgColor = isSelected ? .primary1 : Color("onPrimary")
         let txtColor = isSelected ? Color("onPrimary") : .scrim
 
-        return ZStack {
-            RoundedRectangle(cornerRadius: 10)
-                .fill(bgColor)
-                .shadow(radius: 5)
-            
-            HStack(spacing: 15) {
-                Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
-                    .foregroundColor(txtColor)
-                    .font(.system(size: 24))
-                    .padding(5)
-                
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(SongUtils.refineTitle(txt: book.title))
-                        .font(.system(size: 20, weight: .bold))
-                        .foregroundColor(txtColor)
-
-                    Text("\(book.songs) \(book.subTitle) songs")
-                        .font(.system(size: 18))
-                        .foregroundColor(txtColor)
-                }
-                Spacer()
-            }
-            .padding()
+        Button(action: {
+            onPressed?()
+        }) {
+            Text(text)
+                .font(.title3)
+                .fontWeight(.bold)
+                .foregroundColor(txtColor)
+                .padding(.horizontal, 15)
+                .padding(.vertical, 5)
+                .background(bgColor)
+                .cornerRadius(20)
         }
-        .frame(maxWidth: .infinity)
-        .onTapGesture {
-            onTap()
-        }
+        .padding(.bottom, 5)
+        .buttonStyle(PlainButtonStyle())
+        .shadow(color: .black.opacity(0.1), radius: 3, x: 0, y: 2)
     }
 }
 
-
-#Preview {
+#Preview{
     BookItem(
-        book: Book.sampleBooks[0],
+        text: "Songs of Worship",
         isSelected: true,
-        onTap: { print("Amen") }
+        onPressed: { }
     )
-    .padding()
 }
-

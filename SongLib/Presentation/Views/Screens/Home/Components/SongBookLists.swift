@@ -1,5 +1,5 @@
 //
-//  HomeLists.swift
+//  SongBookLists.swift
 //  SongLib
 //
 //  Created by Siro Daves on 19/08/2025.
@@ -16,7 +16,7 @@ struct BooksList: View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack() {
                 ForEach(Array(books.enumerated()), id: \.1.bookId) { index, book in
-                    SearchBookItem(
+                    BookItem(
                         text: book.title,
                         isSelected: index == selectedBook,
                         onPressed: { onSelect(book) }
@@ -38,7 +38,7 @@ struct SongsList: View {
                 NavigationLink {
                     PresenterView(song: song)
                 } label: {
-                    SearchSongItem(
+                    SongItem(
                         song: song,
                         height: 50,
                         isSelected: false,

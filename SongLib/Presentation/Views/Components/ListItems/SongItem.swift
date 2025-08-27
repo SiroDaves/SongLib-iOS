@@ -1,5 +1,5 @@
 //
-//  SearchSongItem.swift
+//  SongItem.swift
 //  SongLib
 //
 //  Created by Siro Daves on 04/05/2025.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct SearchSongItem: View {
+struct SongItem: View {
     let song: Song
     let height: CGFloat
     let isSelected: Bool
