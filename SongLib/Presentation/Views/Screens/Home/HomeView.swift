@@ -141,8 +141,3 @@ private struct SongSidebar: View {
         .navigationTitle("Songs")
     }
 }
-
-#Preview {
-    HomeView()
-        .environmentObject(MockMainViewModel.make())
-}
