@@ -8,7 +8,7 @@
 import Foundation
 
 struct Search: Identifiable, Codable, Equatable {
-    var id: UUID
+    var id: Int
     let title: String
     let createdAt: Date
 }

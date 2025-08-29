@@ -44,7 +44,7 @@ struct ListedSongs: View {
     
     func addSongToListing(song: Song, listing: Listing){
         selectedSong = nil
-        viewModel.addSong(song: song, listing: listing)
+        viewModel.addSong(songId: song.songId, parentId: listing.id)
         toastMessage = "\(song.title) added to \(listing.title) listing"
         showToast = true
         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {

@@ -56,6 +56,7 @@ final class SongListingViewModel: ObservableObject {
                 
                 listedSongs.removeAll()
                 for listing in listings {
+                    print("Listing \(listing.id)")
                     if let song = songbkRepo.fetchSong(withId: listing.songId) {
                         listedSongs.append(song) // ✅ only append if exists
                     } else {

@@ -23,16 +23,16 @@ class SearchDataManager {
     func saveSearch(_ search: Search) {
         context.perform {
             do {
-                let fetchRequest: NSFetchRequest<CDSearch> = CDSearch.fetchRequest()
+                let fetchRequest: NSFetchRequest<CDSarch> = CDSarch.fetchRequest()
                 fetchRequest.predicate = NSPredicate(format: "id == %@", search.id as CVarArg)
                 
                 let existingRecords = try self.context.fetch(fetchRequest)
-                let cdSearch: CDSearch
+                let cdSearch: CDSarch
                 
                 if let existingRecord = existingRecords.first {
                     cdSearch = existingRecord
                 } else {
-                    cdSearch = CDSearch(context: self.context)
+                    cdSearch = CDSarch(context: self.context)
                 }
                 
                 cdSearch.id = search.id
@@ -48,7 +48,7 @@ class SearchDataManager {
     
     // Fetch all records from Core Data
     func fetchSearches() -> [Search] {
-        let fetchRequest: NSFetchRequest<CDSearch> = CDSearch.fetchRequest()
+        let fetchRequest: NSFetchRequest<CDSarch> = CDSarch.fetchRequest()
         do {
             let cdSearches = try context.fetch(fetchRequest)
             return cdSearches.compactMap { cdSearch in
@@ -66,7 +66,7 @@ class SearchDataManager {
     
     // Fetch a single record by ID
     func fetchSearch(withId id: UUID) -> Search? {
-        let fetchRequest: NSFetchRequest<CDSearch> = CDSearch.fetchRequest()
+        let fetchRequest: NSFetchRequest<CDSarch> = CDSarch.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "id == %@", id as CVarArg)
         fetchRequest.fetchLimit = 1
         
@@ -87,7 +87,7 @@ class SearchDataManager {
     
     // Delete a record by ID
     func deleteSearch(withId id: Int) {
-        let fetchRequest: NSFetchRequest<CDSearch> = CDSearch.fetchRequest()
+        let fetchRequest: NSFetchRequest<CDSarch> = CDSarch.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "searchId == %d", id)
         
         do {
@@ -102,7 +102,7 @@ class SearchDataManager {
     }
     
     func deleteAllSearches() {
-        let fetchRequest: NSFetchRequest<NSFetchRequestResult> = CDSearch.fetchRequest()
+        let fetchRequest: NSFetchRequest<NSFetchRequestResult> = CDSarch.fetchRequest()
         let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
         
         do {

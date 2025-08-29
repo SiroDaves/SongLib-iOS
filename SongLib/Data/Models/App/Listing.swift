@@ -8,8 +8,8 @@
 import Foundation
 
 struct Listing: Identifiable, Equatable {
-    let id: UUID
-    var parentId: UUID
+    let id: Int
+    var parentId: Int
     var songId: Int
     var title: String
     var createdAt: Date

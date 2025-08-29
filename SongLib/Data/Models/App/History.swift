@@ -8,7 +8,7 @@
 import Foundation
 
 struct History: Identifiable, Codable, Equatable {
-    var id: UUID
+    var id: Int
     let songId: Int
     let createdAt: Date
 }

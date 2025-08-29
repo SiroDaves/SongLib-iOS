@@ -42,23 +42,27 @@ class SongDataManager {
         }
     }
     
+    func mapCdSongToSong(_ cdSong: CDSong) -> Song {
+        return Song(
+            book: Int(cdSong.book),
+            songId: Int(cdSong.songId),
+            songNo: Int(cdSong.songNo),
+            title: cdSong.title ?? "",
+            alias: cdSong.alias ?? "",
+            content: cdSong.content ?? "",
+            views: Int(cdSong.views),
+            likes: Int(cdSong.likes),
+            liked: cdSong.liked,
+            created: cdSong.created ?? ""
+        )
+    }
+    
     func fetchSongs() -> [Song] {
         let fetchRequest: NSFetchRequest<CDSong> = CDSong.fetchRequest()
         do {
             let cdSongs = try context.fetch(fetchRequest)
             return cdSongs.map { cdSong in
-                Song(
-                    book: Int(cdSong.book),
-                    songId: Int(cdSong.songId),
-                    songNo: Int(cdSong.songNo),
-                    title: cdSong.title ?? "",
-                    alias: cdSong.alias ?? "",
-                    content: cdSong.content ?? "",
-                    views: Int(cdSong.views),
-                    likes: Int(cdSong.likes),
-                    liked: cdSong.liked,
-                    created: cdSong.created ?? ""
-                )
+                mapCdSongToSong(cdSong)
             }
         } catch {
             print("❌ Failed to fetch songs: \(error)")
@@ -69,18 +73,7 @@ class SongDataManager {
     func fetchSong(withId songId: Int) -> Song? {
         do {
             guard let cdSong = try fetchCDSong(withId: songId) else { return nil }
-            return Song(
-                book: Int(cdSong.book),
-                songId: Int(cdSong.songId),
-                songNo: Int(cdSong.songNo),
-                title: cdSong.title ?? "",
-                alias: cdSong.alias ?? "",
-                content: cdSong.content ?? "",
-                views: Int(cdSong.views),
-                likes: Int(cdSong.likes),
-                liked: cdSong.liked,
-                created: cdSong.created ?? ""
-            )
+            return mapCdSongToSong(cdSong)
         } catch {
             print("❌ Failed to fetch song with ID \(songId): \(error)")
             return nil
@@ -144,5 +137,4 @@ class SongDataManager {
             print("❌ Failed to delete songs: \(error)")
         }
     }
-
 }

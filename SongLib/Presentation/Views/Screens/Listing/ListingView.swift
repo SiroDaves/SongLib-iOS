@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct ListingView: View {
+    @Environment(\.presentationMode) var presentationMode
     @StateObject private var viewModel: SongListingViewModel = {
         DiContainer.shared.resolve(SongListingViewModel.self)
     }()
@@ -37,39 +38,6 @@ struct ListingView: View {
                 }
             }
         }
-    }
-
-    @ViewBuilder
-    private var stateContent: some View {
-        switch viewModel.uiState {
-            case .loading:
-                LoadingState()
-                
-            case .loaded:
-                ListingContent(
-                    viewModel: viewModel,
-                    listing: listing
-                )
-
-            case .error(let msg):
-                ErrorView(message: msg) { }
-
-            default:
-                LoadingView()
-        }
-    }
-}
-
-struct ListingContent: View {
-    @Environment(\.presentationMode) var presentationMode
-    @ObservedObject var viewModel: SongListingViewModel
-    let listing: Listing
-    
-    var body: some View {
-        ListedSongs(
-            viewModel: viewModel,
-            songs: viewModel.listedSongs
-        )
         .background(.surface)
         .navigationTitle(listing.title)
         .navigationBarTitleDisplayMode(.inline)
@@ -80,6 +48,26 @@ struct ListingContent: View {
                     presentationMode.wrappedValue.dismiss()
                 } label: { Image(systemName: "chevron.backward") }
             }
+        }
+    }
+
+    @ViewBuilder
+    private var stateContent: some View {
+        switch viewModel.uiState {
+            case .loading:
+                LoadingState()
+                
+            case .loaded:
+                ListedSongs(
+                    viewModel: viewModel,
+                    songs: viewModel.listedSongs
+                )
+
+            case .error(let msg):
+                ErrorView(message: msg) { }
+
+            default:
+                LoadingView()
         }
     }
 }

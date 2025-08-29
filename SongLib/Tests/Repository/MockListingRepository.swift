@@ -31,12 +31,12 @@ class MockListingRepository: ListingRepositoryProtocol {
         mockListings.append(newListing)
     }
     
-    func addSongToListing(song: Song, listing: Listing) {
+    func addSongToListing(songId: Int, parentId: UUID) {
         let newListing = Listing(
             id: UUID(),
-            parentId: listing.id,
-            songId: song.songId,
-            title: song.title,
+            parentId: parentId,
+            songId: songId,
+            title: "listed-song",
             createdAt: Date(),
             updatedAt: Date()
         )

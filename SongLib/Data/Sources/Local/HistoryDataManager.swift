@@ -23,16 +23,16 @@ class HistoryDataManager {
     func saveHistory(_ history: History) {
         context.perform {
             do {
-                let fetchRequest: NSFetchRequest<CDHistory> = CDHistory.fetchRequest()
+                let fetchRequest: NSFetchRequest<CDHistry> = CDHistry.fetchRequest()
                 fetchRequest.predicate = NSPredicate(format: "id == %@", history.id as CVarArg)
                 
                 let existingRecords = try self.context.fetch(fetchRequest)
-                let cdHistory: CDHistory
+                let cdHistory: CDHistry
                 
                 if let existingRecord = existingRecords.first {
                     cdHistory = existingRecord
                 } else {
-                    cdHistory = CDHistory(context: self.context)
+                    cdHistory = CDHistry(context: self.context)
                 }
                 
                 cdHistory.id = history.id
@@ -48,7 +48,7 @@ class HistoryDataManager {
     
     // Fetch all records from Core Data
     func fetchHistories() -> [History] {
-        let fetchRequest: NSFetchRequest<CDHistory> = CDHistory.fetchRequest()
+        let fetchRequest: NSFetchRequest<CDHistry> = CDHistry.fetchRequest()
         do {
             let cdHistoryes = try context.fetch(fetchRequest)
             return cdHistoryes.compactMap { cdHistory in
@@ -66,7 +66,7 @@ class HistoryDataManager {
     
     // Fetch a single record by ID
     func fetchHistory(withId id: UUID) -> History? {
-        let fetchRequest: NSFetchRequest<CDHistory> = CDHistory.fetchRequest()
+        let fetchRequest: NSFetchRequest<CDHistry> = CDHistry.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "id == %@", id as CVarArg)
         fetchRequest.fetchLimit = 1
         
@@ -87,7 +87,7 @@ class HistoryDataManager {
     
     // Delete a record by ID
     func deleteHistory(withId id: Int) {
-        let fetchRequest: NSFetchRequest<CDHistory> = CDHistory.fetchRequest()
+        let fetchRequest: NSFetchRequest<CDHistry> = CDHistry.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "historyId == %d", id)
         
         do {
@@ -102,7 +102,7 @@ class HistoryDataManager {
     }
     
     func deleteAllHistories() {
-        let fetchRequest: NSFetchRequest<NSFetchRequestResult> = CDHistory.fetchRequest()
+        let fetchRequest: NSFetchRequest<NSFetchRequestResult> = CDHistry.fetchRequest()
         let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
         
         do {

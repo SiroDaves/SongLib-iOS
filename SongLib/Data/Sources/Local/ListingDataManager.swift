@@ -36,68 +36,31 @@ class ListingDataManager {
         }
     }
     
-    func fetchListings() -> [Listing] {
-        let request: NSFetchRequest<CDListing> = CDListing.fetchRequest()
-        request.predicate = NSPredicate(format: "songId == %d", 0)
-        
+    func fetchListings(with predicate: NSPredicate? = nil) -> [Listing] {
+        let request: NSFetchRequest<CDListng> = CDListng.fetchRequest()
+        request.predicate = predicate
+
         do {
             let cdListings = try context.fetch(request)
-            return cdListings.compactMap { cdListing in
-                guard let id = cdListing.id,
-                      let parentId = cdListing.parentId,
-                      let createdAt = cdListing.createdAt,
-                      let updatedAt = cdListing.updatedAt else { return nil }
-                
-                let songCount = fetchChildListingCount(for: id)
-
-                return Listing(
-                    id: id,
-                    parentId: parentId,
-                    songId: 0,
-                    title: cdListing.title ?? "Untitled listing",
-                    createdAt: createdAt,
-                    updatedAt: updatedAt,
-                    songCount: songCount
-                )
-            }
+            return cdListings.compactMap(mapCDListing)
         } catch {
             print("❌ Failed to fetch listings: \(error)")
             return []
         }
     }
-    
-    func fetchChildListings(for parentId: UUID) -> [Listing] {
-        let request: NSFetchRequest<CDListing> = CDListing.fetchRequest()
-        request.predicate = NSPredicate(format: "parentId == %@", parentId as CVarArg)
-        
-        do {
-            let cdListings = try context.fetch(request)
-            return cdListings.compactMap { cdListing in
-                guard let id = cdListing.id,
-                      let parentId = cdListing.parentId,
-                      let createdAt = cdListing.createdAt,
-                      let updatedAt = cdListing.updatedAt else { return nil }
-                
-                let songCount = fetchChildListingCount(for: id)
 
-                return Listing(
-                    id: id,
-                    parentId: parentId,
-                    songId: 0,
-                    title: cdListing.title ?? "Untitle listing",
-                    createdAt: createdAt,
-                    updatedAt: updatedAt,
-                    songCount: songCount
-                )
-            }
-        } catch {
-            print("❌ Failed to fetch listings: \(error)")
-            return []
-        }
+    func fetchListings() -> [Listing] {
+        let predicate = NSPredicate(format: "songId == %d", 0)
+        return fetchListings(with: predicate)
+    }
+
+    func fetchChildListings(for parentId: UUID) -> [Listing] {
+        let predicate = NSPredicate(format: "parentId == %@", parentId as CVarArg)
+        return fetchListings(with: predicate)
     }
 
     private func fetchChildListingCount(for parentId: UUID) -> Int {
-        let request: NSFetchRequest<CDListing> = CDListing.fetchRequest()
+        let request: NSFetchRequest<CDListng> = CDListng.fetchRequest()
         request.predicate = NSPredicate(format: "parentId == %@", parentId as CVarArg)
 
         do {
@@ -111,17 +74,13 @@ class ListingDataManager {
     func fetchListing(withId id: UUID) -> Listing? {
         do {
             guard let cdListing = try fetchCDListing(withId: id) else { return nil }
-            guard let parentId = cdListing.parentId,
-                  let createdAt = cdListing.createdAt,
-                  let updatedAt = cdListing.updatedAt else { return nil }
-            
             return Listing(
-                id: cdListing.id ?? id,
-                parentId: parentId,
+                id: cdListing.id!,
+                parentId: cdListing.parentId!,
                 songId: Int(cdListing.songId),
-                title: cdListing.title ?? "",
-                createdAt: createdAt,
-                updatedAt: updatedAt
+                title: cdListing.title!,
+                createdAt: cdListing.createdAt!,
+                updatedAt: cdListing.updatedAt!
             )
         } catch {
             print("❌ Failed to fetch listing with ID \(id): \(error)")
@@ -158,7 +117,7 @@ class ListingDataManager {
     }
     
     func deleteAllListings() {
-        let fetchRequest: NSFetchRequest<NSFetchRequestResult> = CDListing.fetchRequest()
+        let fetchRequest: NSFetchRequest<NSFetchRequestResult> = CDListng.fetchRequest()
         let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
         
         do {
@@ -170,18 +129,37 @@ class ListingDataManager {
         }
     }
     
-    private func fetchCDListing(withId id: UUID) throws -> CDListing? {
-        let request: NSFetchRequest<CDListing> = CDListing.fetchRequest()
+    private func mapCDListing(_ cdListing: CDListng) -> Listing? {
+        guard let id = cdListing.id,
+              let parentId = cdListing.parentId,
+              let createdAt = cdListing.createdAt,
+              let updatedAt = cdListing.updatedAt else { return nil }
+
+        let songCount = fetchChildListingCount(for: id)
+
+        return Listing(
+            id: id,
+            parentId: parentId,
+            songId: Int(cdListing.songId),
+            title: cdListing.title ?? "Untitled listing",
+            createdAt: createdAt,
+            updatedAt: updatedAt,
+            songCount: songCount
+        )
+    }
+    
+    private func fetchCDListing(withId id: UUID) throws -> CDListng? {
+        let request: NSFetchRequest<CDListng> = CDListng.fetchRequest()
         request.predicate = NSPredicate(format: "id == %@", id as CVarArg)
         request.fetchLimit = 1
         return try context.fetch(request).first
     }
     
-    private func fetchOrCreateCDListing(withId id: UUID) throws -> CDListing {
+    private func fetchOrCreateCDListing(withId id: UUID) throws -> CDListng {
         if let existing = try fetchCDListing(withId: id) {
             return existing
         } else {
-            return CDListing(context: context)
+            return CDListng(context: context)
         }
     }
 }
