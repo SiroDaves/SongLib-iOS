@@ -80,14 +80,14 @@ struct HomeLikesMock: View {
 }
 
 struct HomeListingsMock: View {
-    @State private var showingNewListingAlert = false
+    @State private var showNewListingAlert = false
     @State private var newListingTitle = ""
 
     var body: some View {
         NavigationStack {
             ScrollView {
-                ForEach(Listing.sampleListings.indices, id: \.self) { index in
-                    let listing = Listing.sampleListings[index]
+                ForEach(SongListing.sampleListings.indices, id: \.self) { index in
+                    let listing = SongListing.sampleListings[index]
 
                     VStack(spacing: 0) {
                         NavigationLink {
@@ -96,7 +96,7 @@ struct HomeListingsMock: View {
                             ListingItem(listing: listing)
                         }
 
-                        if index < Listing.sampleListings.count - 1 {
+                        if index < SongListing.sampleListings.count - 1 {
                             Divider()
                         }
                     }
@@ -109,13 +109,13 @@ struct HomeListingsMock: View {
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button {
-                        showingNewListingAlert = true
+                        showNewListingAlert = true
                     } label: {
                         Image(systemName: "plus")
                     }
                 }
             }
-            .alert("New Listing", isPresented: $showingNewListingAlert) {
+            .alert("New Listing", isPresented: $showNewListingAlert) {
                 TextField("Listing title", text: $newListingTitle)
                 Button("Add", action: {
                     guard !newListingTitle.trimmingCharacters(in: .whitespaces).isEmpty else { return }

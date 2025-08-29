@@ -22,7 +22,7 @@ final class SongListingViewModel: ObservableObject {
     
     @Published var songs: [Song] = []
     @Published var listedSongs: [Song] = []
-    @Published var listings: [Listing] = []
+    @Published var listings: [SongListing] = []
     
     @Published var isLiked: Bool = false
     @Published var activeSubscriber: Bool = false
@@ -46,22 +46,22 @@ final class SongListingViewModel: ObservableObject {
             }
         }
     }
-    func loadListing(listing: Listing) {
+    func loadListing(listing: SongListing) {
         uiState = .loading("")
         
         Task {
             await MainActor.run {
                 checkSubscription()
-                listings = listingRepo.fetchChildListings(for: listing.parentId)
+                listings = listingRepo.fetchChildListings(for: listing.parent)
                 
                 listedSongs.removeAll()
                 for listing in listings {
-                    print("Listing \(listing.id)")
-                    if let song = songbkRepo.fetchSong(withId: listing.songId) {
-                        listedSongs.append(song)
-                    } else {
-                        print("⚠️ Missing song for id \(listing.songId)")
-                    }
+//                    print("Listing \(listing.id)")
+//                    if let song = songbkRepo.fetchSong(withId: listing.songId) {
+//                        listedSongs.append(song)
+//                    } else {
+//                        print("⚠️ Missing song \(listing.songId)")
+//                    }
                 }
                 
                 uiState = .loaded
@@ -112,16 +112,16 @@ final class SongListingViewModel: ObservableObject {
         uiState = .liked
     }
     
-    func addListing(title: String) {
-        listingRepo.addListing(title)
+    func saveListing(_ parent: Int, song: Int, title: String) {
+        listingRepo.saveListing(parent, song: song, title: title)
         Task { @MainActor in
             listings = listingRepo.fetchListings()
             uiState = .filtered
         }
     }
     
-    func addSong(songId: Int, parentId: Int) {
-        listingRepo.addSongToListing(songId: songId, parentId: parentId)
+    func addSongToListing(_ parent: Int, song: Int) {
+        listingRepo.addSongToListing(parent, song: song)
         Task { @MainActor in
             listings = listingRepo.fetchListings()
             uiState = .filtered

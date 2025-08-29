@@ -23,7 +23,7 @@ final class MainViewModel: ObservableObject {
     @Published var songs: [Song] = []
     @Published var likes: [Song] = []
     @Published var filtered: [Song] = []
-    @Published var listings: [Listing] = []
+    @Published var listings: [SongListing] = []
     @Published var selectedBook: Int = 0
     @Published var uiState: UiState = .idle
 
@@ -96,21 +96,21 @@ final class MainViewModel: ObservableObject {
         self.uiState = .filtered
     }
     
-    func addListing(title: String) {
-        listingRepo.addListing(title)
+    func likeSong(song: Song) {
+        songbkRepo.likeSong(song)
+        uiState = .filtered
+    }
+    
+    func saveListing(_ parent: Int, song: Int, title: String) {
+        listingRepo.saveListing(parent, song: song, title: title)
         Task { @MainActor in
             listings = listingRepo.fetchListings()
             uiState = .filtered
         }
     }
     
-    func likeSong(song: Song) {
-        songbkRepo.likeSong(song)
-        uiState = .filtered
-    }
-    
-    func addSong(songId: Int, parentId: Int) {
-        listingRepo.addSongToListing(songId: songId, parentId: parentId)
+    func addSongToListing(_ parent: Int, song: Int) {
+        listingRepo.addSongToListing(parent, song: song)
         Task { @MainActor in
             listings = listingRepo.fetchListings()
             uiState = .filtered

@@ -12,7 +12,7 @@ struct ListingView: View {
     @StateObject private var viewModel: SongListingViewModel = {
         DiContainer.shared.resolve(SongListingViewModel.self)
     }()
-    let listing: Listing
+    let listing: SongListing
     
     @State private var showToast = false
     @State private var toastMessage: String = ""

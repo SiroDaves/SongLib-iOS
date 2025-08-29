@@ -1,23 +1,21 @@
 //
-//  Listing.swift
+//  SongListItem.swift
 //  SongLib
 //
-//  Created by Siro Daves on 26/08/2025.
+//  Created by Siro Daves on 30/08/2025.
 //
 
 import Foundation
 
-struct Listing: Identifiable, Equatable {
+struct SongListItem: Identifiable, Equatable {
     let id: Int
-    var parentId: Int
-    var songId: Int
-    var title: String
-    var createdAt: Date
-    var updatedAt: Date
+    var parent: Int
+    var song: Int
+    var created: Date
+    var modified: Date
     
-    var songCount: Int = 0
-    var relativeUpdatedAt: String {
-        let interval = Date().timeIntervalSince(updatedAt)
+    var lastUpdate: String {
+        let interval = Date().timeIntervalSince(modified)
 
         if interval < 60 {
             return "just now"
@@ -28,7 +26,7 @@ struct Listing: Identifiable, Equatable {
         } else {
             let formatter = DateFormatter()
             formatter.dateStyle = .medium
-            return formatter.string(from: updatedAt)
+            return formatter.string(from: modified)
         }
     }
 }

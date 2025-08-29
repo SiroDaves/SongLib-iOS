@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct ChooseListingSheet: View {
-    let listings: [Listing]
-    let onSelect: (Listing) -> Void
+    let listings: [SongListing]
+    let onSelect: (SongListing) -> Void
     let onNewList: (String) -> Void
     
     @Environment(\.dismiss) private var dismiss
@@ -63,7 +63,7 @@ struct ChooseListingSheet: View {
 
 #Preview {
     ChooseListingSheet(
-        listings: Listing.sampleListings,
+        listings: SongListing.sampleListings,
         onSelect: { listing in },
         onNewList: { title in }
     )

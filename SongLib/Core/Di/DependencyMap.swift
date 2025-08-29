@@ -30,31 +30,31 @@ struct DependencyMap {
         }.inObjectScope(.container)
         
         container.register(BookDataManager.self) { resolver in
-            BookDataManager(coreDataManager: resolver.resolve(CoreDataManager.self)!)
+            BookDataManager(cdManager: resolver.resolve(CoreDataManager.self)!)
         }.inObjectScope(.container)
         
         container.register(SongDataManager.self) { resolver in
             SongDataManager(
-                coreDataManager: resolver.resolve(CoreDataManager.self)!,
-                bookDataManager: resolver.resolve(BookDataManager.self)!
+                cdManager: resolver.resolve(CoreDataManager.self)!,
+                bdManager: resolver.resolve(BookDataManager.self)!
             )
         }.inObjectScope(.container)
         
-        container.register(ListingDataManager.self) { resolver in
-            ListingDataManager(
-                coreDataManager: resolver.resolve(CoreDataManager.self)!,
+        container.register(SongListingDataManager.self) { resolver in
+            SongListingDataManager(
+                cdManager: resolver.resolve(CoreDataManager.self)!,
             )
         }.inObjectScope(.container)
         
-        container.register(SearchDataManager.self) { resolver in
-            SearchDataManager(
-                coreDataManager: resolver.resolve(CoreDataManager.self)!,
+        container.register(QueryDataManager.self) { resolver in
+            QueryDataManager(
+                cdManager: resolver.resolve(CoreDataManager.self)!,
             )
         }.inObjectScope(.container)
         
-        container.register(HistoryDataManager.self) { resolver in
-            HistoryDataManager(
-                coreDataManager: resolver.resolve(CoreDataManager.self)!,
+        container.register(SongViewDataManager.self) { resolver in
+            SongViewDataManager(
+                cdManager: resolver.resolve(CoreDataManager.self)!,
             )
         }.inObjectScope(.container)
         
@@ -68,12 +68,19 @@ struct DependencyMap {
         
         container.register(ListingRepositoryProtocol.self) { resolver in
             ListingRepository(
-                listData: resolver.resolve(ListingDataManager.self)!
+                listData: resolver.resolve(SongListingDataManager.self)!
             )
         }.inObjectScope(.container)
         
         container.register(SubscriptionRepositoryProtocol.self) { resolver in
             SubscriptionRepository()
+        }.inObjectScope(.container)
+        
+        container.register(TrackingRepositoryProtocol.self) { resolver in
+            TrackingRepository(
+                viewData: resolver.resolve(SongViewDataManager.self)!,
+                queryData: resolver.resolve(QueryDataManager.self)!
+            )
         }.inObjectScope(.container)
         
         container.register(ReviewReqRepositoryProtocol.self) { resolver in

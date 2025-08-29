@@ -7,24 +7,22 @@
 
 import Foundation
 
-extension Listing {
-    static let sampleListings: [Listing] = [
-        Listing(
+extension SongListing {
+    static let sampleListings: [SongListing] = [
+        SongListing(
             id: 1,
-            parentId: 0,
-            songId: 101,
+            parent: 0,
             title: "Sunday Service",
-            createdAt: Date().addingTimeInterval(-3600),
-            updatedAt: Date().addingTimeInterval(-600),
+            created: Date().addingTimeInterval(-3600),
+            modified: Date().addingTimeInterval(-600),
             songCount: 12
         ),
-        Listing(
+        SongListing(
             id: 2,
-            parentId: 0,
-            songId: 202,
+            parent: 0,
             title: "Wedding Playlist",
-            createdAt: Date().addingTimeInterval(-86400),
-            updatedAt: Date().addingTimeInterval(-7200),
+            created: Date().addingTimeInterval(-86400),
+            modified: Date().addingTimeInterval(-7200),
             songCount: 8
         )
     ]

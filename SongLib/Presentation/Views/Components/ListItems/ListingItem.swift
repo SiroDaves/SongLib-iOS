@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ListingItem: View {
-    let listing: Listing
+    let listing: SongListing
 
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
@@ -25,7 +25,7 @@ struct ListingItem: View {
 
                 Spacer()
 
-                Text("updated \(listing.relativeUpdatedAt)")
+                Text("updated \(listing.lastUpdate)")
                     .font(.subheadline)
                     .foregroundColor(.scrim)
             }

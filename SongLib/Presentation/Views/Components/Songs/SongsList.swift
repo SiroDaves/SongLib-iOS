@@ -33,7 +33,7 @@ struct SongsList: View {
                     addSongToListing(song: song, listing: listing)
                 },
                 onNewList: { title in
-                    viewModel.addListing(title: title)
+                    viewModel.saveListing(0, song: 0, title: title)
                     if let newListing = viewModel.listings.last {
                         addSongToListing(song: song, listing: newListing)
                     }
@@ -42,9 +42,9 @@ struct SongsList: View {
         }
     }
     
-    func addSongToListing(song: Song, listing: Listing){
+    func addSongToListing(song: Song, listing: SongListing){
         selectedSong = nil
-        viewModel.addSong(songId: song.songId, parentId: listing.id)
+        viewModel.addSongToListing(listing.id, song: song.songId)
         toastMessage = "\(song.title) added to \(listing.title) listing"
         showToast = true
         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {

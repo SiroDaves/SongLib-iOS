@@ -9,7 +9,7 @@ import SwiftUI
 
 struct HomeListings: View {
     @ObservedObject var viewModel: MainViewModel
-    @State private var showingNewListingAlert = false
+    @State private var showNewListingAlert = false
     @State private var newListingTitle = ""
 
     var body: some View {
@@ -21,25 +21,7 @@ struct HomeListings: View {
                         messageIcon: Image(systemName: "list.number")
                     )
                 } else {
-                    ScrollView {
-                        ForEach(viewModel.listings.indices, id: \.self) { index in
-                            let listing = viewModel.listings[index]
-
-                            VStack(spacing: 0) {
-                                NavigationLink {
-                                    ListingView(listing: listing)
-                                } label: {
-                                    ListingItem(listing: listing)
-                                }
-
-                                if index < viewModel.listings.count - 1 {
-                                    Divider()
-                                }
-                            }
-                        }
-                        .background(.surface)
-                        .padding(.vertical)
-                    }
+                    ListingsScrollView(listings: viewModel.listings)
                 }
             }
             .navigationTitle("Song Listings")
@@ -47,24 +29,49 @@ struct HomeListings: View {
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button {
-                        showingNewListingAlert = true
+                        showNewListingAlert = true
                     } label: {
                         Image(systemName: "plus")
                     }
                 }
             }
-            .alert("New Listing", isPresented: $showingNewListingAlert) {
+            .alert("New Listing", isPresented: $showNewListingAlert) {
                 TextField("Listing title", text: $newListingTitle)
-                
                 Button("Add", action: {
                     guard !newListingTitle.trimmingCharacters(in: .whitespaces).isEmpty else { return }
-                    viewModel.addListing(title: newListingTitle)
+                    viewModel.saveListing(0, song: 0, title: newListingTitle)
                     newListingTitle = ""
                 })
                 Button("Cancel", role: .cancel) {}
             } message: {
                 Text("Enter a title for your new song listing")
             }
+        }
+    }
+}
+
+private struct ListingsScrollView: View {
+    let listings: [SongListing]
+
+    var body: some View {
+        ScrollView {
+            LazyVStack(spacing: 0) {
+                ForEach(Array(listings.enumerated()), id: \.element.id) { index, listing in
+                    VStack(spacing: 0) {
+                        NavigationLink {
+                            ListingView(listing: listing)
+                        } label: {
+                            ListingItem(listing: listing)
+                        }
+
+                        if index < listings.count - 1 {
+                            Divider()
+                        }
+                    }
+                }
+            }
+            .background(.surface)
+            .padding(.vertical)
         }
     }
 }
