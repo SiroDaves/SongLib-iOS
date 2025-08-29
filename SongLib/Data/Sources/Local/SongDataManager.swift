@@ -8,17 +8,16 @@
 import CoreData
 
 class SongDataManager {
-    private let coreDataManager: CoreDataManager
-    private let bookDataManager: BookDataManager
+    private let cdManager: CoreDataManager
+    private let bdManager: BookDataManager
     
-    init(coreDataManager: CoreDataManager = .shared,
-         bookDataManager: BookDataManager) {
-        self.coreDataManager = coreDataManager
-        self.bookDataManager = bookDataManager
+    init(cdManager: CoreDataManager = .shared, bdManager: BookDataManager) {
+        self.cdManager = cdManager
+        self.bdManager = bdManager
     }
-    
+
     private var context: NSManagedObjectContext {
-        coreDataManager.viewContext
+        return cdManager.viewContext
     }
     
     func saveSong(_ song: Song) {

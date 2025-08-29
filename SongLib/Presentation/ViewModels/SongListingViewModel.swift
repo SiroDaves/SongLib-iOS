@@ -58,7 +58,7 @@ final class SongListingViewModel: ObservableObject {
                 for listing in listings {
                     print("Listing \(listing.id)")
                     if let song = songbkRepo.fetchSong(withId: listing.songId) {
-                        listedSongs.append(song) // ✅ only append if exists
+                        listedSongs.append(song)
                     } else {
                         print("⚠️ Missing song for id \(listing.songId)")
                     }
@@ -120,7 +120,7 @@ final class SongListingViewModel: ObservableObject {
         }
     }
     
-    func addSong(songId: Int, parentId: UUID) {
+    func addSong(songId: Int, parentId: Int) {
         listingRepo.addSongToListing(songId: songId, parentId: parentId)
         Task { @MainActor in
             listings = listingRepo.fetchListings()

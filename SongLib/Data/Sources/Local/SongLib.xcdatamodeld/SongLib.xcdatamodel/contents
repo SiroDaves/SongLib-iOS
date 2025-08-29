@@ -11,7 +11,7 @@
         <attribute name="title" optional="YES" attributeType="String"/>
     </entity>
     <entity name="CDHistry" representedClassName="CDHistry" syncable="YES" codeGenerationType="class">
-        <attribute name="createdAt" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="createdAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="songId" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
     </entity>

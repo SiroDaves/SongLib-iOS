@@ -8,7 +8,7 @@
 import Foundation
 
 class MockListingRepository: ListingRepositoryProtocol {
-    func fetchChildListings(for parentId: UUID) -> [Listing] {
+    func fetchChildListings(for parentId: Int) -> [Listing] {
         return mockListings
     }
     
@@ -21,8 +21,8 @@ class MockListingRepository: ListingRepositoryProtocol {
     
     func addListing(_ title: String) {
         let newListing = Listing(
-            id: UUID(),
-            parentId: UUID(),
+            id: 1,
+            parentId: 0,
             songId: 0,
             title: title,
             createdAt: Date(),
@@ -31,9 +31,9 @@ class MockListingRepository: ListingRepositoryProtocol {
         mockListings.append(newListing)
     }
     
-    func addSongToListing(songId: Int, parentId: UUID) {
+    func addSongToListing(songId: Int, parentId: Int) {
         let newListing = Listing(
-            id: UUID(),
+            id: 1,
             parentId: parentId,
             songId: songId,
             title: "listed-song",
@@ -57,7 +57,7 @@ class MockListingRepository: ListingRepositoryProtocol {
         }
     }
     
-    func deleteListing(withId id: UUID) {
+    func deleteListing(withId id: Int) {
         mockListings.removeAll { $0.id == id }
     }
     

@@ -10,8 +10,8 @@ import Foundation
 extension Listing {
     static let sampleListings: [Listing] = [
         Listing(
-            id: UUID(),
-            parentId: UUID(),
+            id: 1,
+            parentId: 0,
             songId: 101,
             title: "Sunday Service",
             createdAt: Date().addingTimeInterval(-3600),
@@ -19,8 +19,8 @@ extension Listing {
             songCount: 12
         ),
         Listing(
-            id: UUID(),
-            parentId: UUID(),
+            id: 2,
+            parentId: 0,
             songId: 202,
             title: "Wedding Playlist",
             createdAt: Date().addingTimeInterval(-86400),

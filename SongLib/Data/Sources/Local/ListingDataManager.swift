@@ -8,30 +8,31 @@
 import CoreData
 
 class ListingDataManager {
-    private let coreDataManager: CoreDataManager
+    private let cdManager: CoreDataManager
     
-    init(coreDataManager: CoreDataManager = .shared) {
-        self.coreDataManager = coreDataManager
+    init(cdManager: CoreDataManager = .shared) {
+        self.cdManager = cdManager
     }
     
     private var context: NSManagedObjectContext {
-        coreDataManager.viewContext
+        cdManager.viewContext
     }
     
-    func saveListing(_ listing: Listing) {
+    func saveListing(title: String, parentId: Int, songId: Int) {
         context.perform {
             do {
-                let cdListing = try self.fetchOrCreateCDListing(withId: listing.id)
-                cdListing.id = listing.id
-                cdListing.parentId = listing.parentId
-                cdListing.songId = Int32(listing.songId)
-                cdListing.title = listing.title
-                cdListing.createdAt = listing.createdAt
-                cdListing.updatedAt = listing.updatedAt
+                let cdListing = CDListng(context: self.context)
+                cdListing.id = self.cdManager.nextId(context: self.context, entity: "CDListng")
+                cdListing.parentId = Int32(parentId)
+                cdListing.songId = Int32(songId)
+                cdListing.title = title
+                cdListing.createdAt = Date()
+                cdListing.updatedAt = Date()
+                
                 try self.context.save()
-                print("✅ New listing \(listing.title) added")
+                print("✅ New listing \(title) saved")
             } catch {
-                print("❌ Failed to save listing \(listing.id): \(error)")
+                print("❌ Failed to save listing: \(error)")
             }
         }
     }
@@ -59,7 +60,7 @@ class ListingDataManager {
         return fetchListings(with: predicate)
     }
 
-    private func fetchChildListingCount(for parentId: UUID) -> Int {
+    private func fetchChildListingCount(for parentId: Int) -> Int {
         let request: NSFetchRequest<CDListng> = CDListng.fetchRequest()
         request.predicate = NSPredicate(format: "parentId == %@", parentId as CVarArg)
 
@@ -71,12 +72,12 @@ class ListingDataManager {
         }
     }
 
-    func fetchListing(withId id: UUID) -> Listing? {
+    func fetchListing(withId id: Int) -> Listing? {
         do {
             guard let cdListing = try fetchCDListing(withId: id) else { return nil }
             return Listing(
-                id: cdListing.id!,
-                parentId: cdListing.parentId!,
+                id: Int(cdListing.id),
+                parentId: Int(cdListing.parentId),
                 songId: Int(cdListing.songId),
                 title: cdListing.title!,
                 createdAt: cdListing.createdAt!,
@@ -104,7 +105,7 @@ class ListingDataManager {
         }
     }
     
-    func deleteListing(withId id: UUID) {
+    func deleteListing(withId id: Int) {
         context.perform {
             do {
                 guard let cdListing = try self.fetchCDListing(withId: id) else { return }
@@ -130,32 +131,26 @@ class ListingDataManager {
     }
     
     private func mapCDListing(_ cdListing: CDListng) -> Listing? {
-        guard let id = cdListing.id,
-              let parentId = cdListing.parentId,
-              let createdAt = cdListing.createdAt,
-              let updatedAt = cdListing.updatedAt else { return nil }
-
-        let songCount = fetchChildListingCount(for: id)
-
+        let songCount = fetchChildListingCount(for: Int(cdListing.id))
         return Listing(
-            id: id,
-            parentId: parentId,
+            id: Int(cdListing.id),
+            parentId: Int(cdListing.parentId),
             songId: Int(cdListing.songId),
             title: cdListing.title ?? "Untitled listing",
-            createdAt: createdAt,
-            updatedAt: updatedAt,
+            createdAt: cdListing.createdAt!,
+            updatedAt: cdListing.updatedAt!,
             songCount: songCount
         )
     }
     
-    private func fetchCDListing(withId id: UUID) throws -> CDListng? {
+    private func fetchCDListing(withId id: Int) throws -> CDListng? {
         let request: NSFetchRequest<CDListng> = CDListng.fetchRequest()
         request.predicate = NSPredicate(format: "id == %@", id as CVarArg)
         request.fetchLimit = 1
         return try context.fetch(request).first
     }
     
-    private func fetchOrCreateCDListing(withId id: UUID) throws -> CDListng {
+    private func fetchOrCreateCDListing(withId id: Int) throws -> CDListng {
         if let existing = try fetchCDListing(withId: id) {
             return existing
         } else {

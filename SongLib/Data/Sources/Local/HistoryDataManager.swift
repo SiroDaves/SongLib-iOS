@@ -8,52 +8,38 @@
 import CoreData
 
 class HistoryDataManager {
-    private let coreDataManager: CoreDataManager
+    private let cdManager: CoreDataManager
         
-    init(coreDataManager: CoreDataManager = CoreDataManager.shared) {
-        self.coreDataManager = coreDataManager
+    init(cdManager: CoreDataManager = CoreDataManager.shared) {
+        self.cdManager = cdManager
     }
     
-    // Access to the view context
     private var context: NSManagedObjectContext {
-        return coreDataManager.viewContext
+        return cdManager.viewContext
     }
     
-    // Save record to Core Data
-    func saveHistory(_ history: History) {
+    func saveHistory(songId: Int) {
         context.perform {
             do {
-                let fetchRequest: NSFetchRequest<CDHistry> = CDHistry.fetchRequest()
-                fetchRequest.predicate = NSPredicate(format: "id == %@", history.id as CVarArg)
-                
-                let existingRecords = try self.context.fetch(fetchRequest)
-                let cdHistory: CDHistry
-                
-                if let existingRecord = existingRecords.first {
-                    cdHistory = existingRecord
-                } else {
-                    cdHistory = CDHistry(context: self.context)
-                }
-                
-                cdHistory.id = history.id
-                cdHistory.songId = Int32(history.songId)
-                cdHistory.createdAt = history.createdAt
+                let cdHistory = CDHistry(context: self.context)
+                cdHistory.id = self.cdManager.nextId(context: self.context, entity: "CDHistry")
+                cdHistory.songId = Int32(songId)
+                cdHistory.createdAt = Date()
                 
                 try self.context.save()
             } catch {
-                print("❌ Failed to save historyes: \(error)")
+                print("❌ Failed to save history: \(error)")
             }
         }
     }
     
-    // Fetch all records from Core Data
     func fetchHistories() -> [History] {
         let fetchRequest: NSFetchRequest<CDHistry> = CDHistry.fetchRequest()
         do {
             let cdHistoryes = try context.fetch(fetchRequest)
             return cdHistoryes.compactMap { cdHistory in
                 return History(
-                    id: cdHistory.id!,
+                    id: Int(cdHistory.id),
                     songId: Int(cdHistory.songId),
                     createdAt: cdHistory.createdAt!
                 )
@@ -64,7 +50,6 @@ class HistoryDataManager {
         }
     }
     
-    // Fetch a single record by ID
     func fetchHistory(withId id: UUID) -> History? {
         let fetchRequest: NSFetchRequest<CDHistry> = CDHistry.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "id == %@", id as CVarArg)
@@ -75,7 +60,7 @@ class HistoryDataManager {
             guard let cdHistory = results.first else { return nil }
             
             return History(
-                id: cdHistory.id!,
+                id: Int(cdHistory.id),
                 songId: Int(cdHistory.songId),
                 createdAt: cdHistory.createdAt!
             )
@@ -85,7 +70,6 @@ class HistoryDataManager {
         }
     }
     
-    // Delete a record by ID
     func deleteHistory(withId id: Int) {
         let fetchRequest: NSFetchRequest<CDHistry> = CDHistry.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "historyId == %d", id)

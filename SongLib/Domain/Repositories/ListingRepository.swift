@@ -9,12 +9,11 @@ import Foundation
 
 protocol ListingRepositoryProtocol {
     func fetchListings() -> [Listing]
-    func fetchChildListings(for parentId: UUID) -> [Listing]
-    func addListing(_ listing: String)
-    func saveListing(_ listing: Listing)
-    func addSongToListing(songId: Int, parentId: UUID)
+    func fetchChildListings(for parentId: Int) -> [Listing]
+    func saveListing(title: String, parentId: Int, songId: Int)
+    func addSongToListing(songId: Int, parentId: Int)
     func updateListing(_ listing: Listing)
-    func deleteListing(withId id: UUID)
+    func deleteListing(withId id: Int)
     func deleteListings()
 }
 
@@ -30,45 +29,33 @@ class ListingRepository: ListingRepositoryProtocol {
         return listings.sorted { $1.updatedAt < $0.updatedAt }
     }
     
-    func fetchChildListings(for parentId: UUID) -> [Listing] {
+    func fetchChildListings(for parentId: Int) -> [Listing] {
         let listings = listData.fetchListings()
         return listings.sorted { $1.updatedAt < $0.updatedAt }
     }
     
-    func addListing(_ title: String) {
-        let newListing = Listing(
-            id: UUID(),
-            parentId: UUID(),
-            songId: 0,
+    func saveListing(title: String, parentId: Int, songId: Int) {
+        listData.saveListing(
             title: title,
-            createdAt: Date(),
-            updatedAt: Date(),
+            parentId: parentId,
+            songId: songId
         )
-        listData.saveListing(newListing)
     }
     
-    func addSongToListing(songId: Int, parentId: UUID) {
-        let newListing = Listing(
-            id: UUID(),
+    func addSongToListing(songId: Int, parentId: Int) {
+        listData.saveListing(
+            title: "",
             parentId: parentId,
-            songId: songId,
-            title: "child-listing",
-            createdAt: Date(),
-            updatedAt: Date(),
+            songId: songId
         )
-        listData.saveListing(newListing)
     }
     
     func updateListing(_ listing: Listing) {
         listData.updateListing(listing)
     }
     
-    func deleteListing(withId id: UUID) {
+    func deleteListing(withId id: Int) {
         listData.deleteListing(withId: id)
-    }
-    
-    func saveListing(_ listing: Listing) {
-        listData.saveListing(listing)
     }
     
     func deleteListings() {

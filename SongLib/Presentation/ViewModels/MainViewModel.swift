@@ -109,7 +109,7 @@ final class MainViewModel: ObservableObject {
         uiState = .filtered
     }
     
-    func addSong(songId: Int, parentId: UUID) {
+    func addSong(songId: Int, parentId: Int) {
         listingRepo.addSongToListing(songId: songId, parentId: parentId)
         Task { @MainActor in
             listings = listingRepo.fetchListings()

@@ -8,52 +8,38 @@
 import CoreData
 
 class SearchDataManager {
-    private let coreDataManager: CoreDataManager
+    private let cdManager: CoreDataManager
         
-    init(coreDataManager: CoreDataManager = CoreDataManager.shared) {
-        self.coreDataManager = coreDataManager
+    init(cdManager: CoreDataManager = CoreDataManager.shared) {
+        self.cdManager = cdManager
     }
     
-    // Access to the view context
     private var context: NSManagedObjectContext {
-        return coreDataManager.viewContext
+        return cdManager.viewContext
     }
     
-    // Save record to Core Data
-    func saveSearch(_ search: Search) {
+    func saveListing(title: String) {
         context.perform {
             do {
-                let fetchRequest: NSFetchRequest<CDSarch> = CDSarch.fetchRequest()
-                fetchRequest.predicate = NSPredicate(format: "id == %@", search.id as CVarArg)
-                
-                let existingRecords = try self.context.fetch(fetchRequest)
-                let cdSearch: CDSarch
-                
-                if let existingRecord = existingRecords.first {
-                    cdSearch = existingRecord
-                } else {
-                    cdSearch = CDSarch(context: self.context)
-                }
-                
-                cdSearch.id = search.id
-                cdSearch.title = search.title
-                cdSearch.createdAt = search.createdAt
+                let cdSearch = CDSarch(context: self.context)
+                cdSearch.id = self.cdManager.nextId(context: self.context, entity: "CDSarch")
+                cdSearch.title = title
+                cdSearch.createdAt = Date()
                 
                 try self.context.save()
             } catch {
-                print("❌ Failed to save searches: \(error)")
+                print("❌ Failed to save search: \(error)")
             }
         }
     }
     
-    // Fetch all records from Core Data
     func fetchSearches() -> [Search] {
         let fetchRequest: NSFetchRequest<CDSarch> = CDSarch.fetchRequest()
         do {
             let cdSearches = try context.fetch(fetchRequest)
             return cdSearches.compactMap { cdSearch in
                 return Search(
-                    id: cdSearch.id!,
+                    id: Int(cdSearch.id),
                     title: cdSearch.title ?? "",
                     createdAt: cdSearch.createdAt!
                 )
@@ -64,7 +50,6 @@ class SearchDataManager {
         }
     }
     
-    // Fetch a single record by ID
     func fetchSearch(withId id: UUID) -> Search? {
         let fetchRequest: NSFetchRequest<CDSarch> = CDSarch.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "id == %@", id as CVarArg)
@@ -75,7 +60,7 @@ class SearchDataManager {
             guard let cdSearch = results.first else { return nil }
             
             return Search(
-                id: cdSearch.id!,
+                id: Int(cdSearch.id),
                 title: cdSearch.title ?? "",
                 createdAt: cdSearch.createdAt!
             )
@@ -85,7 +70,6 @@ class SearchDataManager {
         }
     }
     
-    // Delete a record by ID
     func deleteSearch(withId id: Int) {
         let fetchRequest: NSFetchRequest<CDSarch> = CDSarch.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "searchId == %d", id)
