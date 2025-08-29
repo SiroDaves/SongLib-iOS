@@ -10,24 +10,46 @@ import SwiftUI
 struct HomeSearchMock: View {
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack(spacing: 1) {
-                    BooksList(
-                        books: Book.sampleBooks,
-                        selectedBook: 0,
-                        onSelect: { book in }
-                    )
-                    
-                    Spacer()
-                    SongsListMock(
-                        songs: Song.sampleSongs,
-                    )
+            ZStack(alignment: .bottomTrailing) {
+                ScrollView {
+                    VStack(spacing: 1) {
+                        BooksList(
+                            books: Book.sampleBooks,
+                            selectedBook: 0,
+                            onSelect: { book in }
+                        )
+                        
+                        Spacer()
+                        SongsListMock(
+                            songs: Song.sampleSongs,
+                        )
+                    }
+                    .background(.surface)
+                    .padding(.vertical)
                 }
-                .background(.surface)
-                .padding(.vertical)
+                .navigationTitle("SongLib")
+                .toolbarBackground(.regularMaterial, for: .navigationBar)
+                
+                Button {
+                } label: {
+                    Image(systemName: "circle.grid.3x3.fill")
+                        .font(.title.weight(.semibold))
+                        .padding()
+                        .foregroundColor(.onPrimaryContainer)
+                        .background(.primaryContainer)
+                        .clipShape(Circle())
+                        .shadow(radius: 4, x: 0, y: 4)
+                }
+                .padding()
+                DialPad(
+                    onNumberClick: { num in
+                    },
+                    onBackspaceClick: {
+                    },
+                    onSearchClick: {
+                    }
+                )
             }
-            .navigationTitle("SongLib")
-            .toolbarBackground(.regularMaterial, for: .navigationBar)
         }
     }
 }
@@ -105,4 +127,8 @@ struct HomeListingsMock: View {
             }
         }
     }
+}
+
+#Preview {
+    HomeSearchMock()
 }
