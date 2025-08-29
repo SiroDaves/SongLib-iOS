@@ -7,7 +7,20 @@
 
 import Foundation
 
-class PreferencesRepository {
+protocol PreferencesRepositoryProtocol {
+    var installDate: Date { get set }
+    var reviewRequested: Bool { get set }
+    var lastReviewPrompt: Date { get set }
+    var usageTime: TimeInterval { get set }
+    var isDataSelected: Bool { get set }
+    var isDataLoaded: Bool { get set }
+    var selectedBooks: String { get set }
+    var horizontalSlides: Bool { get set }
+    
+    func resetPrefs()
+}
+
+class PreferencesRepository: PreferencesRepositoryProtocol {
     private let userDefaults: UserDefaults
     
     init(userDefaults: UserDefaults = .standard) {

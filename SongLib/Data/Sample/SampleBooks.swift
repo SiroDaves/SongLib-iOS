@@ -5,7 +5,6 @@
 //  Created by Siro Daves on 15/08/2025.
 //
 
-
 extension Book {
     static let sampleBooks: [Book] = [
         Book(

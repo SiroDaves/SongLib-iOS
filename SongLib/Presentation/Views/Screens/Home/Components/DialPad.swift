@@ -12,18 +12,29 @@ struct DialPad: View {
     let onBackspaceClick: () -> Void
     let onSearchClick: () -> Void
 
-    private let dialPadItems: [[Any]] = [
-        ["6", "7", "8", "9"],
-        ["2", "3", "4", "5"],
-        ["1", "0",
-         ("delete.left", { }),
-         ("checkmark", { })]
-    ]
+    private let dialPadItems: [[Any]] = {
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            return [
+                ["4", "5", "6", "7", "8", "9"],
+                ["3", "2", "1", "0",
+                 ("delete.left", { }),
+                 ("checkmark", { })]
+            ]
+        } else {
+            return [
+                ["6", "7", "8", "9"],
+                ["2", "3", "4", "5"],
+                ["1", "0",
+                 ("delete.left", { }),
+                 ("checkmark", { })]
+            ]
+        }
+    }()
 
     var body: some View {
-        VStack(spacing: 12) {
+        VStack(spacing: 15) {
             ForEach(0..<dialPadItems.count, id: \.self) { rowIndex in
-                HStack(spacing: 12) {
+                HStack(spacing: 15) {
                     ForEach(0..<dialPadItems[rowIndex].count, id: \.self) { colIndex in
                         let item = dialPadItems[rowIndex][colIndex]
 
@@ -84,10 +95,14 @@ struct DialIconButton: View {
     }
 }
 
+//#Preview {
+//    DialPad(
+//        onNumberClick: {_ in },
+//        onBackspaceClick: {},
+//        onSearchClick: {}
+//    )
+//}
+
 #Preview {
-    DialPad(
-        onNumberClick: {_ in },
-        onBackspaceClick: {},
-        onSearchClick: {}
-    )
+    HomeSearchMock()
 }

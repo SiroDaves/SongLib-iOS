@@ -15,64 +15,41 @@ struct HomeView: View {
     
     @State private var showSettings: Bool = false
     @State private var showPaywall: Bool = false
-    
+    @State private var isLandscape = false
+        
     var body: some View {
-        stateContent
-        .edgesIgnoringSafeArea(.bottom)
-        .task { viewModel.fetchData() }
-        .onChange(of: viewModel.uiState, perform: handleStateChange)
+        GeometryReader { geo in
+            let landscape = geo.size.width > geo.size.height
+            
+            Group {
+                if UIDevice.current.userInterfaceIdiom == .pad {
+                    iPadLayout(landscape: landscape)
+                } else {
+                    iPhoneLayout
+                }
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .edgesIgnoringSafeArea(.bottom)
+            .task { viewModel.fetchData() }
+            .onChange(of: viewModel.uiState, perform: handleStateChange)
+        }
     }
     
     @ViewBuilder
-    private var stateContent: some View {
+    private var iPhoneLayout: some View {
         switch viewModel.uiState {
             case .loading(let msg):
-                LoadingState(title: msg!)
-            
+                LoadingState(title: msg ?? "")
+                
             case .filtering:
                 ProgressView().tint(.onPrimary)
-            
+                
             case .filtered:
-                TabView {
-                    if viewModel.songs.isEmpty {
-                        
-                    } else {
-                        HomeSearch(viewModel: viewModel)
-                            .tabItem {
-                                Label("Search", systemImage: "magnifyingglass")
-                            }
-                        .background(.primaryContainer)
-                        HomeLikes(viewModel: viewModel)
-                            .tabItem {
-                                Label("Likes", systemImage: "heart.fill")
-                            }
-                            .background(.primaryContainer)
-                        if viewModel.activeSubscriber {
-                            HomeListings(viewModel: viewModel)
-                                .tabItem {
-                                    Label("Listings", systemImage: "list.number")
-                                }
-                                .background(.primaryContainer)
-                        }
-                    }
-                    SettingsView(viewModel: viewModel)
-                        .tabItem {
-                            Label("Settings", systemImage: "gear")
-                        }
-                    .background(.primaryContainer)
-                }
-                .onAppear {
-                    #if !DEBUG
-                        showPaywall = !viewModel.activeSubscriber
-                    #endif
-                    viewModel.promptReview()
-                }
-                .sheet(isPresented: $showPaywall) {
-                    #if !DEBUG
-                        PaywallView(displayCloseButton: true)
-                    #endif
-                }
-               
+                HomeTabs(
+                    viewModel: viewModel,
+                    showPaywall: $showPaywall
+                )
+                
             case .error(let msg):
                 ErrorView(message: msg) {
                     Task { viewModel.fetchData() }
@@ -81,6 +58,24 @@ struct HomeView: View {
             default:
                 LoadingState()
         }
+    }
+    
+    private func iPadLayout(landscape: Bool) -> some View {
+//        Group {
+//            if landscape {
+//                NavigationSplitView {
+//                } content: {
+//                    iPhoneLayout
+//                } detail: {
+//                    Text("Detail")
+//                }
+//            } else {
+//                iPhoneLayout
+//                    .environment(\.horizontalSizeClass, .compact)
+//            }
+//        }
+        iPhoneLayout
+            .environment(\.horizontalSizeClass, .compact)
     }
     
     private func handleStateChange(_ state: UiState) {
