@@ -9,9 +9,10 @@ import Foundation
 
 protocol ListingRepositoryProtocol {
     func fetchListings() -> [Listing]
+    func fetchChildListings(for parentId: UUID) -> [Listing]
     func addListing(_ listing: String)
     func saveListing(_ listing: Listing)
-    func addSongToListing(song: Song, listing: Listing)
+    func addSongToListing(songId: Int, parentId: UUID)
     func updateListing(_ listing: Listing)
     func deleteListing(withId id: UUID)
     func deleteListings()
@@ -29,6 +30,11 @@ class ListingRepository: ListingRepositoryProtocol {
         return listings.sorted { $1.updatedAt < $0.updatedAt }
     }
     
+    func fetchChildListings(for parentId: UUID) -> [Listing] {
+        let listings = listData.fetchListings()
+        return listings.sorted { $1.updatedAt < $0.updatedAt }
+    }
+    
     func addListing(_ title: String) {
         let newListing = Listing(
             id: UUID(),
@@ -41,12 +47,12 @@ class ListingRepository: ListingRepositoryProtocol {
         listData.saveListing(newListing)
     }
     
-    func addSongToListing(song: Song, listing: Listing) {
+    func addSongToListing(songId: Int, parentId: UUID) {
         let newListing = Listing(
             id: UUID(),
-            parentId: listing.id,
-            songId: song.songId,
-            title: song.title,
+            parentId: parentId,
+            songId: songId,
+            title: "child-listing",
             createdAt: Date(),
             updatedAt: Date(),
         )

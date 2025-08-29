@@ -99,11 +99,12 @@ struct DependencyMap {
             )
         }.inObjectScope(.container)
         
-        container.register(SongViewModel.self) { resolver in
-            SongViewModel(
+        container.register(SongListingViewModel.self) { resolver in
+            SongListingViewModel(
                 prefsRepo: resolver.resolve(PreferencesRepository.self)!,
                 songbkRepo: resolver.resolve(SongBookRepositoryProtocol.self)!,
                 listingRepo: resolver.resolve(ListingRepositoryProtocol.self)!,
+                subsRepo: resolver.resolve(SubscriptionRepositoryProtocol.self)!,
             )
         }.inObjectScope(.container)
         

@@ -12,6 +12,7 @@ protocol SongBookRepositoryProtocol {
     func fetchRemoteSongs(for bookId: String) async throws -> SongResponse
     func fetchLocalBooks() -> [Book]
     func fetchLocalSongs() -> [Song]
+    func fetchSong(withId songId: Int) -> Song?
     func saveBooks(_ books: [Book])
     func saveSong(_ song: Song)
     func likeSong(_ song: Song)
@@ -51,6 +52,10 @@ class SongBookRepository: SongBookRepositoryProtocol {
         return songs.sorted { $0.songId < $1.songId }
     }
     
+    func fetchSong(withId songId: Int) -> Song? {
+        return songData.fetchSong(withId: songId)
+    }
+
     func saveBooks(_ books: [Book]) {
         bookData.saveBooks(books)
     }

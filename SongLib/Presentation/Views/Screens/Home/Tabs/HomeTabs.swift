@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import RevenueCatUI
 
 struct HomeTabs: View {
     @ObservedObject var viewModel: MainViewModel

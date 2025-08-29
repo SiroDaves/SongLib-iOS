@@ -37,9 +37,11 @@ class ListingDataManager {
     }
     
     func fetchListings() -> [Listing] {
-        let fetchRequest: NSFetchRequest<CDListing> = CDListing.fetchRequest()
+        let request: NSFetchRequest<CDListing> = CDListing.fetchRequest()
+        request.predicate = NSPredicate(format: "songId == %d", 0)
+        
         do {
-            let cdListings = try context.fetch(fetchRequest)
+            let cdListings = try context.fetch(request)
             return cdListings.compactMap { cdListing in
                 guard let id = cdListing.id,
                       let parentId = cdListing.parentId,
@@ -51,8 +53,38 @@ class ListingDataManager {
                 return Listing(
                     id: id,
                     parentId: parentId,
-                    songId: Int(cdListing.songId),
-                    title: cdListing.title ?? "",
+                    songId: 0,
+                    title: cdListing.title ?? "Untitled listing",
+                    createdAt: createdAt,
+                    updatedAt: updatedAt,
+                    songCount: songCount
+                )
+            }
+        } catch {
+            print("❌ Failed to fetch listings: \(error)")
+            return []
+        }
+    }
+    
+    func fetchChildListings(for parentId: UUID) -> [Listing] {
+        let request: NSFetchRequest<CDListing> = CDListing.fetchRequest()
+        request.predicate = NSPredicate(format: "parentId == %@", parentId as CVarArg)
+        
+        do {
+            let cdListings = try context.fetch(request)
+            return cdListings.compactMap { cdListing in
+                guard let id = cdListing.id,
+                      let parentId = cdListing.parentId,
+                      let createdAt = cdListing.createdAt,
+                      let updatedAt = cdListing.updatedAt else { return nil }
+                
+                let songCount = fetchChildListingCount(for: id)
+
+                return Listing(
+                    id: id,
+                    parentId: parentId,
+                    songId: 0,
+                    title: cdListing.title ?? "Untitle listing",
                     createdAt: createdAt,
                     updatedAt: updatedAt,
                     songCount: songCount

@@ -109,8 +109,8 @@ final class MainViewModel: ObservableObject {
         uiState = .filtered
     }
     
-    func addSong(song: Song, listing: Listing) {
-        listingRepo.addSongToListing(song: song, listing: listing)
+    func addSong(songId: Int, parentId: UUID) {
+        listingRepo.addSongToListing(songId: songId, parentId: parentId)
         Task { @MainActor in
             listings = listingRepo.fetchListings()
             uiState = .filtered

@@ -12,6 +12,10 @@ class MockSongBookRepository: SongBookRepositoryProtocol {
     var mockSongs: [Song] = Song.sampleSongs
     var shouldThrowError = false
     
+    func fetchSong(withId songId: Int) -> Song? {
+        return mockSongs[0]
+    }
+    
     func fetchRemoteBooks() async throws -> BookResponse {
         if shouldThrowError {
             throw URLError(.badServerResponse)

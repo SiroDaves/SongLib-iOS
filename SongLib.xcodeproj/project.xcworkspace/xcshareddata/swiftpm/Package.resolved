@@ -1,5 +1,5 @@
 {
-  "originHash" : "956b43eab4693e0372438b7197a6d08d75e0f074e902e457918f34d126af7428",
+  "originHash" : "17b10e2748624b44e1af4819dfd5e22ab8aca13b35e1c739da167719e83cb380",
   "pins" : [
     {
       "identity" : "lottie-ios",
@@ -17,6 +17,15 @@
       "state" : {
         "revision" : "b2a5f6c6fb4de109fc6dd6491d7f0657fbc983bf",
         "version" : "5.35.0"
+      }
+    },
+    {
+      "identity" : "swiftuimodal",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/nonameplum/SwiftUIModal",
+      "state" : {
+        "revision" : "cd89b0f163843af3b621fc43e778cde918ebf977",
+        "version" : "1.0.3"
       }
     },
     {

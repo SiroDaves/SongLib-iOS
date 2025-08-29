@@ -66,9 +66,9 @@ class SongDataManager {
         }
     }
     
-    func fetchSong(withId id: Int) -> Song? {
+    func fetchSong(withId songId: Int) -> Song? {
         do {
-            guard let cdSong = try fetchCDSong(withId: id) else { return nil }
+            guard let cdSong = try fetchCDSong(withId: songId) else { return nil }
             return Song(
                 book: Int(cdSong.book),
                 songId: Int(cdSong.songId),
@@ -82,7 +82,7 @@ class SongDataManager {
                 created: cdSong.created ?? ""
             )
         } catch {
-            print("❌ Failed to fetch song with ID \(id): \(error)")
+            print("❌ Failed to fetch song with ID \(songId): \(error)")
             return nil
         }
     }
@@ -105,27 +105,27 @@ class SongDataManager {
         }
     }
     
-    func deleteSong(withId id: Int) {
+    func deleteSong(withId songId: Int) {
         context.perform {
             do {
-                guard let cdSong = try self.fetchCDSong(withId: id) else { return }
+                guard let cdSong = try self.fetchCDSong(withId: songId) else { return }
                 self.context.delete(cdSong)
                 try self.context.save()
             } catch {
-                print("❌ Failed to delete song with ID \(id): \(error)")
+                print("❌ Failed to delete song with ID \(songId): \(error)")
             }
         }
     }
     
-    private func fetchCDSong(withId id: Int) throws -> CDSong? {
+    private func fetchCDSong(withId songId: Int) throws -> CDSong? {
         let request: NSFetchRequest<CDSong> = CDSong.fetchRequest()
-        request.predicate = NSPredicate(format: "songId == %d", id)
+        request.predicate = NSPredicate(format: "songId == %d", songId)
         request.fetchLimit = 1
         return try context.fetch(request).first
     }
     
-    private func fetchOrCreateCDSong(withId id: Int) throws -> CDSong {
-        if let existing = try fetchCDSong(withId: id) {
+    private func fetchOrCreateCDSong(withId songId: Int) throws -> CDSong {
+        if let existing = try fetchCDSong(withId: songId) {
             return existing
         } else {
             return CDSong(context: context)

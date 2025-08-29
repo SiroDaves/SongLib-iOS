@@ -20,21 +20,17 @@ struct ChooseListingSheet: View {
             VStack(spacing: 0) {
                 List {
                     Button {
-                        onNewList("New List")
+                        onNewList("New Song List")
                     } label: {
-                        Label("New list", systemImage: "plus")
+                        Label("New Song List", systemImage: "plus")
+                            .foregroundColor(.primary1)
                     }
                     
                     ForEach(listings) { listing in
                         Button {
                             onSelect(listing)
                         } label: {
-                            HStack {
-                                Image(systemName: "heart")
-                                    .foregroundColor(.primary)
-                                Text(listing.title)
-                                Spacer()
-                            }
+                            ListingItem(listing: listing)
                         }
                     }
                 }
@@ -45,13 +41,30 @@ struct ChooseListingSheet: View {
                 .font(.headline)
                 .frame(maxWidth: .infinity)
                 .padding()
-                .background(.green)
-                .foregroundColor(.white)
+                .background(.primaryContainer)
+                .foregroundColor(.onPrimaryContainer)
                 .clipShape(RoundedRectangle(cornerRadius: 12))
                 .padding()
             }
-            .navigationTitle("Choose list")
-            .navigationBarTitleDisplayMode(.inline)
+            .navigationTitle("Choose a List")
+            .navigationBarTitleDisplayMode(.inline).toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        dismiss()
+                    } label: {
+                        Image(systemName: "xmark")
+                            .foregroundColor(.primary1)
+                    }
+                }
+            }
         }
     }
+}
+
+#Preview {
+    ChooseListingSheet(
+        listings: Listing.sampleListings,
+        onSelect: { listing in },
+        onNewList: { title in }
+    )
 }

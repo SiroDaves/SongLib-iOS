@@ -8,11 +8,11 @@
 import Foundation
 import SwiftUI
 
-final class SongViewModel: ObservableObject {
-
+final class SongListingViewModel: ObservableObject {
     private let prefsRepo: PreferencesRepository
     private let songbkRepo: SongBookRepositoryProtocol
     private let listingRepo: ListingRepositoryProtocol
+    private let subsRepo: SubscriptionRepositoryProtocol
 
     @Published var uiState: UiState = .idle
     @Published var title: String = ""
@@ -20,16 +20,52 @@ final class SongViewModel: ObservableObject {
     @Published var indicators: [String] = []
     @Published var verses: [String] = []
     
+    @Published var songs: [Song] = []
+    @Published var listedSongs: [Song] = []
+    @Published var listings: [Listing] = []
+    
     @Published var isLiked: Bool = false
+    @Published var activeSubscriber: Bool = false
 
     init(
         prefsRepo: PreferencesRepository,
         songbkRepo: SongBookRepositoryProtocol,
-        listingRepo: ListingRepositoryProtocol
+        listingRepo: ListingRepositoryProtocol,
+        subsRepo: SubscriptionRepositoryProtocol
     ) {
         self.prefsRepo = prefsRepo
         self.songbkRepo = songbkRepo
         self.listingRepo = listingRepo
+        self.subsRepo = subsRepo
+    }
+    
+    func checkSubscription() {
+        subsRepo.isActiveSubscriber { [weak self] isActive in
+            DispatchQueue.main.async {
+                self?.activeSubscriber = isActive
+            }
+        }
+    }
+    func loadListing(listing: Listing) {
+        uiState = .loading("")
+        
+        Task {
+            await MainActor.run {
+                checkSubscription()
+                listings = listingRepo.fetchChildListings(for: listing.parentId)
+                
+                listedSongs.removeAll()
+                for listing in listings {
+                    if let song = songbkRepo.fetchSong(withId: listing.songId) {
+                        listedSongs.append(song) // ✅ only append if exists
+                    } else {
+                        print("⚠️ Missing song for id \(listing.songId)")
+                    }
+                }
+                
+                uiState = .loaded
+            }
+        }
     }
 
     func loadSong(song: Song) {
@@ -74,5 +110,21 @@ final class SongViewModel: ObservableObject {
         isLiked = !song.liked
         uiState = .liked
     }
-
+    
+    func addListing(title: String) {
+        listingRepo.addListing(title)
+        Task { @MainActor in
+            listings = listingRepo.fetchListings()
+            uiState = .filtered
+        }
+    }
+    
+    func addSong(songId: Int, parentId: UUID) {
+        listingRepo.addSongToListing(songId: songId, parentId: parentId)
+        Task { @MainActor in
+            listings = listingRepo.fetchListings()
+            uiState = .filtered
+        }
+    }
+    
 }

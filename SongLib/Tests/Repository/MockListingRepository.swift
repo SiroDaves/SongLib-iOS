@@ -8,6 +8,10 @@
 import Foundation
 
 class MockListingRepository: ListingRepositoryProtocol {
+    func fetchChildListings(for parentId: UUID) -> [Listing] {
+        return mockListings
+    }
+    
     var mockListings: [Listing] = []
     var shouldThrowError = false
     

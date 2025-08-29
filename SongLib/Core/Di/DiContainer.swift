@@ -35,7 +35,7 @@ final class DiContainer {
             { self.container.resolve(ReviewReqRepositoryProtocol.self) },
             { self.container.resolve(SelectionViewModel.self) },
             { self.container.resolve(MainViewModel.self) },
-            { self.container.resolve(SongViewModel.self) },
+            { self.container.resolve(SongListingViewModel.self) },
         ]
 
         for resolve in dependencies {
