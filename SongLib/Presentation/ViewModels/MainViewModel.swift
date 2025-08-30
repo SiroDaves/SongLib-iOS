@@ -23,7 +23,7 @@ final class MainViewModel: ObservableObject {
     @Published var songs: [Song] = []
     @Published var likes: [Song] = []
     @Published var filtered: [Song] = []
-    @Published var listings: [SongListing] = []
+    @Published var listings: [Listing] = []
     @Published var selectedBook: Int = 0
     @Published var uiState: UiState = .idle
 
@@ -109,7 +109,7 @@ final class MainViewModel: ObservableObject {
         }
     }
     
-    func saveListItem(_ listing: SongListing, song: Int) {
+    func saveListItem(_ listing: Listing, song: Int) {
         listingRepo.saveListItem(listing, song: song)
         Task { @MainActor in
             listings = listingRepo.fetchListings(for: 0)
