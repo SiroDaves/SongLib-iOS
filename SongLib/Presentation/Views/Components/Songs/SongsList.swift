@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import SwiftUIModal
 
 struct SongsList: View {
     @ObservedObject var viewModel: MainViewModel
@@ -33,7 +32,7 @@ struct SongsList: View {
                     addSongToListing(song: song, listing: listing)
                 },
                 onNewList: { title in
-                    viewModel.saveListing(0, song: 0, title: title)
+                    viewModel.saveListing(0, title: title)
                     if let newListing = viewModel.listings.last {
                         addSongToListing(song: song, listing: newListing)
                     }
@@ -44,8 +43,17 @@ struct SongsList: View {
     
     func addSongToListing(song: Song, listing: SongListing){
         selectedSong = nil
-        viewModel.addSongToListing(listing.id, song: song.songId)
+        viewModel.saveListItem(listing, song: song.songId)
         toastMessage = "\(song.title) added to \(listing.title) listing"
+        showToast = true
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+            showToast = false
+        }
+    }
+    
+    func likeSong(song: Song){
+        viewModel.likeSong(song: song)
+        toastMessage = L10n.likedSong(for: song.title, isLiked: !song.liked)
         showToast = true
         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
             showToast = false
@@ -56,44 +64,56 @@ struct SongsList: View {
     private var stateContent: some View {
         LazyVStack(spacing: 0) {
             ForEach(Array(songs.enumerated()), id: \.element.id) { index, song in
-                NavigationLink {
-                    PresenterView(song: song)
-                } label: {
+                NavigationLink(destination: PresenterView(song: song)) {
                     SongItem(
                         song: song,
                         height: 50,
                         isSelected: false,
                         isSearching: false
                     )
-                    .contextMenu {
-                        Button {
-                            viewModel.likeSong(song: song)
-                            toastMessage = L10n.likedSong(for: song.title, isLiked: !song.liked)
-                            showToast = true
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                                showToast = false
-                            }
-                        } label: {
-                            Label(
-                                song.liked ? "Remove from Likes" : "Add to Likes",
-                                systemImage: song.liked ? "heart.fill" : "heart"
-                            )
-                        }
-                        
-                        Button {
-                            selectedSong = song
-                        } label: {
-                            Label("Add to Listing", systemImage: "text.badge.plus")
-                        }
-                        
-                        ShareLink(
-                            item: SongUtils.shareText(song: song)
-                        ) {
-                            Label(
-                                "Share this song",
-                                systemImage: "square.and.arrow.up"
-                            )
-                        }
+                }
+                .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                    Button {
+                        likeSong(song: song)
+                    } label: {
+                        Label(
+                            song.liked ? "Remove from Likes" : "Add to Likes",
+                            systemImage: song.liked ? "heart.fill" : "heart"
+                        )
+                    }
+                    .tint(.primary1)
+                }
+                .swipeActions(edge: .leading, allowsFullSwipe: false) {
+                    Button {
+                        selectedSong = song
+                    } label: {
+                        Label("Add to Listing", systemImage: "text.badge.plus")
+                    }
+                    .tint(.primaryContainer)
+                }
+                .contextMenu {
+                    Button {
+                        likeSong(song: song)
+                    } label: {
+                        Label(
+                            song.liked ? "Remove from Likes" : "Add to Likes",
+                            systemImage: song.liked ? "heart.fill" : "heart"
+                        )
+                    }
+
+                    Button {
+                        selectedSong = song
+                    } label: {
+                        Label("Add to Listing", systemImage: "text.badge.plus")
+                    }
+
+                    ShareLink(
+                        item: SongUtils.shareText(song: song)
+                    ) {
+                        Label(
+                            "Share this song",
+                            systemImage: "square.and.arrow.up"
+                        )
                     }
                 }
 
