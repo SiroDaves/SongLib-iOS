@@ -8,18 +8,16 @@
 import CoreData
 
 class BookDataManager {
-    private let coreDataManager: CoreDataManager
+    private let cdManager: CoreDataManager
         
-    init(coreDataManager: CoreDataManager = CoreDataManager.shared) {
-        self.coreDataManager = coreDataManager
+    init(cdManager: CoreDataManager = CoreDataManager.shared) {
+        self.cdManager = cdManager
     }
     
-    // Access to the view context
     private var context: NSManagedObjectContext {
-        return coreDataManager.viewContext
+        return cdManager.viewContext
     }
     
-    // Save records to Core Data
     func saveBooks(_ books: [Book]) {
         context.perform {
             do {
@@ -57,21 +55,25 @@ class BookDataManager {
     }
     
     // Fetch all records from Core Data
+    fileprivate func mapCdBookToBook(_ cdBook: CDBook) -> Book {
+        return Book(
+            bookId: Int(cdBook.bookId),
+            title: cdBook.title ?? "",
+            subTitle: cdBook.subTitle ?? "",
+            songs: Int(cdBook.songs),
+            position: Int(cdBook.position),
+            bookNo: Int(cdBook.bookNo),
+            enabled: cdBook.enabled,
+            created: cdBook.created ?? "",
+        )
+    }
+    
     func fetchBooks() -> [Book] {
         let fetchRequest: NSFetchRequest<CDBook> = CDBook.fetchRequest()
         do {
             let cdBooks = try context.fetch(fetchRequest)
             return cdBooks.map { cdBook in
-                return Book(
-                    bookId: Int(cdBook.bookId),
-                    title: cdBook.title ?? "",
-                    subTitle: cdBook.subTitle ?? "",
-                    songs: Int(cdBook.songs),
-                    position: Int(cdBook.position),
-                    bookNo: Int(cdBook.bookNo),
-                    enabled: cdBook.enabled,
-                    created: cdBook.created ?? "",
-                )
+                return mapCdBookToBook(cdBook)
             }
         } catch {
             print("Failed to fetch books: \(error)")
@@ -88,17 +90,7 @@ class BookDataManager {
         do {
             let results = try context.fetch(fetchRequest)
             guard let cdBook = results.first else { return nil }
-            
-            return Book(
-                bookId: Int(cdBook.bookId),
-                title: cdBook.title ?? "",
-                subTitle: cdBook.subTitle ?? "",
-                songs: Int(cdBook.songs),
-                position: Int(cdBook.position),
-                bookNo: Int(cdBook.bookNo),
-                enabled: cdBook.enabled,
-                created: cdBook.created ?? "",
-            )
+            return mapCdBookToBook(cdBook)
         } catch {
             print("Failed to fetch book: \(error)")
             return nil

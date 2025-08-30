@@ -9,8 +9,8 @@ import SwiftUI
 import SwiftUIPager
 
 struct PresenterView: View {
-    @StateObject private var viewModel: SongViewModel = {
-        DiContainer.shared.resolve(SongViewModel.self)
+    @StateObject private var viewModel: SongListingViewModel = {
+        DiContainer.shared.resolve(SongListingViewModel.self)
     }()
     let song: Song
     
@@ -46,25 +46,25 @@ struct PresenterView: View {
     @ViewBuilder
     private var stateContent: some View {
         switch viewModel.uiState {
-        case .loading:
-            ProgressView()
-                .scaleEffect(5)
-                .tint(.onPrimary)
-            
-        case .loaded, .liked:
-            PresenterContent(
-                viewModel: viewModel,
-                selected: selectedPage,
-                song: song
-            )
+            case .loading:
+                ProgressView()
+                    .scaleEffect(5)
+                    .tint(.onPrimary)
+                
+            case .loaded, .liked:
+                PresenterContent(
+                    viewModel: viewModel,
+                    selected: selectedPage,
+                    song: song
+                )
 
-        case .error(let msg):
-            ErrorView(message: msg) {
-                Task { viewModel.loadSong(song: song) }
-            }
+            case .error(let msg):
+                ErrorView(message: msg) {
+                    Task { viewModel.loadSong(song: song) }
+                }
 
-        default:
-            LoadingView()
+            default:
+                LoadingView()
         }
     }
 }

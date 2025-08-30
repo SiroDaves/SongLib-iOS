@@ -8,65 +8,80 @@
 import Foundation
 
 protocol ListingRepositoryProtocol {
-    func fetchListings() -> [Listing]
-    func addListing(_ listing: String)
-    func saveListing(_ listing: Listing)
-    func addSongToListing(song: Song, listing: Listing)
-    func updateListing(_ listing: Listing)
-    func deleteListing(withId id: UUID)
+    func fetchListings(for parent: Int) -> [SongListing]
+    func fetchListItems(for parent: Int) -> [SongListItem]
+    func saveListing(_ parent: Int, title: String)
+    func saveListItem(_ parent: Int, song: Int)
+    func updateListing(_ listing: SongListing)
+    func updateListItem(_ listItem: SongListItem)
+    func deleteListing(with id: Int)
+    func deleteListings(with id: Int)
+    func deleteListItem(with id: Int)
+    func deleteListItems(with id: Int)
     func deleteListings()
+    func deleteListItems()
 }
 
 class ListingRepository: ListingRepositoryProtocol {
-    private let listData: ListingDataManager
+    private let listData: SongListingDataManager
+    private let itemData: SongListItemDataManager
     
-    init(listData: ListingDataManager) {
+    init(
+        listData: SongListingDataManager,
+         itemData: SongListItemDataManager
+    ) {
         self.listData = listData
+        self.itemData = itemData
     }
     
-    func fetchListings() -> [Listing] {
-        let listings = listData.fetchListings()
-        return listings.sorted { $1.updatedAt < $0.updatedAt }
+    func fetchListings(for parent: Int) -> [SongListing] {
+        let listings = listData.fetchListings(with: parent)
+        return listings.sorted { $1.modified < $0.modified }
     }
     
-    func addListing(_ title: String) {
-        let newListing = Listing(
-            id: UUID(),
-            parentId: UUID(),
-            songId: 0,
-            title: title,
-            createdAt: Date(),
-            updatedAt: Date(),
-        )
-        listData.saveListing(newListing)
+    func fetchListItems(for parent: Int) -> [SongListItem] {
+        let listItems = itemData.fetchListItems(with: parent)
+        return listItems.sorted { $1.modified < $0.modified }
     }
     
-    func addSongToListing(song: Song, listing: Listing) {
-        let newListing = Listing(
-            id: UUID(),
-            parentId: listing.id,
-            songId: song.songId,
-            title: song.title,
-            createdAt: Date(),
-            updatedAt: Date(),
-        )
-        listData.saveListing(newListing)
+    func saveListing(_ parent: Int, title: String) {
+        listData.saveListing(parent, title: title)
     }
     
-    func updateListing(_ listing: Listing) {
+    func saveListItem(_ parent: Int, song: Int) {
+        itemData.saveListItem(parent, song: song)
+    }
+    
+    func updateListing(_ listing: SongListing) {
         listData.updateListing(listing)
     }
     
-    func deleteListing(withId id: UUID) {
-        listData.deleteListing(withId: id)
+    func updateListItem(_ listItem: SongListItem) {
+        itemData.updateListItem(listItem)
     }
     
-    func saveListing(_ listing: Listing) {
-        listData.saveListing(listing)
+    func deleteListing(with id: Int) {
+        listData.deleteListing(with: id)
+    }
+    
+    func deleteListings(with id: Int) {
+        listData.deleteListings(with: id)
+    }
+    
+    func deleteListItem(with id: Int) {
+        itemData.deleteListItem(with: id)
+    }
+    
+    func deleteListItems(with id: Int) {
+        itemData.deleteListItems(with: id)
     }
     
     func deleteListings() {
         listData.deleteAllListings()
+    }
+    
+    func deleteListItems() {
+        itemData.deleteAllListItems()
     }
     
 }

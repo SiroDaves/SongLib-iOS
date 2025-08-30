@@ -48,23 +48,25 @@ class CoreDataManager {
         }
     }
     
-    func deleteAllData() {
-        let context = viewContext
+    func nextId(context: NSManagedObjectContext, entity: String) -> Int32 {
+        let fetch: NSFetchRequest<NSDictionary> = NSFetchRequest(entityName: entity)
+        fetch.resultType = .dictionaryResultType
         
-        // Delete all songs
-        let songFetchRequest: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest(entityName: "CDSong")
-        let songDeleteRequest = NSBatchDeleteRequest(fetchRequest: songFetchRequest)
-        
-        // Delete all books
-        let bookFetchRequest: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest(entityName: "CDBook")
-        let bookDeleteRequest = NSBatchDeleteRequest(fetchRequest: bookFetchRequest)
+        let expression = NSExpressionDescription()
+        expression.name = "maxId"
+        expression.expression = NSExpression(forFunction: "max:", arguments: [NSExpression(forKeyPath: "id")])
+        expression.expressionResultType = .integer64AttributeType
+        fetch.propertiesToFetch = [expression]
         
         do {
-            try context.execute(songDeleteRequest)
-            try context.execute(bookDeleteRequest)
-            try context.save()
+            if let result = try context.fetch(fetch).first,
+               let maxId = result["maxId"] as? Int32 {
+                return maxId + 1
+            }
         } catch {
-            print("Failed to delete all data: \(error)")
+            print("⚠️ Error fetching max id: \(error)")
         }
+        
+        return 1
     }
 }

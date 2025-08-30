@@ -52,15 +52,17 @@ struct SongsListMock: View {
             }
         }
         .sheet(isPresented: $showListingSheet) {
-            if let song = selectedSong {
-                ChooseListingSheet(
-                    listings: Listing.sampleListings,
-                    onSelect: { listing in },
-                    onNewList: { title in
-                        showListingSheet = false
-                    }
-                )
-            }
+            ChooseListingSheet(
+                listings: SongListing.sampleListings,
+                onSelect: { listing in },
+                onNewList: { title in
+                    showListingSheet = false
+                }
+            )
         }
     }
+}
+
+#Preview {
+    SongsListMock(songs: Song.sampleSongs)
 }

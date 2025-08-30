@@ -23,7 +23,7 @@ final class MainViewModel: ObservableObject {
     @Published var songs: [Song] = []
     @Published var likes: [Song] = []
     @Published var filtered: [Song] = []
-    @Published var listings: [Listing] = []
+    @Published var listings: [SongListing] = []
     @Published var selectedBook: Int = 0
     @Published var uiState: UiState = .idle
 
@@ -74,7 +74,7 @@ final class MainViewModel: ObservableObject {
                 horizontalSlides = prefsRepo.horizontalSlides
                 books = songbkRepo.fetchLocalBooks()
                 songs = songbkRepo.fetchLocalSongs()
-                listings = listingRepo.fetchListings()
+                listings = listingRepo.fetchListings(for: 0)
                 checkSubscription()
                 uiState = .fetched
             }
@@ -96,23 +96,23 @@ final class MainViewModel: ObservableObject {
         self.uiState = .filtered
     }
     
-    func addListing(title: String) {
-        listingRepo.addListing(title)
-        Task { @MainActor in
-            listings = listingRepo.fetchListings()
-            uiState = .filtered
-        }
-    }
-    
     func likeSong(song: Song) {
         songbkRepo.likeSong(song)
         uiState = .filtered
     }
     
-    func addSong(song: Song, listing: Listing) {
-        listingRepo.addSongToListing(song: song, listing: listing)
+    func saveListing(_ parent: Int, song: Int, title: String) {
+        listingRepo.saveListing(parent, title: title)
         Task { @MainActor in
-            listings = listingRepo.fetchListings()
+            listings = listingRepo.fetchListings(for: 0)
+            uiState = .filtered
+        }
+    }
+    
+    func saveListItem(_ parent: Int, song: Int) {
+        listingRepo.saveListItem(parent, song: song)
+        Task { @MainActor in
+            listings = listingRepo.fetchListings(for: 0)
             uiState = .filtered
         }
     }

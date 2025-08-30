@@ -8,47 +8,47 @@
 import Foundation
 
 protocol TrackingRepositoryProtocol {
-    func fetchHistories() -> [History]
-    func fetchSearches() -> [Search]
-    func saveHistory(_ history: History)
-    func saveSearch(_ search: Search)
-    func deleteHistory()
-    func deleteSearch()
+    func fetchViews() -> [SongView]
+    func fetchQueries() -> [Query]
+    func saveView(_ songId: Int)
+    func saveQuery(_ title: String)
+    func deleteView()
+    func deleteQuery()
 }
 
 class TrackingRepository: TrackingRepositoryProtocol {
-    private let historyData: HistoryDataManager
-    private let searchData: SearchDataManager
+    private let viewData: SongViewDataManager
+    private let queryData: QueryDataManager
     
-    init(historyData: HistoryDataManager, searchData: SearchDataManager) {
-        self.historyData = historyData
-        self.searchData = searchData
+    init(viewData: SongViewDataManager, queryData: QueryDataManager) {
+        self.viewData = viewData
+        self.queryData = queryData
     }
     
-    func fetchHistories() -> [History] {
-        let histories = historyData.fetchHistories()
-        return histories.sorted { $0.createdAt < $1.createdAt }
+    func fetchViews() -> [SongView] {
+        let views = viewData.fetchViews()
+        return views.sorted { $0.created < $1.created }
     }
     
-    func fetchSearches() -> [Search] {
-        let histories = searchData.fetchSearches()
-        return histories.sorted { $0.createdAt < $1.createdAt }
+    func fetchQueries() -> [Query] {
+        let queries = queryData.fetchQueries()
+        return queries.sorted { $0.created < $1.created }
     }
     
-    func saveHistory(_ history: History) {
-        historyData.saveHistory(history)
+    func saveView(_ songId: Int) {
+        viewData.saveView(songId)
     }
     
-    func saveSearch(_ search: Search) {
-        searchData.saveSearch(search)
+    func saveQuery(_ title: String) {
+        queryData.saveQuery(title)
     }
     
-    func deleteHistory() {
-        historyData.deleteAllHistories()
+    func deleteView() {
+        viewData.deleteAllViews()
     }
     
-    func deleteSearch() {
-        searchData.deleteAllSearches()
+    func deleteQuery() {
+        queryData.deleteAllQueries()
     }
     
 }
