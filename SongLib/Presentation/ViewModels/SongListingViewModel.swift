@@ -52,7 +52,7 @@ final class SongListingViewModel: ObservableObject {
         Task {
             await MainActor.run {
                 checkSubscription()
-                listings = listingRepo.fetchChildListings(for: listing.parent)
+                listings = listingRepo.fetchListings(for: listing.parent)
                 
                 listedSongs.removeAll()
                 for listing in listings {
@@ -113,17 +113,17 @@ final class SongListingViewModel: ObservableObject {
     }
     
     func saveListing(_ parent: Int, song: Int, title: String) {
-        listingRepo.saveListing(parent, song: song, title: title)
+        listingRepo.saveListing(parent, title: title)
         Task { @MainActor in
-            listings = listingRepo.fetchListings()
+            listings = listingRepo.fetchListings(for: 0)
             uiState = .filtered
         }
     }
     
-    func addSongToListing(_ parent: Int, song: Int) {
-        listingRepo.addSongToListing(parent, song: song)
+    func saveListItem(_ parent: Int, song: Int) {
+        listingRepo.saveListItem(parent, song: song)
         Task { @MainActor in
-            listings = listingRepo.fetchListings()
+            listings = listingRepo.fetchListings(for: 0)
             uiState = .filtered
         }
     }

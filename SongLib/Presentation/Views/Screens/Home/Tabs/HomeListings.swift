@@ -39,7 +39,7 @@ struct HomeListings: View {
                 TextField("Listing title", text: $newListingTitle)
                 Button("Add", action: {
                     guard !newListingTitle.trimmingCharacters(in: .whitespaces).isEmpty else { return }
-                    viewModel.saveListing(0, song: 0, title: newListingTitle)
+                    viewModel.saveListing(0, title: newListingTitle)
                     newListingTitle = ""
                 })
                 Button("Cancel", role: .cancel) {}

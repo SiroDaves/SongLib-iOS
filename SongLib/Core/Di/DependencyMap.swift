@@ -46,6 +46,12 @@ struct DependencyMap {
             )
         }.inObjectScope(.container)
         
+        container.register(SongListItemDataManager.self) { resolver in
+            SongListItemDataManager(
+                cdManager: resolver.resolve(CoreDataManager.self)!,
+            )
+        }.inObjectScope(.container)
+        
         container.register(QueryDataManager.self) { resolver in
             QueryDataManager(
                 cdManager: resolver.resolve(CoreDataManager.self)!,
@@ -68,7 +74,8 @@ struct DependencyMap {
         
         container.register(ListingRepositoryProtocol.self) { resolver in
             ListingRepository(
-                listData: resolver.resolve(SongListingDataManager.self)!
+                listData: resolver.resolve(SongListingDataManager.self)!,
+                itemData: resolver.resolve(SongListItemDataManager.self)!
             )
         }.inObjectScope(.container)
         

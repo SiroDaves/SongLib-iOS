@@ -18,7 +18,7 @@ class SongListingDataManager {
         cdManager.viewContext
     }
     
-    func saveListing(_ parent: Int, song: Int, title: String) {
+    func saveListing(_ parent: Int, title: String) {
         context.perform {
             do {
                 let cdListing = CDSongListing(context: self.context)
@@ -47,14 +47,6 @@ class SongListingDataManager {
             print("❌ Failed to fetch listings: \(error)")
             return []
         }
-    }
-
-    func fetchListings() -> [SongListing] {
-        return fetchListings(with: 0)
-    }
-
-    func fetchChildListings(for parent: Int) -> [SongListing] {
-        return fetchListings(with: parent)
     }
 
     func fetchListing(with id: Int) -> SongListing? {
@@ -114,6 +106,19 @@ class SongListingDataManager {
         }
     }
     
+    func deleteListings(with id: Int) {
+        let fetchRequest: NSFetchRequest<NSFetchRequestResult> = CDSongListing.fetchRequest()
+        let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+        
+        do {
+            try context.execute(batchDeleteRequest)
+            try context.save()
+            print("🗑️ All listings deleted successfully")
+        } catch {
+            print("❌ Failed to delete listings: \(error)")
+        }
+    }
+    
     private func mapCDListing(_ cdListing: CDSongListing) -> SongListing? {
         let songCount = fetchChildListingCount(for: Int(cdListing.id))
         return SongListing(
@@ -127,7 +132,7 @@ class SongListingDataManager {
     }
     
     private func fetchChildListingCount(for parent: Int) -> Int {
-        let request: NSFetchRequest<CDSongListing> = CDSongListing.fetchRequest()
+        let request: NSFetchRequest<CDSongListItem> = CDSongListItem.fetchRequest()
         request.predicate = NSPredicate(format: "parent == %d", parent)
         do {
             return try context.count(for: request)
@@ -139,7 +144,7 @@ class SongListingDataManager {
 
     private func fetchCDListing(with id: Int) throws -> CDSongListing? {
         let request: NSFetchRequest<CDSongListing> = CDSongListing.fetchRequest()
-        request.predicate = NSPredicate(format: "id == %@", id as CVarArg)
+        request.predicate = NSPredicate(format: "id == %d", id )
         request.fetchLimit = 1
         return try context.fetch(request).first
     }

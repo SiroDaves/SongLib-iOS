@@ -74,7 +74,7 @@ final class MainViewModel: ObservableObject {
                 horizontalSlides = prefsRepo.horizontalSlides
                 books = songbkRepo.fetchLocalBooks()
                 songs = songbkRepo.fetchLocalSongs()
-                listings = listingRepo.fetchListings()
+                listings = listingRepo.fetchListings(for: 0)
                 checkSubscription()
                 uiState = .fetched
             }
@@ -102,17 +102,17 @@ final class MainViewModel: ObservableObject {
     }
     
     func saveListing(_ parent: Int, song: Int, title: String) {
-        listingRepo.saveListing(parent, song: song, title: title)
+        listingRepo.saveListing(parent, title: title)
         Task { @MainActor in
-            listings = listingRepo.fetchListings()
+            listings = listingRepo.fetchListings(for: 0)
             uiState = .filtered
         }
     }
     
-    func addSongToListing(_ parent: Int, song: Int) {
-        listingRepo.addSongToListing(parent, song: song)
+    func saveListItem(_ parent: Int, song: Int) {
+        listingRepo.saveListItem(parent, song: song)
         Task { @MainActor in
-            listings = listingRepo.fetchListings()
+            listings = listingRepo.fetchListings(for: 0)
             uiState = .filtered
         }
     }
