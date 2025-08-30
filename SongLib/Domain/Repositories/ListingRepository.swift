@@ -9,29 +9,18 @@ import Foundation
 
 protocol ListingRepositoryProtocol {
     func fetchListings(for parent: Int) -> [SongListing]
-    func fetchListItems(for parent: Int) -> [SongListItem]
     func saveListing(_ parent: Int, title: String)
-    func saveListItem(_ parent: Int, song: Int)
-    func updateListing(_ listing: SongListing)
-    func updateListItem(_ listItem: SongListItem)
+    func saveListItem(_ parent: SongListing, song: Int)
+    func updateListing(_ listing: SongListing, title: String)
     func deleteListing(with id: Int)
-    func deleteListings(with id: Int)
-    func deleteListItem(with id: Int)
-    func deleteListItems(with id: Int)
     func deleteListings()
-    func deleteListItems()
 }
 
 class ListingRepository: ListingRepositoryProtocol {
     private let listData: SongListingDataManager
-    private let itemData: SongListItemDataManager
     
-    init(
-        listData: SongListingDataManager,
-         itemData: SongListItemDataManager
-    ) {
+    init(listData: SongListingDataManager) {
         self.listData = listData
-        self.itemData = itemData
     }
     
     func fetchListings(for parent: Int) -> [SongListing] {
@@ -39,25 +28,17 @@ class ListingRepository: ListingRepositoryProtocol {
         return listings.sorted { $1.modified < $0.modified }
     }
     
-    func fetchListItems(for parent: Int) -> [SongListItem] {
-        let listItems = itemData.fetchListItems(with: parent)
-        return listItems.sorted { $1.modified < $0.modified }
-    }
-    
     func saveListing(_ parent: Int, title: String) {
-        listData.saveListing(parent, title: title)
+        listData.saveListing(parent, title: title, song: 0)
     }
     
-    func saveListItem(_ parent: Int, song: Int) {
-        itemData.saveListItem(parent, song: song)
+    func saveListItem(_ parent: SongListing, song: Int) {
+        listData.saveListing(parent.id, title: "", song: song)
+        listData.updateListing(parent, title: parent.title)
     }
     
-    func updateListing(_ listing: SongListing) {
-        listData.updateListing(listing)
-    }
-    
-    func updateListItem(_ listItem: SongListItem) {
-        itemData.updateListItem(listItem)
+    func updateListing(_ listing: SongListing, title: String) {
+        listData.updateListing(listing, title: title)
     }
     
     func deleteListing(with id: Int) {
@@ -65,23 +46,10 @@ class ListingRepository: ListingRepositoryProtocol {
     }
     
     func deleteListings(with id: Int) {
-        listData.deleteListings(with: id)
-    }
-    
-    func deleteListItem(with id: Int) {
-        itemData.deleteListItem(with: id)
-    }
-    
-    func deleteListItems(with id: Int) {
-        itemData.deleteListItems(with: id)
+        listData.deleteListing(with: id)
     }
     
     func deleteListings() {
         listData.deleteAllListings()
     }
-    
-    func deleteListItems() {
-        itemData.deleteAllListItems()
-    }
-    
 }

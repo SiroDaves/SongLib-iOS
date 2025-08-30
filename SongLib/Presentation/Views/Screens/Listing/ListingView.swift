@@ -16,6 +16,9 @@ struct ListingView: View {
     
     @State private var showToast = false
     @State private var toastMessage: String = ""
+    @State private var showEditAlert = false
+    @State private var showDeleteAlert = false
+    @State private var editedTitle: String = ""
 
     var body: some View {
         ZStack {
@@ -38,8 +41,7 @@ struct ListingView: View {
                 }
             }
         }
-        .background(.surface)
-        .navigationTitle(listing.title)
+        .navigationTitle(viewModel.listingTitle)
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden(true)
         .toolbar {
@@ -48,6 +50,37 @@ struct ListingView: View {
                     presentationMode.wrappedValue.dismiss()
                 } label: { Image(systemName: "chevron.backward") }
             }
+        
+            ToolbarItemGroup(placement: .navigationBarTrailing) {
+                Button {
+                    editedTitle = viewModel.listingTitle
+                    showEditAlert = true
+                } label: {
+                    Label("Edit", systemImage: "pencil")
+                }
+                
+                Button {
+                    showDeleteAlert = true
+                } label: {
+                    Label("Delete", systemImage: "trash")
+                }
+            }
+        }
+        .alert("Edit List Title", isPresented: $showEditAlert) {
+            TextField("New title", text: $editedTitle)
+            Button("Cancel", role: .cancel) {}
+            Button("Update") {
+                viewModel.updateListing(listing, title: editedTitle)
+            }
+        }
+        .alert("Delete List?", isPresented: $showDeleteAlert) {
+            Button("Cancel", role: .cancel) {}
+            Button("Delete", role: .destructive) {
+                viewModel.deleteListing(listing.id, parent: 0)
+                presentationMode.wrappedValue.dismiss()
+            }
+        } message: {
+            Text("This action cannot be undone.")
         }
     }
 
@@ -58,10 +91,19 @@ struct ListingView: View {
                 LoadingState()
                 
             case .loaded:
-                ListedSongs(
-                    viewModel: viewModel,
-                    songs: viewModel.listedSongs
-                )
+                Group {
+                    if viewModel.listItems.isEmpty {
+                        EmptyState(
+                            message: L10n.emptySongList,
+                            messageIcon: Image(systemName: "plus")
+                        )
+                    } else {
+                        ListingContent(
+                            viewModel: viewModel,
+                            songs: viewModel.listedSongs
+                        )
+                    }
+                }
 
             case .error(let msg):
                 ErrorView(message: msg) { }

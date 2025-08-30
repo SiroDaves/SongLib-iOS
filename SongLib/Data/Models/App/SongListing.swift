@@ -11,6 +11,7 @@ struct SongListing: Identifiable, Equatable {
     let id: Int
     var parent: Int
     var title: String
+    var song: Int
     var created: Date
     var modified: Date
     

@@ -33,4 +33,8 @@ struct L10n {
     static let resetDataDesc = "You can clear all the data and do the selection afresh."
     static let contactUs = "Contact Us"
     static let contactUsDesc = "Got any compliment/complaints? Just email now. Don't fail to attach as many screenshots as you can."
+    static let emptySongs = "You might have to add songs afresh, \nInstall the app afresh"
+    static let emptySongLikes = "Start liking songs when you view them,\n If you don't want to see this again"
+    static let emptySongListing = "Start adding lists of songs,\nif you don't want to see this again"
+    static let emptySongList = "Start adding songs to this song list,\nif you don't want to see this again"
 }

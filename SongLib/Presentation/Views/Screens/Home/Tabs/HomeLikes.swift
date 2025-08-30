@@ -15,7 +15,7 @@ struct HomeLikes: View {
             Group {
                 if viewModel.likes.isEmpty {
                     EmptyState(
-                        message: "Start liking songs when you view them,\n If you don't want to see this again",
+                        message: L10n.emptySongLikes,
                         messageIcon: Image(systemName: "heart.fill")
                     )
                 } else {

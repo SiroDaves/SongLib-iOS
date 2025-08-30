@@ -11,7 +11,7 @@ import SwiftUI
 final class SongListingViewModel: ObservableObject {
     private let prefsRepo: PreferencesRepository
     private let songbkRepo: SongBookRepositoryProtocol
-    private let listingRepo: ListingRepositoryProtocol
+    private let listRepo: ListingRepositoryProtocol
     private let subsRepo: SubscriptionRepositoryProtocol
 
     @Published var uiState: UiState = .idle
@@ -23,19 +23,21 @@ final class SongListingViewModel: ObservableObject {
     @Published var songs: [Song] = []
     @Published var listedSongs: [Song] = []
     @Published var listings: [SongListing] = []
+    @Published var listItems: [SongListing] = []
     
     @Published var isLiked: Bool = false
     @Published var activeSubscriber: Bool = false
+    @Published var listingTitle: String = "Untitled List"
 
     init(
         prefsRepo: PreferencesRepository,
         songbkRepo: SongBookRepositoryProtocol,
-        listingRepo: ListingRepositoryProtocol,
+        listRepo: ListingRepositoryProtocol,
         subsRepo: SubscriptionRepositoryProtocol
     ) {
         self.prefsRepo = prefsRepo
         self.songbkRepo = songbkRepo
-        self.listingRepo = listingRepo
+        self.listRepo = listRepo
         self.subsRepo = subsRepo
     }
     
@@ -52,18 +54,16 @@ final class SongListingViewModel: ObservableObject {
         Task {
             await MainActor.run {
                 checkSubscription()
-                listings = listingRepo.fetchListings(for: listing.parent)
-                
+                listItems = listRepo.fetchListings(for: listing.id)
+                listingTitle = listing.title
                 listedSongs.removeAll()
-                for listing in listings {
-//                    print("Listing \(listing.id)")
-//                    if let song = songbkRepo.fetchSong(withId: listing.songId) {
-//                        listedSongs.append(song)
-//                    } else {
-//                        print("⚠️ Missing song \(listing.songId)")
-//                    }
+                for item in listItems {
+                    if let song = songbkRepo.fetchSong(withId: item.song) {
+                        listedSongs.append(song)
+                    } else {
+                        print("⚠️ Missing song \(item.song)")
+                    }
                 }
-                
                 uiState = .loaded
             }
         }
@@ -113,18 +113,41 @@ final class SongListingViewModel: ObservableObject {
     }
     
     func saveListing(_ parent: Int, song: Int, title: String) {
-        listingRepo.saveListing(parent, title: title)
+        listRepo.saveListing(parent, title: title)
         Task { @MainActor in
-            listings = listingRepo.fetchListings(for: 0)
-            uiState = .filtered
+            listItems = listRepo.fetchListings(for: parent)
+            listings = listRepo.fetchListings(for: 0)
+            uiState = .loaded
         }
     }
     
-    func saveListItem(_ parent: Int, song: Int) {
-        listingRepo.saveListItem(parent, song: song)
+    func updateListing(_ parent: SongListing, title: String) {
+        listRepo.updateListing(parent, title: title)
+        listingTitle = title
         Task { @MainActor in
-            listings = listingRepo.fetchListings(for: 0)
-            uiState = .filtered
+            listItems = listRepo.fetchListings(for: parent.id)
+            listings = listRepo.fetchListings(for: 0)
+            uiState = .loaded
+        }
+    }
+    
+    func saveListItem(_ listing: SongListing, song: Int) {
+        listRepo.saveListItem(listing, song: song)
+        Task { @MainActor in
+            listItems = listRepo.fetchListings(for: listing.id)
+            listings = listRepo.fetchListings(for: 0)
+            uiState = .loaded
+        }
+    }
+    
+    func deleteListing(_ listing: Int, parent: Int) {
+        listRepo.deleteListing(with: listing)
+        Task { @MainActor in
+            if parent != 0 {
+                listItems = listRepo.fetchListings(for: parent)
+            }
+            listings = listRepo.fetchListings(for: 0)
+            uiState = .loaded
         }
     }
     

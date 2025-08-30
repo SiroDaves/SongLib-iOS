@@ -26,7 +26,6 @@ final class DiContainer {
             { self.container.resolve(BookDataManager.self) },
             { self.container.resolve(SongDataManager.self) },
             { self.container.resolve(SongListingDataManager.self) },
-            { self.container.resolve(SongListItemDataManager.self) },
             { self.container.resolve(QueryDataManager.self) },
             { self.container.resolve(SongViewDataManager.self) },
             { self.container.resolve(PreferencesRepository.self) },

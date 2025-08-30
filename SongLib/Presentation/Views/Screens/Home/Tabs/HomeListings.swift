@@ -17,7 +17,7 @@ struct HomeListings: View {
             Group {
                 if viewModel.listings.isEmpty {
                     EmptyState(
-                        message: "Start adding lists of songs,\nif you don't want to see this again",
+                        message: L10n.emptySongListing,
                         messageIcon: Image(systemName: "list.number")
                     )
                 } else {

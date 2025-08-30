@@ -101,7 +101,7 @@ final class MainViewModel: ObservableObject {
         uiState = .filtered
     }
     
-    func saveListing(_ parent: Int, song: Int, title: String) {
+    func saveListing(_ parent: Int, title: String) {
         listingRepo.saveListing(parent, title: title)
         Task { @MainActor in
             listings = listingRepo.fetchListings(for: 0)
@@ -109,8 +109,16 @@ final class MainViewModel: ObservableObject {
         }
     }
     
-    func saveListItem(_ parent: Int, song: Int) {
-        listingRepo.saveListItem(parent, song: song)
+    func saveListItem(_ listing: SongListing, song: Int) {
+        listingRepo.saveListItem(listing, song: song)
+        Task { @MainActor in
+            listings = listingRepo.fetchListings(for: 0)
+            uiState = .filtered
+        }
+    }
+    
+    func deleteListing(_ listing: Int) {
+        listingRepo.deleteListing(with: listing)
         Task { @MainActor in
             listings = listingRepo.fetchListings(for: 0)
             uiState = .filtered
